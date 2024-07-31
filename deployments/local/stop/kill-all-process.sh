@@ -6,11 +6,12 @@
 # Kill all the process stored in the PID paths of possible generated processes in CHAIN_DIR
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
+CHAIN_ID2="${CHAIN_ID:-test-2}"
 
 babylonChain="$CHAIN_DIR/$CHAIN_ID"
-babylonChain2="$CHAIN_DIR/test-2"
+babylonChain2="$CHAIN_DIR/$CHAIN_ID2"
 BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
 VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
 COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"

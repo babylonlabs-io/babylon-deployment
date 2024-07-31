@@ -1,13 +1,13 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./setup-single-node.sh <option of full path to babylond>
+# ./setup-babylond-single-node.sh <option of full path to babylond>
 
 # it setups the single-node home files base struct
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
+NODE_BIN="${1:-$CWD/../../../babylon/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
 CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"

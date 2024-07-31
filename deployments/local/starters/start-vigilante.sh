@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./vigilante-start
+# ./start-vigilante.sh
 
 # Starts an vigilate submitter and reporter connected to babylon and btc chain.
 
@@ -59,8 +59,8 @@ kbt="--keyring-backend test"
 submitterAddr=$($BBN_BIN --home $N0_HOME keys show submitter -a $kbt)
 
 # Creates one config for each vigilante process
-CONF_PATH=$vigilanteConfSub CLEANUP=0 SUBMITTER_ADDR=$submitterAddr $CWD/vigilante-setup-conf.sh
-CONF_PATH=$vigilanteConfRep CLEANUP=0 SUBMITTER_ADDR=$submitterAddr SERVER_PORT=2134 LISTEN_PORT=8068 $CWD/vigilante-setup-conf.sh
+CONF_PATH=$vigilanteConfSub CLEANUP=0 SUBMITTER_ADDR=$submitterAddr $CWD/setup-vigilante.sh
+CONF_PATH=$vigilanteConfRep CLEANUP=0 SUBMITTER_ADDR=$submitterAddr SERVER_PORT=2134 LISTEN_PORT=8068 $CWD/setup-vigilante.sh
 
 # Starts reporter and submitter
 $VIGILANTE_BIN --config $vigilanteConfRep reporter > $vigilanteLogs/reporter.log 2>&1 &

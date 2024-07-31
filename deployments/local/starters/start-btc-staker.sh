@@ -1,19 +1,19 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./btc-staker
+# ./start-btc-staker.sh
 
 # Starts an btc staker and sends stake tx to btc.
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../..}"
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 
 BTC_STAKER_BUILD="${BTC_STAKER_BUILD:-$BBN_DEPLOYMENTS/btc-staker/build}"
 STAKERCLI_BIN="${STAKERCLI_BIN:-$BTC_STAKER_BUILD/stakercli}"
 STAKERD_BIN="${STAKERD_BIN:-$BTC_STAKER_BUILD/stakerd}"
 
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
 BTC_STAKER_HOME="${BTC_STAKER_HOME:-$CHAIN_DIR/btc-staker}"
@@ -119,7 +119,8 @@ stakerBTCAddrListOutput=$($STAKERCLI_BIN daemon list-outputs | jq .outputs[-1].a
 echo $stakerBTCAddrListOutput > $stakercliOutputDir/list.output.last.addr
 
 # Creates the btc delegation
-$STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-amount 1000000 --finality-providers-pks $finalityProviderBTCPubKey --staking-time 10000 > $stakercliOutputDir/btc-staking-tx.json
+$STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-amount 1000000 \
+  --finality-providers-pks $finalityProviderBTCPubKey --staking-time 10000 > $stakercliOutputDir/btc-staking-tx.json
 
 # Generate a few blocks to confirm the tx.
 btcctl --simnet --wallet $flagRpcs $flagRpcWalletCert generate 15

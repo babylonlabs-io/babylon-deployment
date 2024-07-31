@@ -1,13 +1,14 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./single-node-with-btc-delegation.sh
+# ./bbn-start-stop-exportgen-start.sh
 
 # Starts all the process necessary to have a babylon chain running with active btc delegation.
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
 
 CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+STARTERS="${STARTERS:-$CWD/starters}"
 CLEANUP="${CLEANUP:-1}"
 COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
 
@@ -20,10 +21,10 @@ if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
 fi
 
 # setup covd
-CHAIN_DIR=$CHAIN_DIR $CWD/covd-setup.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/covd-setup.sh
 
 # Starts BTC
-CHAIN_DIR=$CHAIN_DIR $CWD/btc-start.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/start-btcd.sh
 sleep 2
 
 # Starts the blockchain
@@ -32,22 +33,22 @@ CHAIN_DIR=$CHAIN_DIR COVENANT_QUORUM=1 COVENANT_PK_FILE=$covdPKs $CWD/single-nod
 sleep 6 # wait a few seconds for the node start building blocks
 
 # Start Covenant
-CLEANUP=0 SETUP=0 $CWD/covd-start.sh
+CLEANUP=0 SETUP=0 $STARTERS/start-covd.sh
 
 # Start Vigilante
-CLEANUP=1 CHAIN_DIR=$CHAIN_DIR $CWD/vigilante-start.sh
+CLEANUP=1 CHAIN_DIR=$CHAIN_DIR $STARTERS/start-vigilante.sh
 
 # Start EOTS
-CHAIN_DIR=$CHAIN_DIR $CWD/eots-start.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/start-eots.sh
 
 # sleeps here, because covd and fpd need funds and execute an tx bank send from user
 # to avoid acc sequence errors, just wait until produces a block.
 sleep 2
 
 # Start FPD
-CHAIN_DIR=$CHAIN_DIR $CWD/fpd-start.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/start-fpd.sh
 
 sleep 12 # waits for fdp to send some txs
 
 # Start BTC Staker and stakes to btc
-CHAIN_DIR=$CHAIN_DIR $CWD/btc-staker.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/start-btc-staker.sh

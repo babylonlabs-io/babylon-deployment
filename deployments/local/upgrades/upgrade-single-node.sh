@@ -87,6 +87,7 @@ echo "Kill all the process '$NODE_BIN_V1'"
 PATH_OF_PIDS=$n0pid $CWD/kill-process.sh
 sleep 5
 
+# call from start-babylond
 $NODE_BIN_V2 $home0 start --api.enable true --grpc.address="0.0.0.0:9090" --api.enabled-unsafe-cors --grpc-web.enable=true --log_level info > $log_path 2>&1 &
 
 # Gets the node pid

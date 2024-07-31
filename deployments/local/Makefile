@@ -1,6 +1,6 @@
 DOCKER := $(shell which docker)
 GIT_TOPLEVEL := $(shell git rev-parse --show-toplevel)
-
+STOP_PATH := $(CURDIR)/stop
 
 build-babylond:
 	$(MAKE) -C $(GIT_TOPLEVEL)/babylon build
@@ -19,17 +19,15 @@ build-btc-staker:
 
 build-all: build-babylond build-vigilante build-fpd build-covd build-btc-staker
 
-start-phase-2-full-test: build-all
-	./phase-2-full-test.sh
+bbn-start-stop-exportgen-start: build-all
+	./bbn-start-stop-exportgen-start.sh
 
-start-bbn-with-btc-delegation: build-all
-	./single-node-with-btc-delegation.sh
+bbn-start-and-add-btc-delegation: build-all
+	./bbn-start-and-add-btc-delegation.sh
 
-upgrade-vanilla: build-all
-	./single-node.sh
-	sleep 10
-	./upgrade-single-node.sh
+bbn-upgrade-vanilla: build-all
+	./bbn-start-and-upgrade-vanilla.sh
 
 stop-all:
-	./kill-all-process.sh
+	$(STOP_PATH)/kill-all-process.sh
 	rm -rf $(CURDIR)/data

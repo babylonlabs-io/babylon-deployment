@@ -6,7 +6,7 @@
 # Kill all the process stored in the PATH_OF_PIDS files
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 PATH_OF_PIDS="${PATH_OF_PIDS:-$CHAIN_DIR/$CHAIN_ID/*.pid}"
 

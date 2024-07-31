@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./vigilante-setup-conf.sh
+# ./setup-vigilante.sh
 
 # Creates vigilante config file.
 

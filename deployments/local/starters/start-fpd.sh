@@ -1,12 +1,12 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./fpd-start
+# ./start-fpd.sh
 
 # it starts the finality provider for single node chain and validator
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../..}"
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 
 FPD_BUILD="${FPD_BUILD:-$BBN_DEPLOYMENTS/finality-provider/build}"
 FPD_BIN="${FPD_BIN:-$FPD_BUILD/fpd}"
@@ -15,7 +15,7 @@ BABYLOND_DIR="${BABYLOND_DIR:-$BBN_DEPLOYMENTS/babylon}"
 BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 FPD_HOME="${FPD_HOME:-$CHAIN_DIR/fpd}"
 CLEANUP="${CLEANUP:-1}"
 

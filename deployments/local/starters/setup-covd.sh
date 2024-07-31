@@ -1,17 +1,17 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./covd-setup
+# ./setup-covd.sh
 
 # it setups the covenant init files for single node chain
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../..}"
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 COVD_BIN="${COVD_BIN:-$BBN_DEPLOYMENTS/covenant-emulator/build/covd}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
 CLEANUP="${CLEANUP:-1}"
 
