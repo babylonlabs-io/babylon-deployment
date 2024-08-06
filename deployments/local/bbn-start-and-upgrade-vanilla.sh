@@ -6,25 +6,27 @@
 # Runs the vanilla upgrade '-'
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
-STARTERS="${STARTERS:-$CWD/starters}"
-UPGRADES="${STARTERS:-$CWD/upgrades}"
-STOP="${STOP:-$CWD/stop}"
 
-VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
-COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
-CHAIN_ID_PHASE1="${CHAIN_ID_PHASE1:-test-1}"
 NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
-CLEANUP="${CLEANUP:-1}"
 
-# TODO: should build the babylond at the expected version by calling make there and going to upgrade version
-# Start single node
-# Gov prop
-# Stop
-# build version to upgrade to
-# start
-# verify if it all went success
+STARTERS="${STARTERS:-$CWD/starters}"
+UPGRADES="${UPGRADES:-$CWD/upgrades}"
 
+# Setup and start single node
 $STARTERS/start-babylond-single-node.sh
-sleep 10
+
+# wait for a block
+sleep 6
+
+lenFpsBeforeUpgrade=$($NODE_BIN q btcstaking finality-providers -o json | jq ".finality_providers | length")
+
+# Gov prop, waits for block, kill and reestart in the new version
 $UPGRADES/upgrade-single-node.sh
+
+# checks if new fp was added '-'
+lenFpsAfterUpgrade=$($NODE_BIN q btcstaking finality-providers -o json | jq ".finality_providers | length")
+
+if ! [[ "$lenFpsAfterUpgrade" -gt $lenFpsBeforeUpgrade ]]; then
+  echo "Upgrade should have applied a new finality provider"
+  exit 1
+fi
