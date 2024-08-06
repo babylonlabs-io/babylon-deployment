@@ -8,8 +8,9 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_HOME="$CHAIN_DIR/$CHAIN_ID"
+STOP="${STOP:-$CWD/../stop}"
 
 N0_HOME="${N0_HOME:-$CHAIN_HOME/n0}"
 BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
@@ -25,7 +26,7 @@ CONF_PATH="${CONF_PATH:-$VIGILANTE_HOME/vigilante-submitter.yml}"
 CLEANUP="${CLEANUP:-1}"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$VIGILANTE_HOME/pid/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$VIGILANTE_HOME/pid/*.pid $STOP/kill-process.sh
 
   rm -rf $VIGILANTE_HOME
   echo "Removed $VIGILANTE_HOME"

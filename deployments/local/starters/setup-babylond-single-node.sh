@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./setup-babylond-single-node.sh <option of full path to babylond>
@@ -8,9 +8,10 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 NODE_BIN="${1:-$CWD/../../../babylon/build/babylond}"
+STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 DENOM="${DENOM:-ubbn}"
 CLEANUP="${CLEANUP:-1}"
 LOG_LEVEL="${LOG_LEVEL:-info}"
@@ -71,7 +72,7 @@ n0app="$n0cfgDir/app.toml"
 n0PrivKey="$n0cfgDir/priv_validator_key.json"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$hdir/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$hdir/*.pid $STOP/kill-process.sh
   sleep 1
 
   rm -rf $hdir
@@ -133,6 +134,7 @@ jq '.consensus_params["block"]["time_iota_ms"]="5000"
   | .app_state["mint"]["params"]["mint_denom"]="'$DENOM'"
   | .app_state["staking"]["params"]["bond_denom"]="'$DENOM'"
   | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
+  | .app_state["btcstaking"]["params"][0]["slashing_address"]="bcrt1qx2vv99d4m60qv0tmtfvcajxcwvqwkn7nhsucwg"
   | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="2"
   | .app_state["consensus"]=null
   | .consensus["params"]["abci"]["vote_extensions_enable_height"]="1"

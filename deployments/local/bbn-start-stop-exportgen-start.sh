@@ -20,14 +20,14 @@ NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
 CLEANUP="${CLEANUP:-1}"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  $CWD/kill-all-process.sh
+  $STOP/kill-all-process.sh
 
   rm -rf $CHAIN_DIR
   echo "Removed $CHAIN_DIR"
 fi
 
 # Starts everything with btc delegation
-$CWD/bbn-start-stop-exportgen-start.sh
+$CWD/bbn-start-and-add-btc-delegation.sh
 
 WAIT_UNTIL=1
 amountActiveDels=0

@@ -8,6 +8,7 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
+STOP="${STOP:-$CWD/../stop}"
 
 COVD_BIN="${COVD_BIN:-$BBN_DEPLOYMENTS/covenant-emulator/build/covd}"
 
@@ -37,7 +38,7 @@ kbt="--keyring-backend test"
 cid="--chain-id $CHAIN_ID"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$COVD_HOME/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$COVD_HOME/*.pid $STOP/kill-process.sh
 
   rm -rf $COVD_HOME
   echo "Removed $COVD_HOME"

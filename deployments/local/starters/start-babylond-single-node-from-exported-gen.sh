@@ -10,7 +10,7 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-2}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 EXPORTED_GEN_FILE="${EXPORTED_GEN_FILE:-$CHAIN_DIR/test-1/n0/config/genesis.exported.json}"
 
 echo "--- Chain ID = $CHAIN_ID"

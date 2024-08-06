@@ -9,27 +9,28 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
 
 CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
 STARTERS="${STARTERS:-$CWD/starters}"
+STOP="${STOP:-$CWD/stop}"
 CLEANUP="${CLEANUP:-1}"
 COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
 
 # Cleans everything
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  $CWD/kill-all-process.sh
+  $STOP/kill-all-process.sh
 
   rm -rf $CHAIN_DIR
   echo "Removed $CHAIN_DIR"
 fi
 
 # setup covd
-CHAIN_DIR=$CHAIN_DIR $STARTERS/covd-setup.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/setup-covd.sh
 
 # Starts BTC
-CHAIN_DIR=$CHAIN_DIR $STARTERS/start-btcd.sh
+CHAIN_DIR=$CHAIN_DIR $STARTERS/start-bitcoind.sh
 sleep 2
 
 # Starts the blockchain
 covdPKs=$COVD_HOME/pks.json
-CHAIN_DIR=$CHAIN_DIR COVENANT_QUORUM=1 COVENANT_PK_FILE=$covdPKs $CWD/single-node.sh
+CHAIN_DIR=$CHAIN_DIR COVENANT_QUORUM=1 COVENANT_PK_FILE=$covdPKs $STARTERS/start-babylond-single-node.sh
 sleep 6 # wait a few seconds for the node start building blocks
 
 # Start Covenant

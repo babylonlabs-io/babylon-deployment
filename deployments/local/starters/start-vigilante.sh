@@ -8,10 +8,11 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_HOME="$CHAIN_DIR/$CHAIN_ID"
+STOP="${STOP:-$CWD/../stop}"
 
-BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../..}"
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 
 BABYLOND_DIR="${BABYLOND_DIR:-$BBN_DEPLOYMENTS/babylon}"
 BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
@@ -30,7 +31,7 @@ vigilantepidPath="$VIGILANTE_HOME/pid"
 vigilanteLogs="$VIGILANTE_HOME/logs"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$vigilantepidPath/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$vigilantepidPath/*.pid $STOP/kill-process.sh
 
   rm -rf $VIGILANTE_HOME
   echo "Removed $VIGILANTE_HOME"

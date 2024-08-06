@@ -12,9 +12,10 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 NODE_BIN_V1="${1:-$CWD/../../babylon/build/babylond}"
 NODE_BIN_V2="${2:-$CWD/upgrades/babylond-v2-vanilla-2425b66919f085c1cc3e843bb0e31470a97fe3ee}"
 SOFTWARE_UPGRADE_FILE="${3:-$CWD/upgrades/vanilla.json}"
+STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 DENOM="${DENOM:-ubbn}"
 
 if [ ! -f $NODE_BIN_V1 ]; then
@@ -84,7 +85,7 @@ done
 echo "Reached upgrade block height"
 echo "Kill all the process '$NODE_BIN_V1'"
 
-PATH_OF_PIDS=$n0pid $CWD/kill-process.sh
+PATH_OF_PIDS=$n0pid $STOP/kill-process.sh
 sleep 5
 
 # call from start-babylond
