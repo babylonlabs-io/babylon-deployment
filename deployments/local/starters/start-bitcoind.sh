@@ -3,8 +3,7 @@
 # USAGE:
 # ./start-bitcoind.sh
 
-# Starts an btc chain with a new mining addr.
-# Btc processes needs sleep timing --"
+# Starts an bitcoind BTC regtest chain with address and blocks
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
@@ -51,6 +50,11 @@ server=1
 # listen on different ports than default testnet
 port=19000
 rpcport=19001
+
+zmqpubrawtx=tcp://127.0.0.1:28332
+zmqpubrawtxlock=tcp://127.0.0.1:28332
+zmqpubhashblock=tcp://127.0.0.1:28332
+zmqpubrawblock=tcp://127.0.0.1:28332
 
 deprecatedrpc=create_bdb
 fallbackfee=0.01
@@ -101,9 +105,9 @@ echo $! > $bitcoindpid
 
 sleep 1
 
-bitcoin-cli $flagDataDir createwallet $walletName
+bitcoin-cli $flagDataDir -named createwallet wallet_name=$walletName passphrase=walletpass
 
-bitcoin-cli $flagDataDir $flagRpc -generate 15
+bitcoin-cli $flagDataDir $flagRpc -generate 200
 
 # keeps mining 1 block each 8 sec.
 gen_blocks &

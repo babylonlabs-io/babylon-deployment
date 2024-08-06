@@ -19,8 +19,8 @@ build-btc-staker:
 
 build-all: build-babylond build-vigilante build-fpd build-covd build-btc-staker
 
-bbn-start-stop-exportgen-start: build-all
-	./bbn-start-stop-exportgen-start.sh
+bbn-start-btc-del-stop-exportgen-start: build-all
+	./bbn-start-btc-del-stop-exportgen-start.sh
 
 bbn-start-and-add-btc-delegation: build-all
 	./bbn-start-and-add-btc-delegation.sh

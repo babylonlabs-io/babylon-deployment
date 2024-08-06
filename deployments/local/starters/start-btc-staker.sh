@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./start-btc-staker.sh
@@ -16,7 +16,7 @@ STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
+BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
 BTC_STAKER_HOME="${BTC_STAKER_HOME:-$CHAIN_DIR/btc-staker}"
 CLEANUP="${CLEANUP:-1}"
 
@@ -33,10 +33,6 @@ stakercliDBDir=$stakercliDirHome/db
 
 BTC_STAKER_KEY="btc-staker"
 
-btcCertPath=$BTC_HOME/certs
-btcRpcCert=$btcCertPath/rpc.cert
-btcWalletRpcCert=$btcCertPath/rpc-wallet.cert
-
 n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
@@ -50,9 +46,6 @@ mkdir -p $pidPath
 mkdir -p $btcctldOutputDirPath
 mkdir -p $stakercliLogsDir
 mkdir -p $stakercliOutputDir
-
-flagRpcs="--rpcuser=rpcuser --rpcpass=rpcpass"
-flagRpcWalletCert="--rpccert $btcWalletRpcCert"
 
 if [ ! -f $STAKERCLI_BIN ]; then
   echo "$STAKERCLI_BIN does not exists. build it first with $~ make"
@@ -71,10 +64,10 @@ then
   exit 1
 fi
 
-if ! command -v btcctl &> /dev/null
+if ! command -v bitcoind &> /dev/null
 then
-  echo "⚠️ btcctl command could not be found!"
-  echo "Install it by checking https://github.com/btcsuite/btcd"
+  echo "⚠️ bitcoind command could not be found!"
+  echo "Install it by checking https://bitcoin.org/en/full-node"
   exit 1
 fi
 
@@ -90,8 +83,10 @@ perl -i -pe 's|WalletName = wallet|WalletName = default|g' $stakercliConfigFile
 #[btcnodebackend]
 perl -i -pe 's|Nodetype = btcd|Nodetype = bitcoind|g' $stakercliConfigFile
 perl -i -pe 's|WalletType = btcwallet|WalletType = bitcoind|g' $stakercliConfigFile
+#[walletconfig]
+# perl -i -pe 's|WalletPass = walletpass|WalletPass =|g' $stakercliConfigFile
 #[walletrpcconfig]
-perl -i -pe 's|Host = localhost:18556|Host = 127.0.0.1:18554|g' $stakercliConfigFile
+perl -i -pe 's|Host = localhost:18556|Host = 127.0.0.1:19001|g' $stakercliConfigFile
 # perl -i -pe 's|DisableTls = true|DisableTls = false|g' $stakercliConfigFile
 # perl -i -pe 's|RPCWalletCert =|RPCWalletCert = "'$btcWalletRpcCert'"|g' $stakercliConfigFile
 # perl -i -pe 's|RawRPCWalletCert = "'$btcWalletRpcCert'"|RawRPCWalletCert =|g' $stakercliConfigFile
@@ -129,4 +124,8 @@ $STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-
   --finality-providers-pks $finalityProviderBTCPubKey --staking-time 10000 > $stakercliOutputDir/btc-staking-tx.json
 
 # Generate a few blocks to confirm the tx.
-btcctl --simnet --wallet $flagRpcs $flagRpcWalletCert generate 15
+walletName="default"
+flagDataDir="-datadir=$BTC_HOME"
+flagRpc="-rpcwallet=$walletName"
+
+bitcoin-cli $flagDataDir $flagRpc -generate 20

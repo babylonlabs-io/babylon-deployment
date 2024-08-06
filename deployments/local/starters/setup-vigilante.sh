@@ -13,13 +13,11 @@ CHAIN_HOME="$CHAIN_DIR/$CHAIN_ID"
 STOP="${STOP:-$CWD/../stop}"
 
 N0_HOME="${N0_HOME:-$CHAIN_HOME/n0}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
+BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
 VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
 LISTEN_PORT="${LISTEN_PORT:-8067}"
 SERVER_PORT="${SERVER_PORT:-2135}"
 
-BTC_RPC_CERT="${BTC_RPC_CERT:-$BTC_HOME/certs/rpc.cert}"
-BTC_WALLET_RPC_CERT="${BTC_WALLET_RPC_CERT:-$BTC_HOME/certs/rpc-wallet.cert}"
 SUBMITTER_ADDR="${SUBMITTER_ADDR:-bbn1dnug7399p0xg4x2ccduegu94gxshrrl78r8mz6}"
 CONF_PATH="${CONF_PATH:-$VIGILANTE_HOME/vigilante-submitter.yml}"
 
@@ -41,25 +39,28 @@ common:
   retry-sleep-time: 5s
   max-retry-sleep-time: 5m
 btc:
-  no-client-tls: false # use true for bitcoind as it does not support tls
-  ca-file: $BTC_RPC_CERT
-  endpoint: 127.0.0.1:18556 # use port 18443 for bitcoind regtest
+  no-client-tls: true # use true for bitcoind as it does not support tls
+  ca-file: "x"
+  endpoint: 127.0.0.1:19001 # use port 18443 for bitcoind regtest
   estimate-mode: CONSERVATIVE # only needed by bitcoind
   tx-fee-max: 20000 # maximum tx fee, 20,000sat/kvb
   tx-fee-min: 1000 # minimum tx fee, 1,000sat/kvb
   default-fee: 10000 # 1,000sat/kvb
   target-block-num: 2
-  wallet-endpoint: 127.0.0.1:18554
+  wallet-endpoint: 127.0.0.1:19001
   wallet-password: walletpass
   wallet-name: default
   wallet-lock-time: 10
-  wallet-ca-file: $BTC_WALLET_RPC_CERT
-  net-params: simnet  # use regtest for bitcoind as it does not support simnet
+  wallet-ca-file: "xx"
+  net-params: regtest  # use regtest for bitcoind as it does not support simnet
   username: rpcuser
   password: rpcpass
   reconnect-attempts: 3
-  btc-backend: btcd # {btcd, bitcoind}
-  zmq-endpoint: ~  # use tcp://127.0.0.1:29000 if btc-backend is bitcoind
+  btc-backend: bitcoind # {btcd, bitcoind}
+  zmq-endpoint: tcp://127.0.0.1:28332  # use tcp://127.0.0.1:29000 if btc-backend is bitcoind
+  zmq-seq-endpoint: tcp://127.0.0.1:28332
+  zmq-block-endpoint: tcp://127.0.0.1:28332
+  zmq-tx-endpoint: tcp://127.0.0.1:28332
 babylon:
   key: submitter
   chain-id: $CHAIN_ID
@@ -88,13 +89,13 @@ metrics:
   host: 0.0.0.0
   server-port: $SERVER_PORT
 submitter:
-  netparams: simnet
+  netparams: regtest
   buffer-size: 10
   resubmit-fee-multiplier: 1
   polling-interval-seconds: 60
   resend-interval-seconds: 1800
 reporter:
-  netparams: simnet
+  netparams: regtest
   btc_cache_size: 1000
   max_headers_in_msg: 100
 monitor:
@@ -106,12 +107,12 @@ monitor:
   max-live-btc-heights: 200
   enable-liveness-checker: true
   enable-slasher: true
-  btcnetparams: simnet
+  btcnetparams: regtest
 btcstaking-tracker:
   check-delegations-interval: 1m
   delegations-batch-size: 100
   check-if-delegation-active-interval: 5m
   retry-submit-unbonding-interval: 1m
   max-jitter-interval: 30s
-  btcnetparams: simnet
+  btcnetparams: regtest
 " > $CONF_PATH

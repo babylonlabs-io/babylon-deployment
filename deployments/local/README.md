@@ -16,7 +16,7 @@ copy some data from the exported genesis into the new one and start a new chain
 with active btc delegations from start.
 
 ```shell
-make bbn-start-stop-exportgen-start
+make bbn-start-btc-del-stop-exportgen-start
 ```
 
 - Wait for the first bbn chain to get a active btc del

@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./bbn-start-stop-exportgen-start.sh
+# ./bbn-start-btc-del-stop-exportgen-start.sh
 
 # Starts all the processes necessary to have a btc delegation active, stops the
 # chain process, export the genesis, setup a new chain with new chain id
