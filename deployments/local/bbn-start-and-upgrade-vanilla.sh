@@ -30,3 +30,5 @@ if ! [[ "$lenFpsAfterUpgrade" -gt $lenFpsBeforeUpgrade ]]; then
   echo "Upgrade should have applied a new finality provider"
   exit 1
 fi
+
+echo "Vanilla upgrade was correctly executed"

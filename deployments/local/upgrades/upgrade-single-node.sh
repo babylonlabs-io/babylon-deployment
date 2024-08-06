@@ -21,6 +21,9 @@ STARTERS="${STARTERS:-$CWD/../starters}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 
+# Load funcs
+. $CWD/helpers.sh $NODE_BIN
+
 if [ ! -f $NODE_BIN ]; then
   echo "$NODE_BIN does not exists. build it first with $~ make"
   exit 1
@@ -47,10 +50,10 @@ SOFTWARE_UPGRADE_FILE=$SOFTWARE_UPGRADE_FILE $CWD/gov-prop-software-upgrade.sh $
 UPGRADE_BLOCK_HEIGHT=$(cat "$SOFTWARE_UPGRADE_FILE" | jq ".messages[0].plan.height" -r)
 
 echo "..."
-echo "It will wait to reach the block height to upgrade"
+echo "It will wait to reach the block height $UPGRADE_BLOCK_HEIGHT to upgrade"
 echo "..."
 
-BLOCK_HEIGHT=$UPGRADE_BLOCK_HEIGHT $CWD/wait-until-block.sh $NODE_BIN
+waitForBlock $UPGRADE_BLOCK_HEIGHT
 
 echo "Reached upgrade block height"
 echo "Kill all the process '$NODE_BIN'"
@@ -81,11 +84,4 @@ cd -
 # wait for upgrade to apply and start
 sleep 10
 
-UPGRADE_NAME=$(cat "$SOFTWARE_UPGRADE_FILE" | jq ".messages[0].plan.name" -r)
-
-upgradeAppliedAtHeight=$($NODE_BIN q upgrade applied $UPGRADE_NAME --output json | jq .height -r)
-
-if ! [[ "$UPGRADE_BLOCK_HEIGHT" -eq $upgradeAppliedAtHeight ]]; then
-  echo "Upgrade should have applied at $UPGRADE_BLOCK_HEIGHT, but it was applied at $upgradeAppliedAtHeight"
-  exit 1
-fi
+upgradeApplied $SOFTWARE_UPGRADE_FILE

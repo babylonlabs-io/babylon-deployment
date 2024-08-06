@@ -28,6 +28,9 @@ bbn-start-and-add-btc-delegation: build-all
 bbn-upgrade-vanilla: build-all
 	./bbn-start-and-upgrade-vanilla.sh
 
+bbn-upgrade-signet: build-all
+	./bbn-start-and-upgrade-signet-launch.sh
+
 stop-all:
 	$(STOP_PATH)/kill-all-process.sh
 	rm -rf $(CURDIR)/data
