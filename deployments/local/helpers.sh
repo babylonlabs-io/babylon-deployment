@@ -10,10 +10,25 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 BABYLON_PATH="${BABYLON_PATH:-$CWD/../../../babylon}"
 NODE_BIN="${1:-$BABYLON_PATH/build/babylond}"
 
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
+
+
 if [ ! -f $NODE_BIN ]; then
   echo "$NODE_BIN does not exists. build it first with $~ make"
   exit 1
 fi
+
+if ! command -v bitcoin-cli &> /dev/null
+then
+  echo "⚠️ bitcoin-cli command could not be found!"
+  echo "Install it by checking https://bitcoin.org/en/full-node"
+  exit 1
+fi
+
+# general usage flags
+flagBtcDataDir="-datadir=$BTC_HOME"
+
 
 waitForBlock() {
   BLOCK_HEIGHT=$1
@@ -41,4 +56,18 @@ upgradeApplied() {
   fi
 
   echo "$upgradeName applied with success!"
+}
+
+writeBaseBtcHeaderFile() {
+  EXPORT_TO=$1
+
+  btcBlockZeroHash=$(bitcoin-cli $flagBtcDataDir getblockhash 0)
+  btcBlockZeroHeader=$(bitcoin-cli $flagBtcDataDir getblockheader $btcBlockZeroHash false)
+
+  echo "{
+    \"header\": \"$btcBlockZeroHeader\",
+    \"hash\": \"$btcBlockZeroHash\",
+    \"height\": \"0\",
+    \"work\": \"2\"
+  }" > $EXPORT_TO
 }

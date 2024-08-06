@@ -22,7 +22,7 @@ CHAIN_ID="${CHAIN_ID:-test-1}"
 CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 
 # Load funcs
-. $CWD/helpers.sh $NODE_BIN
+. $CWD/../helpers.sh $NODE_BIN
 
 if [ ! -f $NODE_BIN ]; then
   echo "$NODE_BIN does not exists. build it first with $~ make"
