@@ -8,7 +8,7 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 NODE_BIN="${1:-$CWD/../../../babylon/build/babylond}"
-SOFTWARE_UPGRADE_FILE="${3:-$CWD/props/vanilla.json}"
+SOFTWARE_UPGRADE_FILE="${SOFTWARE_UPGRADE_FILE:-$CWD/props/vanilla.json}"
 STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"

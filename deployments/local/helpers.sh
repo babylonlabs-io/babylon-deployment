@@ -71,3 +71,9 @@ writeBaseBtcHeaderFile() {
     \"work\": \"2\"
   }" > $EXPORT_TO
 }
+
+getBtcTipHeight() {
+  btcBlockTipHash=$(bitcoin-cli $flagBtcDataDir getbestblockhash)
+  btcBlockTipHeight=$(bitcoin-cli $flagBtcDataDir getblockheader $btcBlockTipHash | jq .height)
+  echo $btcBlockTipHeight
+}

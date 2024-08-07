@@ -1,7 +1,7 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
-# ./upgrade-single-node.sh $NODE_BIN softwareUpgradeName
+# ./upgrade-single-node.sh $NODE_BIN
 
 # Runs a gov prop update, voting and waits to reach the upgrade heigth
 # kills the previous babylond pid, build the babylon at the expected version
@@ -13,8 +13,9 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 BABYLON_PATH="${BABYLON_PATH:-$CWD/../../../babylon}"
 NODE_BIN="${1:-$BABYLON_PATH/build/babylond}"
 BABYLON_VERSION_WITH_UPGRADE="${BABYLON_VERSION_WITH_UPGRADE:-dev}"
+PRE_BUILD_UPGRADE_SCRIPT="${PRE_BUILD_UPGRADE_SCRIPT:-""}"
 
-SOFTWARE_UPGRADE_FILE="${2:-$CWD/props/vanilla.json}"
+SOFTWARE_UPGRADE_FILE="${SOFTWARE_UPGRADE_FILE:-$CWD/props/vanilla.json}"
 STOP="${STOP:-$CWD/../stop}"
 STARTERS="${STARTERS:-$CWD/../starters}"
 
@@ -45,6 +46,7 @@ log_path=$hdir/n0.v2.log
 kbt="--keyring-backend test"
 cid="--chain-id $CHAIN_ID"
 
+echo "running gov prop for file" $SOFTWARE_UPGRADE_FILE
 SOFTWARE_UPGRADE_FILE=$SOFTWARE_UPGRADE_FILE $CWD/gov-prop-software-upgrade.sh $NODE_BIN
 
 UPGRADE_BLOCK_HEIGHT=$(cat "$SOFTWARE_UPGRADE_FILE" | jq ".messages[0].plan.height" -r)
@@ -67,6 +69,11 @@ cd $BABYLON_PATH
 oldBabylonBranch=$(git branch --show-current)
 git checkout $BABYLON_VERSION_WITH_UPGRADE
 
+if [ ${#PRE_BUILD_UPGRADE_SCRIPT} -gt 1 ]; then
+  echo "$PRE_BUILD_UPGRADE_SCRIPT is set, runnig script"
+  bash $PRE_BUILD_UPGRADE_SCRIPT
+fi
+
 # build new version with upgrade 'e2e' build tag is necessary for now
 BUILD_TAGS="e2e" make build
 
@@ -78,6 +85,7 @@ SETUP=0 $STARTERS/start-babylond-single-node.sh
 
 # git checkout to previous version
 cd $BABYLON_PATH
+git stash
 git checkout $oldBabylonBranch
 cd -
 

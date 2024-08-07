@@ -17,7 +17,10 @@ build-covd:
 build-btc-staker:
 	$(MAKE) -C $(GIT_TOPLEVEL)/btc-staker build
 
-build-all: build-babylond build-vigilante build-fpd build-covd build-btc-staker
+build-staking-indexer:
+	$(MAKE) -C $(GIT_TOPLEVEL)/staking-indexer build
+
+build-all: build-babylond build-vigilante build-fpd build-covd build-btc-staker build-staking-indexer
 
 bbn-start-btc-del-stop-exportgen-start: build-all
 	./bbn-start-btc-del-stop-exportgen-start.sh
