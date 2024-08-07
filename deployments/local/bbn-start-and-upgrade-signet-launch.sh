@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./bbn-start-and-upgrade-signet-launch.sh
@@ -49,4 +49,4 @@ if ! [[ $btcHeaderTipAfterUpgrade -gt $btcHeaderTipBeforeUpgrade ]]; then
   exit 1
 fi
 
-echo "Signet launch upgrade was correctly executed"
+echo "Signet launch upgrade was correctly executed, and the last btc header height is" $btcHeaderTipAfterUpgrade

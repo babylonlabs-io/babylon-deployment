@@ -2,13 +2,14 @@
 
 ## Requirements
 
+- [bitcoind](https://bitcoin.org/en/full-node) binaries (on your path)
 - [btcd](https://github.com/btcsuite/btcd/tree/master?tab=readme-ov-file#installation) binaries (on your path)
 - [jq](https://jqlang.github.io/jq/download/)
 - [perl](https://www.perl.org/get.html)
 
 ## Start paths
 
-### Phase-2 full test
+### Babylon Export and Start with BTC Delegations
 
 Starts all the processes necessary to have a btc delegation active, stops the
 chain process, export the genesis, setup a new chain with new chain id
@@ -49,6 +50,50 @@ babylond q btcstaking btc-delegations active -o json | jq
 ```
 
 - You should see a btc delegation active, if nothing is founded check pending btc delegations `babylond q btcstaking btc-delegations pending`
+
+## Upgrades
+
+This section cover upgrades tested locally with a single node
+
+### Upgrade vanilla
+
+This upgrade only adds a new finality provider to a the chain, and execute
+the following steps:
+
+1. Start single node babylon chain
+2. Run upgrade gov prop for software upgrade
+3. Vote Yes
+4. Wait for upgrade height to be reached
+5. Stop the chain
+6. Builds new babylond with the expected upgrade code
+7. Start the chain with upgrade to apply
+8. Check if a new finality provider was added
+
+```shell
+make bbn-upgrade-vanilla
+```
+
+### Upgrade Signet Launch
+
+This upgrade adds BTC headers to the chain, and execute
+the following steps:
+
+1. Start bitcoind
+2. Start single node babylon chain with base BTC Header
+as block zero from bitcoind
+3. Run upgrade gov prop for software upgrade
+4. Vote Yes
+5. Wait for upgrade height to be reached
+6. Stop the chain
+7. Produces a lot of blocks from bitcoind
+8. Generates a new file with BTC headers to `babylon/app/upgrades/signetlaunch/data_btc_headers.go`
+9. Builds new babylond with the expected upgrade code
+10. Start the chain with upgrade to apply
+11. Check if the new BTC headers were correctly created
+
+```shell
+make bbn-upgrade-signet
+```
 
 ## Tear down
 
