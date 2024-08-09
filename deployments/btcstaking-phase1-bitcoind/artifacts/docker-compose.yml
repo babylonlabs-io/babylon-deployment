@@ -2,7 +2,7 @@ version: "3"
 
 services:
   bitcoindsim:
-    image: babylonchain/bitcoindsim:latest
+    image: babylonlabs/bitcoindsim:latest
     platform: linux/amd64
     container_name: bitcoindsim
     environment:
@@ -22,7 +22,7 @@ services:
       - phase-1
 
   bitcoindsim-signer:
-    image: babylonchain/bitcoindsim:26.1
+    image: babylonlabs/bitcoindsim:26.1
     platform: linux/amd64
     container_name: bitcoindsim-signer
     environment:
@@ -37,7 +37,7 @@ services:
       - phase-1
 
   staking-indexer:
-    image: babylonchain/staking-indexer:latest
+    image: babylonlabs/staking-indexer:latest
     container_name: staking-indexer
     environment:
       - CONFIG=/home/staking-indexer/.sid/sid.conf
@@ -57,7 +57,7 @@ services:
     restart: unless-stopped
 
   staking-api-service:
-    image: babylonchain/staking-api-service:latest
+    image: babylonlabs/staking-api-service:latest
     container_name: staking-api-service
     ports:
       - "80:8090"
@@ -75,7 +75,7 @@ services:
     restart: unless-stopped
 
   staking-expiry-checker:
-    image: babylonchain/staking-expiry-checker:latest
+    image: babylonlabs/staking-expiry-checker:latest
     container_name: staking-expiry-checker
     environment:
       - CONFIG=/home/staking-expiry-checker/config.yml
@@ -90,7 +90,7 @@ services:
 
   simple-staking:
     container_name: simple-staking
-    image: babylonchain/simple-staking:latest
+    image: babylonlabs/simple-staking:latest
     environment:
       - APP_NEXT_PUBLIC_MEMPOOL_API=https://babylon.mempool.space
       - APP_NEXT_PUBLIC_API_URL=http://staking-api-service
@@ -104,7 +104,7 @@ services:
 
   unbonding-pipeline:
     container_name: unbonding-pipeline
-    image: babylonchain/cli-tools:latest
+    image: babylonlabs/cli-tools:latest
     restart: unless-stopped
     depends_on:
       - mongodb
@@ -150,7 +150,7 @@ services:
       - phase-1
 
   covenant-signer:
-    image: babylonchain/covenant-signer:latest
+    image: babylonlabs/covenant-signer:latest
     container_name: covenant-signer
     ports:
       - "9791:9791"

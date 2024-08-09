@@ -36,7 +36,7 @@ and run a Babylon network locally, using several different deployment scenarios.
     they need to be initialized accordingly.
 
     ```shell
-    git clone git@github.com:babylonchain/babylon-deployment.git
+    git clone git@github.com:babylonlabs-io/babylon-deployment.git
     git submodule init && git submodule update
     ```
 

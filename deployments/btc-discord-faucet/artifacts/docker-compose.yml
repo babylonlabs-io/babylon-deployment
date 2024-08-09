@@ -5,7 +5,7 @@ services:
     build:
       context: contrib/images/bitcoindsim/
       dockerfile: ./Dockerfile
-    image: babylonchain/bitcoindsim:latest
+    image: babylonlabs/bitcoindsim:latest
     platform: linux/amd64
     container_name: bitcoindsim
     networks:
@@ -29,7 +29,7 @@ services:
 
   btc-discord-faucet:
     container_name: btc-discord-faucet
-    image: babylonchain/btc-discord-faucet
+    image: babylonlabs/btc-discord-faucet
     networks:
       localnet:
         ipv4_address: 192.168.10.4

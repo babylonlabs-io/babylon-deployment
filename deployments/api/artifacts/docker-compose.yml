@@ -3,7 +3,7 @@ version: "3"
 services:
   babylonapi:
     container_name: babylon-api
-    image: babylonchain/babylon-api
+    image: babylonlabs/babylon-api
     networks:
       - localnet
     ports:
@@ -28,7 +28,7 @@ services:
       - localnet
   
   rpcpoller:
-    image: babylonchain/rpc-poller
+    image: babylonlabs/rpc-poller
     container_name: rpc-poller
     networks:
       - localnet

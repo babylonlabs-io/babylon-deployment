@@ -25,13 +25,13 @@ make btcdsim
 One way to see if it works is to run the container interactively:
 
 ```bash
-docker run -it --rm --name btcdsim babylonchain/btcdsim
+docker run -it --rm --name btcdsim babylonlabs/btcdsim
 ```
 
 The logs should show that a wallet is created with and mining is started:
 
 ```console
-$ docker run -it --rm babylonchain/btcdsim
+$ docker run -it --rm babylonlabs/btcdsim
 Starting btcd...
 Creating a wallet...
 spawn btcwallet --simnet -u rpcuser -P rpcpass --create
@@ -132,7 +132,7 @@ Then we can connect to this from another container to query the balance:
 ```console
 $ docker ps
 CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS              PORTS               NAMES
-93e58681637d        babylonchain/btcdsim   "/btcdsim/wrapper.sh"   5 minutes ago       Up 5 minutes        18554-18556/tcp     btcdsim
+93e58681637d        babylonlabs/btcdsim   "/btcdsim/wrapper.sh"   5 minutes ago       Up 5 minutes        18554-18556/tcp     btcdsim
 $ docker exec -it btcdsim sh
 /btcdsim # btcctl --simnet --wallet -u $RPCUSER -P $RPCPASS getbalance
 600

@@ -12,7 +12,7 @@ RUN git clone https://github.com/cosmos/gaia.git
 RUN cd gaia && git fetch origin && git checkout cb523c09bba68c1ac54e71bf4d4408628211532d && make install && cd -
 
 # Install the relayer
-RUN git clone https://github.com/babylonchain/babylon-relayer.git
+RUN git clone https://github.com/babylonlabs/babylon-relayer.git
 RUN cd babylon-relayer && git checkout dev && make install && cd -
 
 RUN apk add bash jq
