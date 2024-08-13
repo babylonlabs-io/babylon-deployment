@@ -6,12 +6,14 @@
 # Kill all the process stored in the PID paths of possible generated processes in CHAIN_DIR
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
+CHAIN_ID2="${CHAIN_ID:-test-2}"
 
 babylonChain="$CHAIN_DIR/$CHAIN_ID"
-babylonChain2="$CHAIN_DIR/test-2"
+babylonChain2="$CHAIN_DIR/$CHAIN_ID2"
 BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
+BTC_BITCOIND_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
 VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
 COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
 EOTS_HOME="${EOTS_HOME:-$CHAIN_DIR/eots}"
@@ -22,6 +24,7 @@ PATH_OF_PIDS=$babylonChain/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$babylonChain2/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$VIGILANTE_HOME/pid/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$BTC_HOME/pid/*.pid $CWD/kill-process.sh
+PATH_OF_PIDS=$BTC_BITCOIND_HOME/pid/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$COVD_HOME/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$EOTS_HOME/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$FPD_HOME/*.pid $CWD/kill-process.sh

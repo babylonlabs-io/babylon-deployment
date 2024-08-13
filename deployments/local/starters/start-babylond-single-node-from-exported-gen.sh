@@ -10,7 +10,7 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-2}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 EXPORTED_GEN_FILE="${EXPORTED_GEN_FILE:-$CHAIN_DIR/test-1/n0/config/genesis.exported.json}"
 
 echo "--- Chain ID = $CHAIN_ID"
@@ -40,7 +40,7 @@ n0cfgDir="$n0dir/config"
 # Process id of node 0
 n0pid="$hdir/n0.pid"
 
-CHAIN_ID=$CHAIN_ID CHAIN_DIR=$CHAIN_DIR $CWD/setup-single-node.sh
+CHAIN_ID=$CHAIN_ID CHAIN_DIR=$CHAIN_DIR $CWD/setup-babylond-single-node.sh
 
 newGen=$n0cfgDir/genesis.json
 tmpGen=$n0cfgDir/tmp_genesis.json
@@ -64,7 +64,7 @@ cat $EXPORTED_GEN_FILE | jq .app_state.btcstaking.params > $inputFile
 jq '.app_state.btcstaking.params = input' $newGen $inputFile > $tmpGen
 mv $tmpGen $newGen
 
-log_path=$hdir/n0.log
+log_path=$hdir/n0.log # TODO: use start single node
 $NODE_BIN $home0 start --api.enable true --grpc.address="0.0.0.0:9090" --api.enabled-unsafe-cors --grpc-web.enable=true --log_level info > $log_path 2>&1 &
 
 echo $! > $n0pid

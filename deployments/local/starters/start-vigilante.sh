@@ -1,17 +1,18 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./vigilante-start
+# ./start-vigilante.sh
 
 # Starts an vigilate submitter and reporter connected to babylon and btc chain.
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 CHAIN_HOME="$CHAIN_DIR/$CHAIN_ID"
+STOP="${STOP:-$CWD/../stop}"
 
-BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../..}"
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 
 BABYLOND_DIR="${BABYLOND_DIR:-$BBN_DEPLOYMENTS/babylon}"
 BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
@@ -19,7 +20,7 @@ BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 VIGILANTE_BIN="${VIGILANTE_BIN:-$BBN_DEPLOYMENTS/vigilante/build/vigilante}"
 
 N0_HOME="${N0_HOME:-$CHAIN_HOME/n0}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
+BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
 VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
 CLEANUP="${CLEANUP:-1}"
 
@@ -30,7 +31,7 @@ vigilantepidPath="$VIGILANTE_HOME/pid"
 vigilanteLogs="$VIGILANTE_HOME/logs"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$vigilantepidPath/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$vigilantepidPath/*.pid $STOP/kill-process.sh
 
   rm -rf $VIGILANTE_HOME
   echo "Removed $VIGILANTE_HOME"
@@ -59,8 +60,8 @@ kbt="--keyring-backend test"
 submitterAddr=$($BBN_BIN --home $N0_HOME keys show submitter -a $kbt)
 
 # Creates one config for each vigilante process
-CONF_PATH=$vigilanteConfSub CLEANUP=0 SUBMITTER_ADDR=$submitterAddr $CWD/vigilante-setup-conf.sh
-CONF_PATH=$vigilanteConfRep CLEANUP=0 SUBMITTER_ADDR=$submitterAddr SERVER_PORT=2134 LISTEN_PORT=8068 $CWD/vigilante-setup-conf.sh
+CONF_PATH=$vigilanteConfSub CLEANUP=0 SUBMITTER_ADDR=$submitterAddr $CWD/setup-vigilante.sh
+CONF_PATH=$vigilanteConfRep CLEANUP=0 SUBMITTER_ADDR=$submitterAddr SERVER_PORT=2134 LISTEN_PORT=8068 $CWD/setup-vigilante.sh
 
 # Starts reporter and submitter
 $VIGILANTE_BIN --config $vigilanteConfRep reporter > $vigilanteLogs/reporter.log 2>&1 &

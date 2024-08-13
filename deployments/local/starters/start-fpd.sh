@@ -1,21 +1,22 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./fpd-start
+# ./start-fpd.sh
 
 # it starts the finality provider for single node chain and validator
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../..}"
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 
 FPD_BUILD="${FPD_BUILD:-$BBN_DEPLOYMENTS/finality-provider/build}"
 FPD_BIN="${FPD_BIN:-$FPD_BUILD/fpd}"
+STOP="${STOP:-$CWD/../stop}"
 
 BABYLOND_DIR="${BABYLOND_DIR:-$BBN_DEPLOYMENTS/babylon}"
 BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 FPD_HOME="${FPD_HOME:-$CHAIN_DIR/fpd}"
 CLEANUP="${CLEANUP:-1}"
 
@@ -36,7 +37,7 @@ homeN0="--home $n0dir"
 kbt="--keyring-backend test"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$FPD_HOME/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$FPD_HOME/*.pid $STOP/kill-process.sh
 
   rm -rf $FPD_HOME
   echo "Removed $FPD_HOME"
@@ -65,7 +66,7 @@ perl -i -pe 's|Port = 2112|Port = 2734|g' $cfg
 perl -i -pe 's|RpcListener = 127.0.0.1:12581|RpcListener = "'$listenAddr'"|g' $cfg
 
 # Adds new key for the finality provider
-$FPD_BIN keys add --key-name $fpKeyName $cid $homeF > $outdir/keys-add-keys-finality-provider.txt
+$FPD_BIN keys add $fpKeyName $homeF $kbt > $outdir/keys-add-keys-finality-provider.txt
 
 # Starts the finality provider daemon
 pid_file=$FPD_HOME/fpd.pid
@@ -84,4 +85,4 @@ $BBN_BIN tx bank send user $fpBbnAddr 100000000ubbn $homeN0 $kbt $cid -y
 
 # Register the finality provider
 registerFPFile=$outdir/register-finality-provider.json
-$FPD_BIN register-finality-provider $dAddr --eots-pk $btcPKHex > $registerFPFile
+$FPD_BIN register-finality-provider $btcPKHex $dAddr > $registerFPFile

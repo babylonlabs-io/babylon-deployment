@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./btc-start
+# ./start-btcd.sh
 
 # Starts an btc chain with a new mining addr.
 # Btc processes needs sleep timing --"
@@ -9,15 +9,16 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 # These options can be overridden by env
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btc}"
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btcd}"
 CLEANUP="${CLEANUP:-1}"
+STOP="${STOP:-$CWD/../stop}"
 
 echo "--- Chain Dir = $CHAIN_DIR"
 echo "--- BTC HOME = $BTC_HOME"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$BTC_HOME/pid/*.pid $CWD/kill-process.sh
+  PATH_OF_PIDS=$BTC_HOME/pid/*.pid $STOP/kill-process.sh
   sleep 3 # takes some time to kill the process and start again...
 
   rm -rf $BTC_HOME
