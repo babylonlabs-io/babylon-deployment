@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-btc-staker.sh
@@ -71,7 +71,9 @@ then
   exit 1
 fi
 
+walletName="btcWalletName"
 $STAKERCLI_BIN admin dump-config --config-file-dir $stakercliConfigFile
+
 
 #[Application Options]
 perl -i -pe 's|StakerdDir = '$HOME'/.stakerd|StakerdDir = "'$stakercliDirHome'"|g' $stakercliConfigFile
@@ -79,7 +81,7 @@ perl -i -pe 's|ConfigFile = '$HOME'/.stakerd/stakerd.conf|ConfigFile = "'$staker
 perl -i -pe 's|DataDir = '$HOME'/.stakerd/data|DataDir = "'$stakercliDataDir'"|g' $stakercliConfigFile
 perl -i -pe 's|LogDir = '$HOME'/.stakerd/logs|LogDir = "'$stakercliLogsDir'"|g' $stakercliConfigFile
 #[walletconfig]
-perl -i -pe 's|WalletName = wallet|WalletName = default|g' $stakercliConfigFile
+perl -i -pe 's|WalletName = wallet|WalletName = "'$walletName'"|g' $stakercliConfigFile
 #[btcnodebackend]
 perl -i -pe 's|Nodetype = btcd|Nodetype = bitcoind|g' $stakercliConfigFile
 perl -i -pe 's|WalletType = btcwallet|WalletType = bitcoind|g' $stakercliConfigFile
@@ -124,7 +126,7 @@ $STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-
   --finality-providers-pks $finalityProviderBTCPubKey --staking-time 10000 > $stakercliOutputDir/btc-staking-tx.json
 
 # Generate a few blocks to confirm the tx.
-walletName="default"
+walletName="btcWalletName"
 flagDataDir="-datadir=$BTC_HOME"
 flagRpc="-rpcwallet=$walletName"
 

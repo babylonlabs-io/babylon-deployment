@@ -30,6 +30,7 @@ if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
   echo "Removed $VIGILANTE_HOME"
 fi
 
+walletName="btcWalletName"
 mkdir -p $VIGILANTE_HOME
 
 echo "
@@ -49,7 +50,7 @@ btc:
   target-block-num: 2
   wallet-endpoint: 127.0.0.1:19001
   wallet-password: walletpass
-  wallet-name: default
+  wallet-name: $walletName
   wallet-lock-time: 10
   wallet-ca-file: "xx"
   net-params: regtest  # use regtest for bitcoind as it does not support simnet
