@@ -1,6 +1,0 @@
-=============== Aug 27, 2024 (AEST) ===============
-15:59:11.951906 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-15:59:11.957020 db@open opening
-15:59:11.957273 version@stat F·[] S·0B[] Sc·[]
-15:59:11.958990 db@janitor F·2 G·0
-15:59:11.959000 db@open done T·1.968218ms
