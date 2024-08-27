@@ -1,13 +1,13 @@
 {
-    "start_time": 1625204910,
+    "start_time": 1724738326,
     "periods": [
         {
             "coins": "1000000ubbn",
-            "length_seconds": 10
+            "length_seconds": 60
         },
         {
             "coins": "1000000ubbn",
-            "length_seconds": 10
+            "length_seconds": 60
         }
     ]
 }

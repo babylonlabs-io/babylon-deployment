@@ -131,52 +131,26 @@ $BINARY_OLD --home $CHAINDIR/$CHAINID/node0/$BINARY start --pruning=nothing --gr
 # Wait for the node to start
 sleep 10
 
-# Submit a software upgrade proposal
-echo "Submitting a software upgrade proposal..."
+# Create a vesting account
+echo "Creating a vesting account..."
 
-UPGRADE_NAME=vanilla
-UPGRADE_HEIGHT=50
+# Get the address of the sender account (assuming it's the first account)
+SENDER_ADDRESS=$($BINARY_OLD keys show -a node0 --keyring-backend test --home $CHAINDIR/$CHAINID/node0/$BINARY)
 
-$BINARY_OLD --home $CHAINDIR/$CHAINID/node0/$BINARY tx upgrade software-upgrade $UPGRADE_NAME --title "TEST UPGRADE" --summary "SUMMARY" --upgrade-height $UPGRADE_HEIGHT --upgrade-info "PROPOSE TO UPGRADE TO $UPGRADE_NAME!" --deposit 10000$DENOM --from test-spending-key $KEYRING --chain-id $CHAINID --no-validate --fees 2000$BASEDENOM --yes
+# Generate a new account for vesting
+VESTING_ACCOUNT_NAME="vesting_account"
+VESTING_ACCOUNT=$($BINARY_OLD keys add $VESTING_ACCOUNT_NAME --keyring-backend test --home $CHAINDIR/$CHAINID/node0/$BINARY --output json)
+VESTING_ADDRESS=$(echo $VESTING_ACCOUNT | jq -r .address)
 
-# Wait for the proposal to be included in a block
-sleep 10
+# Use the vesting.json file to create the periodic vesting account
+$BINARY_OLD tx vesting create-periodic-vesting-account \
+  $VESTING_ADDRESS \
+  ./vesting.json \
+  --from $SENDER_ADDRESS \
+  --chain-id $CHAINID \
+  --keyring-backend test \
+  --home $CHAINDIR/$CHAINID/node0/$BINARY \
+  --fees 2ubbn \
+  --yes
 
-# Validator votes for the proposal
-echo "Voting for the software upgrade proposal..."
-$BINARY_OLD --home $CHAINDIR/$CHAINID/node0/$BINARY tx gov vote 1 yes --from node0 $KEYRING --chain-id $CHAINID --fees 2000$BASEDENOM --yes
-
-# Wait for the voting period to end
-sleep 10
-
-# Check proposal status
-while true; do
-  status=$(babylond q gov proposal 1 --output json | jq '.proposal.status')
-  if [ $status -lt 3 ]; then
-    echo "Proposal has not been passed"
-    sleep 5
-  else
-    echo "Proposal has been passed!"
-    break
-  fi
-done
-
-echo "Simulating waiting until the upgrade height..."
-sleep 30
-
-# At upgrade height, the node should halt. Restart the node with the new binary (assume the binary is updated)
-echo "kill $BINARY_OLD..."
-killall $BINARY
-
-sleep 5
-
-# Assume the new binary is in place
-echo "start $BINARY_NEW..."
-$BINARY_NEW --home $CHAINDIR/$CHAINID/node0/$BINARY start --pruning=nothing --grpc-web.enable=false --grpc.address="0.0.0.0:$GRPCPORT" >$CHAINDIR/$CHAINID.log 2>&1 &
-
-# Monitor the node log for successful upgrade
-tail -f $CHAINDIR/$CHAINID.log | while read LOGLINE; do
-  [[ "${LOGLINE}" == *"applying upgrade"*"$UPGRADE_NAME"* ]] && pkill -P $$ tail
-done
-
-echo "Software upgrade to $UPGRADE_NAME completed successfully."
+echo "Vesting account created with address: $VESTING_ADDRESS"
