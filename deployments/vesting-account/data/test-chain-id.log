@@ -883,3 +883,11 @@
 [90m4:00PM[0m [32mINF[0m [1mexecuted block[0m [36mapp_hash=[0mEF3B087327A16F9B613EAF2A01904A2478FAE3C267DBCD7CE28FE39EE58B0D00 [36mheight=[0m98 [36mmodule=[0mstate
 [90m4:00PM[0m [32mINF[0m [1mcommitted state[0m [36mblock_app_hash=[0m312858F81605D593772C682228707F591403DD6007BD3BCC922BC3769A39640A [36mheight=[0m98 [36mmodule=[0mstate
 [90m4:00PM[0m [32mINF[0m [1mindexed block events[0m [36mheight=[0m98 [36mmodule=[0mtxindex
+[90m4:00PM[0m [32mINF[0m [1mTimed out[0m [36mdur=[0m987.71934 [36mheight=[0m99 [36mmodule=[0mconsensus [36mround=[0m0 [36mstep=[0mRoundStepNewHeight
+[90m4:00PM[0m [32mINF[0m [1mreceived proposal[0m [36mmodule=[0mconsensus [36mproposal=[0m"Proposal{99/0 (9A30DAC75B9F8BBBD384C49118419285980363E5DC046058992BAAA3A59333F5:1:8AEF44F5BDCE, -1) 93B6C8D67B73 @ 2024-08-27T06:00:52.869923565Z}" [36mproposer=[0mAE61F5B3114F579606CBE6154E1B0FEDEDC078B2
+[90m4:00PM[0m [32mINF[0m [1mreceived complete proposal block[0m [36mhash=[0m9A30DAC75B9F8BBBD384C49118419285980363E5DC046058992BAAA3A59333F5 [36mheight=[0m99 [36mmodule=[0mconsensus
+[90m4:00PM[0m [32mINF[0m [1mfinalizing commit of block[0m [36mhash=[0m9A30DAC75B9F8BBBD384C49118419285980363E5DC046058992BAAA3A59333F5 [36mheight=[0m99 [36mmodule=[0mconsensus [36mnum_txs=[0m0 [36mroot=[0mEF3B087327A16F9B613EAF2A01904A2478FAE3C267DBCD7CE28FE39EE58B0D00
+[90m4:00PM[0m [32mINF[0m [1mfinalized block[0m [36mblock_app_hash=[0m898FB17D549266D07560DB8A9BEE593FC8128155A976781682F1B8FDF5812648 [36mheight=[0m99 [36mmodule=[0mstate [36mnum_txs_res=[0m0 [36mnum_val_updates=[0m0
+[90m4:00PM[0m [32mINF[0m [1mexecuted block[0m [36mapp_hash=[0m898FB17D549266D07560DB8A9BEE593FC8128155A976781682F1B8FDF5812648 [36mheight=[0m99 [36mmodule=[0mstate
+[90m4:00PM[0m [32mINF[0m [1mcommitted state[0m [36mblock_app_hash=[0mEF3B087327A16F9B613EAF2A01904A2478FAE3C267DBCD7CE28FE39EE58B0D00 [36mheight=[0m99 [36mmodule=[0mstate
+[90m4:00PM[0m [32mINF[0m [1mindexed block events[0m [36mheight=[0m99 [36mmodule=[0mtxindex
