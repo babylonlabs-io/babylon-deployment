@@ -28,9 +28,6 @@ bbn-start-btc-del-stop-exportgen-start: build-all
 bbn-start-and-add-btc-delegation: build-all
 	./bbn-start-and-add-btc-delegation.sh
 
-bbn-upgrade-vanilla: build-all
-	./bbn-start-and-upgrade-vanilla.sh
-
 bbn-upgrade-signet: build-all
 	./bbn-start-and-upgrade-signet-launch.sh
 

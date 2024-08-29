@@ -55,24 +55,6 @@ babylond q btcstaking btc-delegations active -o json | jq
 
 This section cover upgrades tested locally with a single node
 
-### Upgrade vanilla
-
-This upgrade only adds a new finality provider to a the chain, and execute
-the following steps:
-
-1. Start single node babylon chain
-2. Run upgrade gov prop for software upgrade
-3. Vote Yes
-4. Wait for upgrade height to be reached
-5. Stop the chain
-6. Builds new babylond with the expected upgrade code
-7. Start the chain with upgrade to apply
-8. Check if a new finality provider was added
-
-```shell
-make bbn-upgrade-vanilla
-```
-
 ### Upgrade Signet Launch
 
 This upgrade adds BTC headers to the chain, and execute
