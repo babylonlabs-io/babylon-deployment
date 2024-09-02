@@ -46,3 +46,6 @@
 [submodule "covenant-signer"]
 	path = covenant-signer
 	url = git@github.com:babylonlabs-io/covenant-signer.git
+[submodule "networks"]
+	path = networks
+	url = git@github.com:babylonlabs-io/networks.git
