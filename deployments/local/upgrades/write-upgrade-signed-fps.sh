@@ -18,7 +18,6 @@ CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
 DATA_OUTPUTS="${DATA_OUTPUTS:-$CHAIN_DIR/outputs}"
 EXPORT_TO="${EXPORT_TO:-$DATA_OUTPUTS/signed-fps.json}"
 
-. $CWD/../helpers.sh
 mkdir -p $DATA_OUTPUTS
 
 concatenatedSignedMsgs=$(jq -s 'map(.)' $SIGNED_MSGS_PATH/*)

@@ -126,7 +126,6 @@ $STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-
   --finality-providers-pks $finalityProviderBTCPubKey --staking-time 10000 > $stakercliOutputDir/btc-staking-tx.json
 
 # Generate a few blocks to confirm the tx.
-walletName="btcWalletName"
 flagDataDir="-datadir=$BTC_HOME"
 flagRpc="-rpcwallet=$walletName"
 
