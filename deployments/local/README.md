@@ -69,9 +69,13 @@ as block zero from bitcoind
 6. Stop the chain
 7. Produces a lot of blocks from bitcoind
 8. Generates a new file with BTC headers to `babylon/app/upgrades/signetlaunch/data_btc_headers.go`
-9. Builds new babylond with the expected upgrade code
-10. Start the chain with upgrade to apply
-11. Check if the new BTC headers were correctly created
+9. Copy all the signed messages `MsgCreateFinalityProvider` from
+[bbn-1/finality-providers/msgs](../../networks/bbn-1/finality-providers/msgs/)
+into the babylon upgrade file `babylon/app/upgrades/signetlaunch/data_signed_fps.go`
+10. Builds new babylond with the expected upgrade code
+11. Start the chain with upgrade to apply
+12. Check if the new BTC headers were correctly created
+13. Check if the new FPs were correctly inserted
 
 ```shell
 make bbn-upgrade-signet
