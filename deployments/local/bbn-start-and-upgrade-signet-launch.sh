@@ -44,7 +44,6 @@ PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-data.sh SOFTWARE_UPGRADE_FILE=
   BABYLON_VERSION_WITH_UPGRADE="main" $UPGRADES/upgrade-single-node.sh
 
 # checks if all the btc headers and fps were added '-'
-
 upgradeHeight=$($NODE_BIN q upgrade applied signet-launch --output json | jq ".height" -r)
 btcHeaderTipAfterUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.height -r)
 fpsLengthAfterUpgrade=$($NODE_BIN q btcstaking finality-providers --output json | jq '.finality_providers | length')
