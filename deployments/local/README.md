@@ -9,6 +9,9 @@
 
 ## Start paths
 
+The following commands will start a babylond chain locally with hardcoded ports.
+Stop any other running chain or docker container before start running commands.
+
 ### Babylon Export and Start with BTC Delegations
 
 Starts all the processes necessary to have a btc delegation active, stops the
