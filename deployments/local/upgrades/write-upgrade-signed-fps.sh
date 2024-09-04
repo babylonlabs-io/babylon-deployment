@@ -1,0 +1,33 @@
+#!/bin/bash -eu
+
+# USAGE:
+# ./write-upgrade-signed-fps.sh
+
+# Reads all the json files inside a path and cocatenates all of the signed MsgCreateFinalityProvider
+# msgs and writes it in a go file as expected by babylon to compile and run the upgrade.
+
+CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
+BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
+SIGNED_MSGS_PATH="${SIGNED_MSGS_PATH:-$BBN_DEPLOYMENTS/networks/bbn-1/finality-providers/msgs}"
+GO_SIGNED_FPS_PATH="${GO_SIGNED_FPS_PATH:-$BABYLON_PATH/app/upgrades/signetlaunch/data_signed_fps.go}"
+
+CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+
+DATA_OUTPUTS="${DATA_OUTPUTS:-$CHAIN_DIR/outputs}"
+EXPORT_TO="${EXPORT_TO:-$DATA_OUTPUTS/signed-fps.json}"
+
+mkdir -p $DATA_OUTPUTS
+
+concatenatedSignedMsgs=$(jq -s 'map(.)' $SIGNED_MSGS_PATH/*)
+
+# export the concatenated signed finality providers to a file
+echo "{ \"signed_txs_create_fp\": $concatenatedSignedMsgs}" | jq > $EXPORT_TO
+
+fpsSignedJson=$(cat $EXPORT_TO)
+
+# writes the signed msg create finality providers to babylon as go file
+echo "package signetlaunch
+
+const SignedFPsStr = \`$fpsSignedJson\`" > $GO_SIGNED_FPS_PATH

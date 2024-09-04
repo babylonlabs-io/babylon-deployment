@@ -86,7 +86,7 @@ then
 fi
 
 
-walletName="default"
+walletName="btcWalletName"
 flagDataDir="-datadir=$BTC_HOME"
 flagRpc="-rpcwallet=$walletName"
 

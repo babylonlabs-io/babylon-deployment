@@ -9,6 +9,9 @@
 
 ## Start paths
 
+The following commands will start a babylond chain locally with hardcoded ports.
+Stop any other running chain or docker container before start running commands.
+
 ### Babylon Export and Start with BTC Delegations
 
 Starts all the processes necessary to have a btc delegation active, stops the
@@ -55,24 +58,6 @@ babylond q btcstaking btc-delegations active -o json | jq
 
 This section cover upgrades tested locally with a single node
 
-### Upgrade vanilla
-
-This upgrade only adds a new finality provider to a the chain, and execute
-the following steps:
-
-1. Start single node babylon chain
-2. Run upgrade gov prop for software upgrade
-3. Vote Yes
-4. Wait for upgrade height to be reached
-5. Stop the chain
-6. Builds new babylond with the expected upgrade code
-7. Start the chain with upgrade to apply
-8. Check if a new finality provider was added
-
-```shell
-make bbn-upgrade-vanilla
-```
-
 ### Upgrade Signet Launch
 
 This upgrade adds BTC headers to the chain, and execute
@@ -87,9 +72,13 @@ as block zero from bitcoind
 6. Stop the chain
 7. Produces a lot of blocks from bitcoind
 8. Generates a new file with BTC headers to `babylon/app/upgrades/signetlaunch/data_btc_headers.go`
-9. Builds new babylond with the expected upgrade code
-10. Start the chain with upgrade to apply
-11. Check if the new BTC headers were correctly created
+9. Copy all the signed messages `MsgCreateFinalityProvider` from
+[bbn-1/finality-providers/msgs](../../networks/bbn-1/finality-providers/msgs/)
+into the babylon upgrade file `babylon/app/upgrades/signetlaunch/data_signed_fps.go`
+10. Builds new babylond with the expected upgrade code
+11. Start the chain with upgrade to apply
+12. Check if the new BTC headers were correctly created
+13. Check if the new FPs were correctly inserted
 
 ```shell
 make bbn-upgrade-signet
