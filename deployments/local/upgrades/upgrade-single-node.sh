@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./upgrade-single-node.sh $NODE_BIN
@@ -20,15 +20,11 @@ STOP="${STOP:-$CWD/../stop}"
 STARTERS="${STARTERS:-$CWD/../starters}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 
-# Load funcs
+# Load funcs, cheks babylond exists
 . $CWD/../helpers.sh $NODE_BIN
-
-if [ ! -f $NODE_BIN ]; then
-  echo "$NODE_BIN does not exists. build it first with $~ make"
-  exit 1
-fi
 
 hdir="$CHAIN_DIR/$CHAIN_ID"
 
@@ -39,8 +35,8 @@ n0dir="$hdir/n0"
 home0="--home $n0dir"
 
 # Process id of node 0
-n0pid="$hdir/n0.pid"
-log_path=$hdir/n0.v2.log
+n0pid="$n0dir/*.pid"
+log_path=$n0dir/start.v2.log
 
 # Common flags
 kbt="--keyring-backend test"
@@ -81,7 +77,7 @@ BUILD_TAGS="e2e" make build
 cd -
 
 # start the chain again
-SETUP=0 $STARTERS/start-babylond-single-node.sh
+NODE_LOG_PATH=$log_path SETUP=0 $STARTERS/start-babylond-single-node.sh
 
 # git checkout to previous version
 cd $BABYLON_PATH

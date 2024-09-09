@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-covd.sh
@@ -16,8 +16,9 @@ BABYLOND_DIR="${BABYLOND_DIR:-$BBN_DEPLOYMENTS/babylon}"
 BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 CLEANUP="${CLEANUP:-1}"
 SETUP="${SETUP:-1}"
 

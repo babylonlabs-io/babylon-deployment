@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./gov-prop-software-upgrade.sh <option of full path to babylond>
@@ -12,7 +12,8 @@ SOFTWARE_UPGRADE_FILE="${SOFTWARE_UPGRADE_FILE:-$CWD/props/signet-launch.json}"
 STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 
 if [ ! -f $NODE_BIN ]; then
   echo "$NODE_BIN does not exists. build it first with $~ make"

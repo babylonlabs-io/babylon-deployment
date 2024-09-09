@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-vigilante.sh
@@ -8,7 +8,8 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 CHAIN_HOME="$CHAIN_DIR/$CHAIN_ID"
 STOP="${STOP:-$CWD/../stop}"
 
@@ -20,11 +21,11 @@ BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 VIGILANTE_BIN="${VIGILANTE_BIN:-$BBN_DEPLOYMENTS/vigilante/build/vigilante}"
 
 N0_HOME="${N0_HOME:-$CHAIN_HOME/n0}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
-VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
+BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
+VIGILANTE_HOME="${VIGILANTE_HOME:-$DATA_DIR/vigilante}"
 CLEANUP="${CLEANUP:-1}"
 
-echo "--- Chain Dir = $CHAIN_DIR"
+echo "--- Chain Dir = $DATA_DIR"
 echo "--- BTC HOME = $BTC_HOME"
 
 vigilantepidPath="$VIGILANTE_HOME/pid"

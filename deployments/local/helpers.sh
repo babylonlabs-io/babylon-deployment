@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./helpers.sh <option of full path to babylond>
@@ -10,21 +10,9 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 BABYLON_PATH="${BABYLON_PATH:-$CWD/../../../babylon}"
 NODE_BIN="${1:-$BABYLON_PATH/build/babylond}"
 
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
 
-
-if [ ! -f $NODE_BIN ]; then
-  echo "$NODE_BIN does not exists. build it first with $~ make"
-  exit 1
-fi
-
-if ! command -v bitcoin-cli &> /dev/null
-then
-  echo "⚠️ bitcoin-cli command could not be found!"
-  echo "Install it by checking https://bitcoin.org/en/full-node"
-  exit 1
-fi
 
 # general usage flags
 flagBtcDataDir="-datadir=$BTC_HOME"
@@ -76,4 +64,39 @@ getBtcTipHeight() {
   btcBlockTipHash=$(bitcoin-cli $flagBtcDataDir getbestblockhash)
   btcBlockTipHeight=$(bitcoin-cli $flagBtcDataDir getblockheader $btcBlockTipHash | jq .height)
   echo $btcBlockTipHeight
+}
+
+
+checkBabylond() {
+  if [ ! -f $NODE_BIN ]; then
+    echo "$NODE_BIN does not exists. build it first with $~ make"
+    exit 1
+  fi
+}
+
+checkBitcoinCLI() {
+  if ! command -v bitcoin-cli &> /dev/null
+  then
+    echo "⚠️ bitcoin-cli command could not be found!"
+    echo "Install it by checking https://bitcoin.org/en/full-node"
+    exit 1
+  fi
+}
+
+checkBitcoind() {
+  if ! command -v bitcoind &> /dev/null
+  then
+    echo "⚠️ bitcoind command could not be found!"
+    echo "Install it by checking https://bitcoin.org/en/full-node"
+    exit 1
+  fi
+}
+
+checkJq() {
+  if ! command -v jq &> /dev/null
+  then
+    echo "⚠️ jq command could not be found!"
+    echo "Install it by checking https://stedolan.github.io/jq/download/"
+    exit 1
+  fi
 }

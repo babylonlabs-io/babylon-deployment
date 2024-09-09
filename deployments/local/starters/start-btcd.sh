@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-btcd.sh
@@ -9,12 +9,12 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 # These options can be overridden by env
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/btcd}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+BTC_HOME="${BTC_HOME:-$DATA_DIR/btcd}"
 CLEANUP="${CLEANUP:-1}"
 STOP="${STOP:-$CWD/../stop}"
 
-echo "--- Chain Dir = $CHAIN_DIR"
+echo "--- Chain Dir = $DATA_DIR"
 echo "--- BTC HOME = $BTC_HOME"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then

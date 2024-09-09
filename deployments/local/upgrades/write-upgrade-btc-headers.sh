@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./write-upgrade-btc-headers.sh
@@ -13,14 +13,12 @@ BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
 GO_BTC_HEADERS_PATH="${GO_BTC_HEADERS_PATH:-$BABYLON_PATH/app/upgrades/signetlaunch/data_btc_headers.go}"
 SID_BIN="${SID_BIN:-$BBN_DEPLOYMENTS/staking-indexer/build/sid}"
 
-CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-SID_HOME="${SID_HOME:-$CHAIN_DIR/staking-indexer}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+SID_HOME="${SID_HOME:-$DATA_DIR/staking-indexer}"
 
-DATA_OUTPUTS="${DATA_OUTPUTS:-$CHAIN_DIR/outputs}"
+DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 EXPORT_TO="${EXPORT_TO:-$DATA_OUTPUTS/btc-headers.json}"
 
-hdir="$CHAIN_DIR/$CHAIN_ID"
 homeF="--home $SID_HOME"
 
 . $CWD/../helpers.sh

@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-btc-staker.sh
@@ -14,11 +14,14 @@ STAKERCLI_BIN="${STAKERCLI_BIN:-$BTC_STAKER_BUILD/stakercli}"
 STAKERD_BIN="${STAKERD_BIN:-$BTC_STAKER_BUILD/stakerd}"
 STOP="${STOP:-$CWD/../stop}"
 
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
-BTC_STAKER_HOME="${BTC_STAKER_HOME:-$CHAIN_DIR/btc-staker}"
+BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
+BTC_STAKER_HOME="${BTC_STAKER_HOME:-$DATA_DIR/btc-staker}"
 CLEANUP="${CLEANUP:-1}"
+
+. $CWD/../helpers.sh
 
 pidPath=$BTC_STAKER_HOME/pid
 btcctldOutputDirPath=$BTC_STAKER_HOME/btcctl/output
@@ -57,19 +60,8 @@ if [ ! -f $STAKERD_BIN ]; then
   exit 1
 fi
 
-if ! command -v jq &> /dev/null
-then
-  echo "⚠️ jq command could not be found!"
-  echo "Install it by checking https://stedolan.github.io/jq/download/"
-  exit 1
-fi
-
-if ! command -v bitcoind &> /dev/null
-then
-  echo "⚠️ bitcoind command could not be found!"
-  echo "Install it by checking https://bitcoin.org/en/full-node"
-  exit 1
-fi
+checkJq
+checkBitcoind
 
 walletName="btcWalletName"
 $STAKERCLI_BIN admin dump-config --config-file-dir $stakercliConfigFile
