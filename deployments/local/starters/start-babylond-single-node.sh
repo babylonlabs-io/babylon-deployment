@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./start-babylond-single-node.sh <option of full path to babylond>
@@ -18,27 +18,22 @@ COVENANT_PK_FILE="${COVENANT_PK_FILE:-""}"
 COVENANT_QUORUM="${COVENANT_QUORUM:-3}"
 SETUP="${SETUP:-1}"
 
-hdir="$CHAIN_DIR/$CHAIN_ID"
-
 # Folder for node
-n0dir="$hdir/n0"
+NODE_DIR="${NODE_DIR:-$CHAIN_DIR/$CHAIN_ID/n0}"
+NODE_LOG_PATH="${NODE_LOG_PATH:-$NODE_DIR/start.log}"
 
-NODE_LOG_PATH="${NODE_LOG_PATH:-$n0dir/start.log}"
+. $CWD/../helpers.sh $NODE_BIN
+checkBabylond
 
 echo "--- Chain ID = $CHAIN_ID"
 echo "--- Chain Dir = $CHAIN_DIR"
 echo "--- Coin Denom = $DENOM"
 
-if [ ! -f $NODE_BIN ]; then
-  echo "$NODE_BIN does not exists. build it first with $~ make"
-  exit 1
-fi
-
 # Home flag for folder
-home0="--home $n0dir"
+home0="--home $NODE_DIR"
 
 # Process id of node 0
-n0pid="$n0dir/start.pid"
+n0pid="$NODE_DIR/start.pid"
 
 if [[ "$SETUP" == 1 || "$SETUP" == "1" ]]; then
   BTC_BASE_HEADER_FILE=$BTC_BASE_HEADER_FILE COVENANT_PK_FILE=$COVENANT_PK_FILE COVENANT_QUORUM=$COVENANT_QUORUM CHAIN_ID=$CHAIN_ID CHAIN_DIR=$CHAIN_DIR DENOM=$DENOM $CWD/setup-babylond-single-node.sh
@@ -54,7 +49,7 @@ echo "Logs:"
 echo "  * tail -f $NODE_LOG_PATH"
 echo
 echo "Env for easy access:"
-echo "export H1='--home $n0dir'"
+echo "export H1='--home $NODE_DIR'"
 echo
 echo "Command Line Access:"
-echo "  * $NODE_BIN --home $n0dir status"
+echo "  * $NODE_BIN --home $NODE_DIR status"

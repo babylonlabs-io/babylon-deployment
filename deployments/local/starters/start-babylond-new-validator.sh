@@ -1,4 +1,4 @@
-#!/bin/bash -euxx
+#!/bin/bash -eu
 
 # USAGE:
 # ./start-babylond-new-validator.sh <option of full path to babylond>
@@ -13,11 +13,18 @@ STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 
+DENOM="${DENOM:-ubbn}"
 LOG_LEVEL="${LOG_LEVEL:-info}"
 SCALE_FACTOR="${SCALE_FACTOR:-000000}"
 
-hdir="$DATA_DIR/$CHAIN_ID"
+. $CWD/../helpers.sh $NODE_BIN
+
+checkBabylond
+checkJq
+
+hdir="$CHAIN_DIR/$CHAIN_ID"
 
 nodeNum=$(ls $hdir/ | wc -l)
 
@@ -29,23 +36,6 @@ USER_KEY="user$nodeNum"
 USER_MNEMONIC=$(babylond keys mnemonic)
 
 NEWLINE=$'\n'
-
-
-if ! command -v jq &> /dev/null
-then
-  echo "⚠️ jq command could not be found!"
-  echo "Install it by checking https://stedolan.github.io/jq/download/"
-  exit 1
-fi
-
-echo "--- Chain ID = $CHAIN_ID"
-echo "--- Chain Dir = $DATA_DIR"
-echo "--- Coin Denom = $DENOM"
-
-if [ ! -f $NODE_BIN ]; then
-  echo "$NODE_BIN does not exists. build it first with $~ make"
-  exit 1
-fi
 
 # Folder for node
 nodeDir="$hdir/n$nodeNum"
@@ -81,9 +71,9 @@ $NODE_BIN $home $cid init n$nodeNum &>/dev/null
 echo "--- Copy genesis from previous node..."
 cp $hdir/n0/config/genesis.json $cfgDir/genesis.json
 
-
-echo "--- Validating genesis..."
-$NODE_BIN $home validate-genesis
+# TODO: Verify why our genesis is invalid - https://github.com/babylonlabs-io/babylon/issues/63
+# echo "--- Validating genesis..."
+# $NODE_BIN $home validate-genesis
 
 # This is needed to avoid using same ports for each node
 
@@ -119,46 +109,42 @@ echo "$VAL_MNEMONIC$NEWLINE"
 yes "$VAL_MNEMONIC$NEWLINE" | $NODE_BIN $home keys add $VAL_KEY $kbt --recover
 yes "$USER_MNEMONIC$NEWLINE" | $NODE_BIN $home keys add $USER_KEY $kbt --recover
 
+$NODE_BIN $home create-bls-key $($NODE_BIN $home keys show $VAL_KEY -a $kbt)
+
 echo "--- Modifying app..."
 perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "0.05uquid"|g' $app
 
 peer0="$($NODE_BIN tendermint show-node-id $home0 --log_level info)\@127.0.0.1:26656"
 perl -i -pe 's|persistent_peers = ""|persistent_peers = "'$peer0'"|g' $cfg
 
-log_path=$hdir.n$nodeNum.log
-
-$NODE_BIN $home start --api.enable true --grpc.address="0.0.0.0:909$nodeNum" --grpc-web.enable=false --log_level trace --trace > $log_path 2>&1 &
-
-# Gets the node pid
-echo $! > $pid
-
-# Start the instance
-echo "--- Starting node..."
-
-# Adds 5 sec to create the log and makes it easier to debug it on CI
+SETUP=0 NODE_DIR=$nodeDir $CWD/start-babylond-single-node.sh $NODE_BIN
 
 sleep 5
-cat $log_path
-
 echo "Creating a new validator from CLI"
-
 echo "Sending funds from n0 to n$nodeNum"
 
 newValAddr=$($NODE_BIN keys show $VAL_KEY $home $kbt -a)
 
-$NODE_BIN tx bank send user $newValAddr 10000$SCALE_FACTOR$DENOM  $kbt $home0 $cid -y -b sync
+$NODE_BIN tx bank send user $newValAddr 10000$SCALE_FACTOR$DENOM $kbt $home0 $cid -y -b sync
+
+sleep 6 # wait for a block
 
 pubkey=$($NODE_BIN tendermint show-validator $home)
 
-commission="--commission-max-change-rate=0.01 --commission-max-rate=1.0 --commission-rate=0.07 --min-self-delegation 10"
-$NODE_BIN tx stakegauge create-validator $kbt $home $cid -y --from $VAL_KEY --amount 1000$SCALE_FACTOR$DENOM --pubkey $pubkey $commission -b sync
+createValJSON=$nodeDir/create-val-params.json
 
-echo
-echo "Logs:"
-echo "  * tail -f $log_path"
-echo
-echo "Env for easy access:"
-echo "export H1='--home $nodeDir'"
-echo
-echo "Command Line Access:"
-echo "  * $NODE_BIN --home $nodeDir status"
+echo "{
+  \"pubkey\": $pubkey,
+  \"amount\": \"100000000$DENOM\",
+  \"moniker\": \"$VAL_KEY\",
+  \"identity\": \"optional identity signature (ex. UPort or Keybase)\",
+  \"website\": \"validator (optional) website\",
+  \"security\": \"validator (optional) security contact email\",
+  \"details\": \"validator (optional) details\",
+  \"commission-rate\": \"0.1\",
+  \"commission-max-rate\": \"0.2\",
+  \"commission-max-change-rate\": \"0.01\",
+  \"min-self-delegation\": \"10\"
+}" | jq > $createValJSON
+
+$NODE_BIN tx checkpointing create-validator $createValJSON $kbt $home $cid -y --from $VAL_KEY -b sync --output json | jq

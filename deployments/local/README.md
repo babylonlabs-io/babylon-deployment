@@ -54,6 +54,21 @@ babylond q btcstaking btc-delegations active -o json | jq
 
 - You should see a btc delegation active, if nothing is founded check pending btc delegations `babylond q btcstaking btc-delegations pending`
 
+### Stand-alone scripts
+
+#### Start a single-node-chain
+
+Run `./starters/start-babylond-single-node.sh` to create a babylon chain with a single node.
+
+#### Add a new validator
+
+With a running chain, create a new validator by running `./starters/start-babylond-new-validator.sh`,
+it creates a new validator by using the checkpoint wrapping create validator transaction
+`babylond tx checkpointing create-validator`, it submits the wrapped msg which then
+is put into a queue to be run at the end of an epoch, after the epoch is passed, if
+everything was successfully processed, you should be able to see a new validator
+under `babylond q staking validators`
+
 ## Upgrades
 
 This section cover upgrades tested locally with a single node
