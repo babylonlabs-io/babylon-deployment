@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./setup-babylond-single-node.sh <option of full path to babylond>
@@ -23,6 +23,11 @@ COVENANT_QUORUM="${COVENANT_QUORUM:-3}"
 COVENANT_PK_FILE="${COVENANT_PK_FILE:-""}"
 BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-""}"
 
+. $CWD/../helpers.sh $NODE_BIN
+
+checkBabylond
+checkJq
+
 # Default 1 account keys + 1 user key with no special grants
 VAL0_KEY="val"
 VAL0_MNEMONIC="copper push brief egg scan entry inform record adjust fossil boss egg comic alien upon aspect dry avoid interest fury window hint race symptom"
@@ -41,21 +46,9 @@ NEWLINE=$'\n'
 
 hdir="$CHAIN_DIR/$CHAIN_ID"
 
-if ! command -v jq &> /dev/null
-then
-  echo "⚠️ jq command could not be found!"
-  echo "Install it by checking https://stedolan.github.io/jq/download/"
-  exit 1
-fi
-
 echo "--- Chain ID = $CHAIN_ID"
 echo "--- Chain Dir = $DATA_DIR"
 echo "--- Coin Denom = $DENOM"
-
-if [ ! -f $NODE_BIN ]; then
-  echo "$NODE_BIN does not exists. Build it first with $~ make"
-  exit 1
-fi
 
 # Folder for node
 n0dir="$hdir/n0"
