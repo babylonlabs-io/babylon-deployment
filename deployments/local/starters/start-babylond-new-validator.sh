@@ -149,4 +149,4 @@ echo "{
 
 $NODE_BIN tx checkpointing create-validator $createValJSON $kbt $home $cid -y --from $VAL_KEY -b sync > /tmp/dev
 
-echo "$VAL_KEY created, wait for end of epoch to changes to take effect"
+echo "$VAL_KEY created, wait for the end of epoch to changes to take effect"
