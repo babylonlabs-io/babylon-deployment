@@ -13,8 +13,8 @@ EOTS_BIN="${EOTS_BIN:-$FPD_BUILD/eotsd}"
 STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-EOTS_HOME="${EOTS_HOME:-$CHAIN_DIR/eots}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+EOTS_HOME="${EOTS_HOME:-$DATA_DIR/eots}"
 CLEANUP="${CLEANUP:-1}"
 
 if [ ! -f $EOTS_BIN ]; then

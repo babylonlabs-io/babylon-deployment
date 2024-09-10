@@ -9,12 +9,13 @@
 # with active btc delegations from start.
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
+DATA_DIR="${DATA_DIR:-$CWD/data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 STARTERS="${STARTERS:-$CWD/starters}"
 STOP="${STOP:-$CWD/stop}"
 
-VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
-COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
+VIGILANTE_HOME="${VIGILANTE_HOME:-$DATA_DIR/vigilante}"
+COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
 CHAIN_ID_PHASE1="${CHAIN_ID_PHASE1:-test-1}"
 NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
 CLEANUP="${CLEANUP:-1}"
@@ -22,8 +23,8 @@ CLEANUP="${CLEANUP:-1}"
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
   $STOP/kill-all-process.sh
 
-  rm -rf $CHAIN_DIR
-  echo "Removed $CHAIN_DIR"
+  rm -rf $DATA_DIR
+  echo "Removed $DATA_DIR"
 fi
 
 # Starts everything with btc delegation

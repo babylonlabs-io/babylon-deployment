@@ -13,11 +13,11 @@ NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
 STARTERS="${STARTERS:-$CWD/starters}"
 UPGRADES="${UPGRADES:-$CWD/upgrades}"
 
-CHAIN_DIR="${CHAIN_DIR:-$CWD/data}"
-DATA_OUTPUTS="${DATA_OUTPUTS:-$CHAIN_DIR/outputs}"
+DATA_DIR="${DATA_DIR:-$CWD/data}"
+DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-$DATA_OUTPUTS/btc-base-header.json}"
 
-. $CWD/helpers.sh
+. $CWD/helpers.sh $NODE_BIN
 mkdir -p $DATA_OUTPUTS
 
 # Start bitcoind

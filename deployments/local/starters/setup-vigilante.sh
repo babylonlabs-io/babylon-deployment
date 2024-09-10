@@ -8,13 +8,13 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-CHAIN_HOME="$CHAIN_DIR/$CHAIN_ID"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_HOME="$DATA_DIR/babylon/$CHAIN_ID"
 STOP="${STOP:-$CWD/../stop}"
 
 N0_HOME="${N0_HOME:-$CHAIN_HOME/n0}"
-BTC_HOME="${BTC_HOME:-$CHAIN_DIR/bitcoind}"
-VIGILANTE_HOME="${VIGILANTE_HOME:-$CHAIN_DIR/vigilante}"
+BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
+VIGILANTE_HOME="${VIGILANTE_HOME:-$DATA_DIR/vigilante}"
 LISTEN_PORT="${LISTEN_PORT:-8067}"
 SERVER_PORT="${SERVER_PORT:-2135}"
 

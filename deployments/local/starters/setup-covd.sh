@@ -12,8 +12,8 @@ COVD_BIN="${COVD_BIN:-$BBN_DEPLOYMENTS/covenant-emulator/build/covd}"
 STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-COVD_HOME="${COVD_HOME:-$CHAIN_DIR/covd}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
 CLEANUP="${CLEANUP:-1}"
 
 if ! command -v jq &> /dev/null

@@ -10,23 +10,18 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 NODE_BIN="${1:-$CWD/../../babylon/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-2}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
+
 EXPORTED_GEN_FILE="${EXPORTED_GEN_FILE:-$CHAIN_DIR/test-1/n0/config/genesis.exported.json}"
 
 echo "--- Chain ID = $CHAIN_ID"
-echo "--- Chain Dir = $CHAIN_DIR"
+echo "--- Chain Dir = $DATA_DIR"
 
-if [ ! -f $NODE_BIN ]; then
-  echo "$NODE_BIN does not exists. build it first with $~ make"
-  exit 1
-fi
+. $CWD/../helpers.sh $NODE_BIN
 
-if ! command -v jq &> /dev/null
-then
-  echo "⚠️ jq command could not be found!"
-  echo "Install it by checking https://stedolan.github.io/jq/download/"
-  exit 1
-fi
+checkBabylond
+checkJq
 
 hdir="$CHAIN_DIR/$CHAIN_ID"
 
@@ -64,19 +59,5 @@ cat $EXPORTED_GEN_FILE | jq .app_state.btcstaking.params > $inputFile
 jq '.app_state.btcstaking.params = input' $newGen $inputFile > $tmpGen
 mv $tmpGen $newGen
 
-log_path=$hdir/n0.log # TODO: use start single node
-$NODE_BIN $home0 start --api.enable true --grpc.address="0.0.0.0:9090" --api.enabled-unsafe-cors --grpc-web.enable=true --log_level info > $log_path 2>&1 &
-
-echo $! > $n0pid
-
-# Start the instance
-echo "--- Starting node..."
-echo
-echo "Logs:"
-echo "  * tail -f $log_path"
-echo
-echo "Env for easy access:"
-echo "export H1='--home $n0dir'"
-echo
-echo "Command Line Access:"
-echo "  * $NODE_BIN --home $n0dir status"
+# start the node with the modified genesis
+CHAIN_ID=$CHAIN_ID CHAIN_DIR=$CHAIN_DIR $CWD/start-babylond-single-node.sh

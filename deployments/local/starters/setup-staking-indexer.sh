@@ -12,8 +12,8 @@ SID_BIN="${SID_BIN:-$BBN_DEPLOYMENTS/staking-indexer/build/sid}"
 STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-SID_HOME="${SID_HOME:-$CHAIN_DIR/staking-indexer}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+SID_HOME="${SID_HOME:-$DATA_DIR/staking-indexer}"
 CLEANUP="${CLEANUP:-1}"
 
 if [ ! -f $SID_BIN ]; then

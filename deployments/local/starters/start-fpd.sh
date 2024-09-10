@@ -16,11 +16,12 @@ BABYLOND_DIR="${BABYLOND_DIR:-$BBN_DEPLOYMENTS/babylon}"
 BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
-CHAIN_DIR="${CHAIN_DIR:-$CWD/../data}"
-FPD_HOME="${FPD_HOME:-$CHAIN_DIR/fpd}"
+DATA_DIR="${DATA_DIR:-$CWD/../data}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
+FPD_HOME="${FPD_HOME:-$DATA_DIR/fpd}"
 CLEANUP="${CLEANUP:-1}"
 
-n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
+n0dir="$DATA_DIR/$CHAIN_ID/n0"
 listenAddr="127.0.0.1:12583"
 
 homeF="--home $FPD_HOME"
@@ -41,11 +42,6 @@ if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
 
   rm -rf $FPD_HOME
   echo "Removed $FPD_HOME"
-fi
-
-if [ ! -f $FPD_BIN ]; then
-  echo "$FPD_BIN does not exists. build it first with $~ make"
-  exit 1
 fi
 
 if [ ! -f $FPD_BIN ]; then
