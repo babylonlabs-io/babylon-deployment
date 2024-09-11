@@ -22,5 +22,6 @@ PATH_OF_PIDS=$BTC_HOME/pid/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$BTC_BITCOIND_HOME/pid/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$COVD_HOME/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$EOTS_HOME/*.pid $CWD/kill-process.sh
-PATH_OF_PIDS=$FPD_HOME/*.pid $CWD/kill-process.sh
+PATH_OF_PIDS=$FPD_HOME/*/*.pid $CWD/kill-process.sh
+PATH_OF_PIDS=$FPD_HOME/*/*/*.pid $CWD/kill-process.sh # eotsd inside fpd
 PATH_OF_PIDS=$BTC_STAKER_HOME/pid/*.pid $CWD/kill-process.sh

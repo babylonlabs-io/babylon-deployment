@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-fpd.sh
@@ -18,7 +18,7 @@ BBN_BIN="${BBN_BIN:-$BABYLOND_DIR/build/babylond}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
 CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
-FPD_HOME="${FPD_HOME:-$DATA_DIR/fpd}"
+FPD_HOME="${FPD_HOME:-$DATA_DIR/fpd/fp-0}"
 CLEANUP="${CLEANUP:-1}"
 
 n0dir="$DATA_DIR/$CHAIN_ID/n0"

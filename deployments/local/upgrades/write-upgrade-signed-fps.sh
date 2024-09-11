@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./write-upgrade-signed-fps.sh
@@ -10,6 +10,7 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
+# By default it reads the signed FP msgs from netwroks repo
 SIGNED_MSGS_PATH="${SIGNED_MSGS_PATH:-$BBN_DEPLOYMENTS/networks/bbn-1/finality-providers/msgs}"
 GO_SIGNED_FPS_PATH="${GO_SIGNED_FPS_PATH:-$BABYLON_PATH/app/upgrades/signetlaunch/data_signed_fps.go}"
 
@@ -17,8 +18,6 @@ DATA_DIR="${DATA_DIR:-$CWD/../data}"
 
 OUTPUTS_DIR="${OUTPUTS_DIR:-$DATA_DIR/outputs}"
 EXPORT_TO="${EXPORT_TO:-$OUTPUTS_DIR/signed-fps.json}"
-
-mkdir -p $OUTPUTS_DIR
 
 concatenatedSignedMsgs=$(jq -s 'map(.)' $SIGNED_MSGS_PATH/*)
 
