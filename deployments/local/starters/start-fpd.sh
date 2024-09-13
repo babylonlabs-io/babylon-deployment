@@ -65,9 +65,8 @@ perl -i -pe 's|RpcListener = 127.0.0.1:12581|RpcListener = "'$listenAddr'"|g' $c
 $FPD_BIN keys add $fpKeyName $homeF $kbt > $outdir/keys-add-keys-finality-provider.txt
 
 # Starts the finality provider daemon
-pid_file=$FPD_HOME/fpd.pid
 $FPD_BIN start --rpc-listener $listenAddr $homeF > $logdir/fpd-start.log 2>&1 &
-echo $! > $pid_file
+echo $! > $FPD_HOME/fpd.pid
 sleep 2
 
 # Creates the finality provider and stores it into the database and eots
