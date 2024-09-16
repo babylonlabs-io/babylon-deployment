@@ -107,6 +107,4 @@ if [[ "$START" == 1 || "$START" == "1" ]]; then
   createFPFile=$outdir/create-finality-provider.json
   $FPD_BIN create-finality-provider --eots-pk $btcPKHex $keyNameF $cid $homeF \
     --daemon-address $fpdListenAddr --moniker $moniker > $createFPFile
-  sleep 5
-
 fi
