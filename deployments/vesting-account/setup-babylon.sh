@@ -108,7 +108,7 @@ if [ $platform = 'linux' ]; then
   sed -i 's/"bond_denom": "stake"/"bond_denom": "'"$DENOM"'"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
   sed -i 's/"voting_period": "172800s"/"voting_period": "20s"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
   sed -i 's/"expedited_voting_period": "86400s"/"expedited_voting_period": "10s"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
-  # sed -i 's/"epoch_interval": "400"/"epoch_interval": "10"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
+  sed -i 's/"epoch_interval": "400"/"epoch_interval": "20"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
   sed -i 's/"secret"/"mnemonic"/g' $CHAINDIR/$CHAINID/key_seed.json
 else
   sed -i '' 's#"tcp://0.0.0.0:26657"#"tcp://0.0.0.0:'"$RPCPORT"'"#g' $CHAINDIR/$CHAINID/node0/$BINARY/config/config.toml
@@ -120,7 +120,7 @@ else
   sed -i '' 's/"bond_denom": "stake"/"bond_denom": "'"$DENOM"'"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
   sed -i '' 's/"voting_period": "172800s"/"voting_period": "20s"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
   sed -i '' 's/"expedited_voting_period": "86400s"/"expedited_voting_period": "10s"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
-  # sed -i '' 's/"epoch_interval": "400"/"epoch_interval": "10"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
+  sed -i '' 's/"epoch_interval": "400"/"epoch_interval": "20"/g' $CHAINDIR/$CHAINID/node0/$BINARY/config/genesis.json
   sed -i '' 's/"secret"/"mnemonic"/g' $CHAINDIR/$CHAINID/key_seed.json
 fi
 
@@ -142,6 +142,27 @@ VESTING_ACCOUNT_NAME="vesting_account"
 VESTING_ACCOUNT=$($BINARY_OLD keys add $VESTING_ACCOUNT_NAME --keyring-backend test --home $CHAINDIR/$CHAINID/node0/$BINARY --output json)
 VESTING_ADDRESS=$(echo $VESTING_ACCOUNT | jq -r .address)
 
+# Send 1bbn to the vesting account
+echo "Sending 1bbn to the vesting account..."
+$BINARY_OLD tx bank send \
+  $SENDER_ADDRESS \
+  $VESTING_ADDRESS \
+  1000000ubbn \
+  --chain-id $CHAINID \
+  --keyring-backend test \
+  --home $CHAINDIR/$CHAINID/node0/$BINARY \
+  --fees 2ubbn \
+  --yes
+
+# Wait for the transaction to be processed
+sleep 5
+
+# Verify the balance of the vesting account
+echo "Verifying the balance of the vesting account..."
+$BINARY_OLD query bank balances $VESTING_ADDRESS \
+  --chain-id $CHAINID \
+  --node tcp://localhost:$RPCPORT
+
 # Use the vesting.json file to create the periodic vesting account
 $BINARY_OLD tx vesting create-periodic-vesting-account \
   $VESTING_ADDRESS \
@@ -154,3 +175,29 @@ $BINARY_OLD tx vesting create-periodic-vesting-account \
   --yes
 
 echo "Vesting account created with address: $VESTING_ADDRESS"
+
+# Stake 10 BBN for VESTING_ADDRESS to genesis validator
+echo "Staking 10 BBN from vesting account to genesis validator..."
+
+# Get the validator address (assuming it's the first validator in the active set)
+VALIDATOR_ADDRESS=$($BINARY_OLD query staking validators --output json | jq -r '.validators[0].operator_address')
+
+# Stake 10 BBN (10000000ubbn) from the vesting account to the validator
+$BINARY_OLD tx epoching delegate $VALIDATOR_ADDRESS 10000000ubbn \
+  --from $VESTING_ADDRESS \
+  --chain-id $CHAINID \
+  --keyring-backend test \
+  --home $CHAINDIR/$CHAINID/node0/$BINARY \
+  --fees 2ubbn \
+  --yes
+
+# Wait for the transaction to be processed
+sleep 5
+
+# Verify the delegation
+echo "Verifying the delegation..."
+$BINARY_OLD query staking delegations $VESTING_ADDRESS \
+  --chain-id $CHAINID \
+  --node tcp://localhost:$RPCPORT
+
+echo "Staking completed for vesting account: $VESTING_ADDRESS"
