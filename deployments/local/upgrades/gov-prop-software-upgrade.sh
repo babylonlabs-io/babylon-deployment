@@ -34,7 +34,7 @@ cid="--chain-id $CHAIN_ID"
 
 VAL0_ADDR=$($NODE_BIN $home0 keys show val -a $kbt --bech val)
 
-UPGRADE_BLOCK_HEIGHT=`$NODE_BIN status | jq ".sync_info.latest_block_height | tonumber | . + 12"`
+UPGRADE_BLOCK_HEIGHT=`$NODE_BIN status | jq ".sync_info.latest_block_height | tonumber | . + 6"`
 echo "upgrade block height: $UPGRADE_BLOCK_HEIGHT"
 
 echo "Send gov proposal to upgrade to '$SOFTWARE_UPGRADE_FILE'"

@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./bbn-start-and-upgrade-signet-launch.sh
@@ -16,6 +16,13 @@ UPGRADES="${UPGRADES:-$CWD/upgrades}"
 DATA_DIR="${DATA_DIR:-$CWD/data}"
 DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-$DATA_OUTPUTS/btc-base-header.json}"
+CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
+NUMBER_FPS_SIGNED="${NUMBER_FPS_SIGNED:-1}"
+CHAIN_ID="${CHAIN_ID:-test-1}"
+
+n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
+cid="--chain-id $CHAIN_ID"
+kbt="--keyring-backend test"
 
 . $CWD/helpers.sh $NODE_BIN
 mkdir -p $DATA_OUTPUTS
@@ -40,8 +47,21 @@ btcHeaderTipBeforeUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.
 fpsLengthBeforeUpgrade=$($NODE_BIN q btcstaking finality-providers --output json | jq '.finality_providers | length')
 
 # Gov prop, waits for block, kill and reestart in the new version
-PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-data.sh SOFTWARE_UPGRADE_FILE=$UPGRADES/props/signet-launch.json \
+NUMBER_FPS_SIGNED=$NUMBER_FPS_SIGNED PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-data.sh SOFTWARE_UPGRADE_FILE=$UPGRADES/props/signet-launch.json \
   BABYLON_VERSION_WITH_UPGRADE="main" $UPGRADES/upgrade-single-node.sh
+
+# Send funds to new finality providers after the upgrade (it could be before as well)
+fpNum=0
+for fpHomePath in $DATA_DIR/fpd/*; do
+  echo "sending bbn to fpd $fpNum"
+  fpName="fp-name-$fpNum"
+
+  fpAddr=$($NODE_BIN keys show $fpName --home $fpHomePath $kbt -a)
+  # Send some funds to finality provider for him to be able to perform actions.
+  $NODE_BIN tx bank send user $fpAddr 1000000ubbn --home $n0dir $kbt $cid -y -b sync > /tmp/dev
+  fpNum=$(($fpNum + 1))
+done
+
 
 # checks if all the btc headers and fps were added '-'
 upgradeHeight=$($NODE_BIN q upgrade applied signet-launch --output json | jq ".height" -r)

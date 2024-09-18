@@ -69,6 +69,14 @@ is put into a queue to be run at the end of an epoch, after the epoch is passed,
 everything was successfully processed, you should be able to see a new validator
 under `babylond q staking validators`
 
+#### Create signed MsgCreateFinalityProvider
+
+Generates a new signed msg ready to be used in the signet launch upgrade
+by running the script `./upgrades/fpd-create-signed-fp.sh` it creates a new
+path under `data/fpd/fp-${num}` with the eotsd and fpd home inside of it
+that contains the keys and proof of possession used to generate the signed
+msg.
+
 ## Upgrades
 
 This section cover upgrades tested locally with a single node

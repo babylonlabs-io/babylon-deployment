@@ -6,13 +6,16 @@
 # Contains diff functions to help other scripts
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-BABYLON_PATH="${BABYLON_PATH:-$CWD/../../../babylon}"
+BABYLON_PATH="${BABYLON_PATH:-$SCRIPT_DIR/../../../babylon}"
 NODE_BIN="${1:-$BABYLON_PATH/build/babylond}"
 
-DATA_DIR="${DATA_DIR:-$CWD/../data}"
+DATA_DIR="${DATA_DIR:-$SCRIPT_DIR/../data}"
 BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
+STOP="${STOP:-$SCRIPT_DIR/stop}"
 
+FPD_BIN="${FPD_BIN:-$SCRIPT_DIR/../../../finality-provider/build/fpd}"
 
 # general usage flags
 flagBtcDataDir="-datadir=$BTC_HOME"
@@ -60,6 +63,19 @@ writeBaseBtcHeaderFile() {
   }" > $EXPORT_TO
 }
 
+cleanUp() {
+  CLEANUP=$1
+  PATH_OF_PIDS=$2
+  DIR_TO_REMOVE=$3
+
+  if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
+    PATH_OF_PIDS=$PATH_OF_PIDS $STOP/kill-process.sh
+
+    rm -rf $DIR_TO_REMOVE
+    echo "Removed $DIR_TO_REMOVE"
+  fi
+}
+
 getBtcTipHeight() {
   btcBlockTipHash=$(bitcoin-cli $flagBtcDataDir getbestblockhash)
   btcBlockTipHeight=$(bitcoin-cli $flagBtcDataDir getblockheader $btcBlockTipHash | jq .height)
@@ -70,6 +86,13 @@ getBtcTipHeight() {
 checkBabylond() {
   if [ ! -f $NODE_BIN ]; then
     echo "$NODE_BIN does not exists. build it first with $~ make"
+    exit 1
+  fi
+}
+
+checkFpd() {
+  if [ ! -f $FPD_BIN ]; then
+    echo "$FPD_BIN does not exists. build it first with $~ make"
     exit 1
   fi
 }
