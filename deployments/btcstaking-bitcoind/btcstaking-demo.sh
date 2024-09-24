@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eux
 
 echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 
@@ -7,7 +7,7 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
         BTC_PK=\$(/bin/fpd cfp --key-name finality-provider$idx \
             --chain-id chain-test \
             --moniker \"Finality Provider $idx\" | jq -r .btc_pk_hex ); \
-        /bin/fpd rfp --eots-pk \$BTC_PK
+        /bin/fpd rfp \$BTC_PK
     "
 done
 
@@ -69,7 +69,7 @@ attackHeight=$(docker exec finality-provider /bin/sh -c '/bin/fpd ls | jq -r ".f
 
 # Execute the attack for the first height that every finality provider voted
 docker exec finality-provider /bin/sh -c \
-    "/bin/fpd afs --eots-pk $attackerBtcPk --height $attackHeight"
+    "/bin/fpd afs $attackerBtcPk $attackHeight"
 
 echo "Finality Provider with Bitcoin public key $attackerBtcPk submitted a conflicting finality signature for Babylon height $attackHeight; the Finality Provider's private BTC key has been extracted and the Finality Provider will now be slashed"
 
