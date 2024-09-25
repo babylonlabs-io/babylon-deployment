@@ -16,6 +16,7 @@ BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
 STOP="${STOP:-$SCRIPT_DIR/stop}"
 
 FPD_BIN="${FPD_BIN:-$SCRIPT_DIR/../../../finality-provider/build/fpd}"
+COVD_BIN="${COVD_BIN:-$SCRIPT_DIR/../../../covenant-emulator/build/covd}"
 
 # general usage flags
 flagBtcDataDir="-datadir=$BTC_HOME"
@@ -93,6 +94,13 @@ checkBabylond() {
 checkFpd() {
   if [ ! -f $FPD_BIN ]; then
     echo "$FPD_BIN does not exists. build it first with $~ make"
+    exit 1
+  fi
+}
+
+checkCovd() {
+  if [ ! -f $COVD_BIN ]; then
+    echo "$COVD_BIN does not exists. build it first with $~ make"
     exit 1
   fi
 }

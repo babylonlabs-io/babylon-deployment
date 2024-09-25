@@ -88,13 +88,13 @@ fi
 
 walletName="btcWalletName"
 flagDataDir="-datadir=$BTC_HOME"
-flagRpc="-rpcwallet=$walletName"
+rpcWalletFlag="-rpcwallet=$walletName"
 
 gen_blocks () {
   echo "1 block generated each 8s"
 
   while true; do
-    bitcoin-cli $flagDataDir $flagRpc -generate 1 > /dev/null 2>&1
+    bitcoin-cli $flagDataDir $rpcWalletFlag -generate 1 > /dev/null 2>&1
     sleep 8
   done
 }
@@ -107,7 +107,7 @@ sleep 1
 
 bitcoin-cli $flagDataDir -named createwallet wallet_name=$walletName passphrase=walletpass
 
-bitcoin-cli $flagDataDir $flagRpc -generate 200
+bitcoin-cli $flagDataDir $rpcWalletFlag -generate 200
 
 # keeps mining 1 block each 8 sec.
 gen_blocks &

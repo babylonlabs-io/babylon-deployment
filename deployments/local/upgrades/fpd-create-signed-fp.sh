@@ -72,11 +72,12 @@ $FPD_BIN tx create-finality-provider $btcPKHex $popHex \
   --generate-only --gas-prices 10ubbn --moniker $moniker --security-contact $fpName@email.com \
   --website http://$fpName.com.br --details "best-$fpName" --commission-rate "0.05" --output json | jq > $outputCreatedMsgPath
 
-$FPD_BIN tx sign $outputCreatedMsgPath $homeF $kbt \
-  --from $fpName --offline --account-number 0 --sequence 0 | jq > $OUTPUT_SIGNED_MSG
+echo "Generated file " $outputCreatedMsgPath
 
+$FPD_BIN tx sign $outputCreatedMsgPath $homeF $kbt --from $fpName --offline --account-number 0 --sequence 0 | jq > $OUTPUT_SIGNED_MSG
 
 if [[ "$START" == 1 || "$START" == "1" ]]; then
+  echo "starting the finality provider"
   $EOTS_BIN start $eotsdHomeF >> $EOTS_HOME/eots-start.log &
   echo $! > $EOTS_HOME/eots.pid
 
