@@ -144,8 +144,8 @@ services:
       - babylondnode0
     restart: unless-stopped
 
-  finality-provider:
-    container_name: finality-provider
+  finality-provider0: # TODO: Should have one for each FP NUM_FINALITY_PROVIDERS
+    container_name: finality-provider0
     image: babylonlabs-io/finality-provider
     command: fpd start
     networks:
@@ -154,7 +154,7 @@ services:
     ports:
       - "15822:15812"
     volumes:
-      - ../.testnets/finality-provider:/home/finality-provider/.fpd
+      - ../.testnets/finality-provider0:/home/finality-provider/.fpd
     depends_on:
       - babylondnode0
     restart: unless-stopped
@@ -172,7 +172,7 @@ services:
       - ../.testnets/eotsmanager:/home/finality-provider/.eotsd
     depends_on:
       - babylondnode0
-      - finality-provider
+      - finality-provider0
     restart: unless-stopped
 
   covenant-emulator:

@@ -3,7 +3,7 @@
 echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
-    docker exec finality-provider /bin/sh -c "
+    docker exec finality-provider$idx /bin/sh -c "
         BTC_PK=\$(/bin/fpd cfp --key-name finality-provider$idx \
             --chain-id chain-test \
             --moniker \"Finality Provider $idx\" | jq -r .btc_pk_hex ); \
@@ -18,9 +18,11 @@ sleep 10
 
 # Get the public keys of the finality providers
 btcPks=$(docker exec btc-staker /bin/sh -c '/bin/stakercli dn bfp | jq -r ".finality_providers[].bitcoin_public_Key"')
+echo "BTC Stakers btc pks" $btcPks
 
 # Get the available BTC addresses for delegations
 delAddrs=($(docker exec btc-staker /bin/sh -c '/bin/stakercli dn list-outputs | jq -r ".outputs[].address" | sort | uniq'))
+echo "Delegators Addrs bond vars" $delAddrs
 
 i=0
 declare -a txHashes=()
@@ -50,7 +52,7 @@ echo "Made a delegation to each of the finality providers"
 
 echo "Wait a few minutes for the delegations to become active..."
 while true; do
-    allDelegationsActive=$(docker exec finality-provider /bin/sh -c \
+    allDelegationsActive=$(docker exec finality-provider0 /bin/sh -c \
         'fpd ls | jq ".finality_providers[].last_voted_height != null"')
 
     if [[ $allDelegationsActive == *"false"* ]]
@@ -65,10 +67,10 @@ done
 echo "Attack Babylon by submitting a conflicting finality signature for a finality provider"
 # Select the first Finality Provider
 attackerBtcPk=$(echo ${btcPks}  | cut -d " " -f 1)
-attackHeight=$(docker exec finality-provider /bin/sh -c '/bin/fpd ls | jq -r ".finality_providers[].last_voted_height" | head -n 1')
+attackHeight=$(docker exec finality-provider0 /bin/sh -c '/bin/fpd ls | jq -r ".finality_providers[].last_voted_height" | head -n 1')
 
 # Execute the attack for the first height that every finality provider voted
-docker exec finality-provider /bin/sh -c \
+docker exec finality-provider0 /bin/sh -c \
     "/bin/fpd afs $attackerBtcPk $attackHeight"
 
 echo "Finality Provider with Bitcoin public key $attackerBtcPk submitted a conflicting finality signature for Babylon height $attackHeight; the Finality Provider's private BTC key has been extracted and the Finality Provider will now be slashed"
