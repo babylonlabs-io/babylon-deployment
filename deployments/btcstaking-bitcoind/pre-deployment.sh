@@ -2,8 +2,8 @@
 
 # Create new directory that will hold node and services' configuration
 mkdir -p .testnets && chmod o+w .testnets
-docker run --rm -v $(pwd)/.testnets:/data babylonchain/babylond \
-    babylond testnet init-files --v 2 -o /data \
+docker run --rm -v $(pwd)/.testnets:/data babylonlabs-io/babylond \
+    babylond testnet --v 2 -o /data \
     --starting-ip-address 192.168.10.2 --keyring-backend=test \
     --chain-id chain-test --epoch-interval 10 \
     --btc-finalization-timeout 2 --btc-confirmation-depth 1 \
@@ -36,5 +36,5 @@ mkdir -p .testnets/api
 mkdir -p .testnets/poller
 cp artifacts/api.yml .testnets/api/config.yml
 cp artifacts/poller.yml .testnets/poller/config.yml
-cp ../../babylon-api/sample-chain-registry.json .testnets/api/chain-registry.json 
+cp ../../babylon-api/sample-chain-registry.json .testnets/api/chain-registry.json
 cp ../../rpc-poller/sample-chain-registry.json .testnets/poller/chain-registry.json
