@@ -162,7 +162,7 @@ services:
   eotsmanager:
     container_name: eotsmanager
     image: babylonlabs-io/finality-provider
-    command: eotsd start
+    command: eotsd start --home /home/finality-provider/.eotsd
     networks:
       localnet:
         ipv4_address: 192.168.10.14
@@ -172,6 +172,7 @@ services:
       - ../.testnets/eotsmanager:/home/finality-provider/.eotsd
     depends_on:
       - babylondnode0
+      - finality-provider
     restart: unless-stopped
 
   covenant-emulator:
