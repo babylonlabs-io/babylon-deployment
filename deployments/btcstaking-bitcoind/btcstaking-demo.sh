@@ -34,7 +34,7 @@ do
     # showcase the reclamation of expired BTC funds afterwards.
     if [ $((i % $NUM_FINALITY_PROVIDERS)) -eq $((NUM_FINALITY_PROVIDERS -1)) ];
     then
-        stakingTime=10
+        stakingTime=100
     else
         stakingTime=500
     fi
