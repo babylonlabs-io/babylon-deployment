@@ -38,11 +38,3 @@ cp artifacts/stakerd.conf .testnets/btc-staker/stakerd.conf
 cp artifacts/eotsd.conf .testnets/eotsmanager/eotsd.conf
 cp artifacts/covd.conf .testnets/covenant-emulator/covd.conf
 cp -R artifacts/covenant-keyring .testnets/covenant-emulator/keyring-test
-
-# API
-mkdir -p .testnets/api
-mkdir -p .testnets/poller
-cp artifacts/api.yml .testnets/api/config.yml
-cp artifacts/poller.yml .testnets/poller/config.yml
-cp ../../babylon-api/sample-chain-registry.json .testnets/api/chain-registry.json
-cp ../../rpc-poller/sample-chain-registry.json .testnets/poller/chain-registry.json

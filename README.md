@@ -40,32 +40,6 @@ and run a Babylon network locally, using several different deployment scenarios.
     git submodule init && git submodule update
     ```
 
-### Appendix: Babylon API prerequisites
-
-If you're interested in running Babylon API (an in-house blockchain data
-aggregator), you need to take the following additional actions.
-
-1. Export an env var containing a CoinMarketCap token (can be obtained from
-    [here](https://coinmarketcap.com/academy/article/register-for-coinmarketcap-api))
-
-    ```shell
-    export CMC_PRO_API_KEY=XXX
-    ```
-
-2. For the standalone [API deployment](deployments/api) that connects to the
-    Babylon Devnet, complete the following items:
-
-    - Export env vars containing credentials for the signet BTC node used by
-      the Babylon Devnet (can be obtained through
-      [here](https://babylon-chain.atlassian.net/wiki/spaces/BABYLON/pages/173081551/Credential+management))
-        ```shell
-        export BTC_RPC_USER=XXX
-        export BTC_RPC_PASS=XXX
-        ```
-
-    - Connect to the Babylon Devnet VPN (VPN config can be obtained through
-      [here](https://babylon-chain.atlassian.net/wiki/spaces/BABYLON/pages/173081551/Credential+management))
-
 ## Deployment scenarios
 
 Every deployment scenario lives under the [deployments](deployments/) directory,
@@ -76,24 +50,10 @@ on a dedicated subdirectory.  The following scenarios are currently available:
 - [BTC Staking (BTC backend: bitcoind)](deployments/btcstaking-bitcoind):
   Spawns a Babylon network showcasing Babylon's BTC Staking and BTC Timestamping protocols, backed by
   a bitcoind-based BTC simnet
-- [BTC Timestamping (BTC backend: bitcoind)](deployments/timestamping-bitcoind):
-  Spawns a Babylon network featuring Babylon's BTC Timestamping protocol,
-  backed by a bitcoind-based BTC simnet
-- [BTC Timestamping (BTC backend: btcd)](deployments/timestamping-btcd):
-  Spawns a Babylon network featuring Babylon's BTC Timestamping protocol,
-  backed by a btcd-based BTC simnet
-- [Phase 1 Integration (BTC backend: bitcoind)](deployments/phase1-integration-bitcoind):
-  Spawns a Babylon BTC Timestamping network testing Babylon's Phase 1 Integration with a gaiad
-  testnet, backed by a bitcoind-based BTC simnet
-- [Phase 2 Integration (BTC backend: bitcoind)](deployments/phase2-integration-bitcoind):
-  Spawns a Babylon BTC Timestamping network testing Babylon's Phase 2 Integration with a wasmd
-  testnet, backed by a bitcoind-based BTC simnet
 - [Faucet](deployments/faucet):
   Spawns a Babylon network along with a Discord-based Faucet
 - [BTC Discord Faucet](deployments/btc-discord-faucet):
   Spawns a Bitcoin regtest node along with a Discord-based BTC Faucet
-- [API](deployments/api):
-  Spawns Babylon network APIs along with rpc-poller. Utilise devnet enviroments for gathering babylonchain and BTC data. Write operations from API has no effect
 
 ### Subdirectory structure and deployment process
 
@@ -206,62 +166,6 @@ To stop the network:
 make stop-deployment-btcstaking-bitcoind
 ```
 
-### BTC Timestamping (BTC backend: bitcoind)
-
-To start the network:
-
-```shell
-make start-deployment-timestamping-bitcoind
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-timestamping-bitcoind
-```
-
-### BTC Timestamping (BTC backend: btcd)
-
-To start the network:
-
-```shell
-make start-deployment-timestamping-btcd
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-timestamping-btcd
-```
-
-### Phase 1 Integration (BTC backend: bitcoind)
-
-To start the network:
-
-```shell
-make start-deployment-phase1-integration-bitcoind
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-phase1-integration-bitcoind
-```
-
-### Phase 2 Integration (BTC backend: bitcoind)
-
-To start the network:
-
-```shell
-make start-deployment-phase2-integration-bitcoind
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-phase2-integration-bitcoind
-```
-
 ### Faucet
 
 To start the network:
@@ -288,18 +192,4 @@ To stop the network:
 
 ```shell
 make stop-deployment-btc-discord-faucet
-```
-
-### API
-
-To start the api services:
-
-```shell
-make start-deployment-api
-```
-
-To stop the api services:
-
-```shell
-make stop-deployment-api
 ```
