@@ -25,6 +25,7 @@ fpdOut=$OUTPUTS_DIR/fps
 n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
 cid="--chain-id $CHAIN_ID"
 kbt="--keyring-backend test"
+gasp="--gas-prices 1ubbn"
 
 . $CWD/helpers.sh $NODE_BIN
 mkdir -p $DATA_OUTPUTS
@@ -66,7 +67,7 @@ for fpHomePath in $DATA_DIR/fpd/*; do
 
   fpAddr=$($NODE_BIN keys show $fpName --home $fpHomePath $kbt -a)
   # Send some funds to finality provider for him to be able to perform actions.
-  $NODE_BIN tx bank send user $fpAddr 1000000ubbn --home $n0dir $kbt $cid -y -b sync > /tmp/dev
+  $NODE_BIN tx bank send user $fpAddr 1000000ubbn --home $n0dir $kbt $cid -y -b sync $gasp > /tmp/dev
   fpNum=$(($fpNum + 1))
 done
 
@@ -78,11 +79,11 @@ btcHeaderTipBeforeUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.
 fpsLengthBeforeUpgrade=$($NODE_BIN q btcstaking finality-providers --output json | jq '.finality_providers | length')
 
 # Gov prop, waits for block, kill and reestart in the new version
-SIGNED_FPD_MSGS_PATH=$fpdOut PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-data.sh SOFTWARE_UPGRADE_FILE=$UPGRADES/props/signet-launch.json \
+SIGNED_FPD_MSGS_PATH=$fpdOut PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-data.sh SOFTWARE_UPGRADE_FILE=$UPGRADES/props/v1.json \
   BABYLON_VERSION_WITH_UPGRADE="main" $UPGRADES/upgrade-single-node.sh
 
 # realize all checks, like if all the btc headers and fps were added '-'
-upgradeHeight=$($NODE_BIN q upgrade applied signet-launch --output json | jq ".height" -r)
+upgradeHeight=$($NODE_BIN q upgrade applied v1 --output json | jq ".height" -r)
 btcHeaderTipAfterUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.height -r)
 fpsLengthAfterUpgrade=$($NODE_BIN q btcstaking finality-providers --output json | jq '.finality_providers | length')
 
@@ -95,7 +96,7 @@ if ! [[ $fpsLengthAfterUpgrade -gt $fpsLengthBeforeUpgrade ]]; then
   exit 1
 fi
 
-echo "Signet launch upgrade was correctly executed at block height " $upgradeHeight
+echo "V1 upgrade was correctly executed at block height " $upgradeHeight
 echo "the last btc header height is" $btcHeaderTipAfterUpgrade
 echo "the number of finality providers increased from" $fpsLengthBeforeUpgrade " to " $fpsLengthAfterUpgrade
 

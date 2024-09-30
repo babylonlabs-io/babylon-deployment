@@ -64,6 +64,7 @@ home0="--home $n0dir"
 # Common flags
 kbt="--keyring-backend test"
 cid="--chain-id $CHAIN_ID"
+gasp="--gas-prices 1$DENOM"
 
 $NODE_BIN $home $cid init n$nodeNum &>/dev/null
 
@@ -123,7 +124,7 @@ echo "Sending funds from n0 to n$nodeNum"
 
 newValAddr=$($NODE_BIN keys show $VAL_KEY $home $kbt -a)
 
-$NODE_BIN tx bank send user $newValAddr 10000$SCALE_FACTOR$DENOM $kbt $home0 $cid -y -b sync > /tmp/dev
+$NODE_BIN tx bank send user $newValAddr 10000$SCALE_FACTOR$DENOM $kbt $home0 $cid -y -b sync $gasp > /tmp/dev
 
 sleep 6 # wait for a block
 
@@ -145,6 +146,6 @@ echo "{
   \"min-self-delegation\": \"10\"
 }" | jq > $createValJSON
 
-$NODE_BIN tx checkpointing create-validator $createValJSON $kbt $home $cid -y --from $VAL_KEY -b sync > /tmp/dev
+$NODE_BIN tx checkpointing create-validator $createValJSON $kbt $home $cid -y --from $VAL_KEY -b sync $gasp > /tmp/dev
 
 echo "$VAL_KEY created, wait for the end of epoch to changes to take effect"

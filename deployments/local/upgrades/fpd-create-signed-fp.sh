@@ -69,7 +69,7 @@ outputCreatedMsgPath="$outdir/msg-unsigned.json"
 moniker="nick-$fpName"
 $FPD_BIN tx create-finality-provider $btcPKHex $popHex \
   $homeF $kbt --from $fpName --chain-id $CHAIN_ID \
-  --generate-only --gas-prices 10ubbn --moniker $moniker --security-contact $fpName@email.com \
+  --generate-only --gas-prices 1ubbn --moniker $moniker --security-contact $fpName@email.com \
   --website http://$fpName.com.br --details "best-$fpName" --commission-rate "0.05" --output json | jq > $outputCreatedMsgPath
 
 echo "Generated file " $outputCreatedMsgPath
