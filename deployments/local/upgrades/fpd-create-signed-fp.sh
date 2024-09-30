@@ -31,6 +31,7 @@ OUTPUT_SIGNED_MSG="${OUTPUT_SIGNED_MSG:-$outdir/msg-signed.json}"
 
 cid="--chain-id $CHAIN_ID"
 kbt="--keyring-backend test"
+gasp="--gas-prices 1ubbn"
 keyNameF="--key-name $fpName"
 
 . $CWD/../helpers.sh
@@ -69,7 +70,7 @@ outputCreatedMsgPath="$outdir/msg-unsigned.json"
 moniker="nick-$fpName"
 $FPD_BIN tx create-finality-provider $btcPKHex $popHex \
   $homeF $kbt --from $fpName --chain-id $CHAIN_ID \
-  --generate-only --gas-prices 1ubbn --moniker $moniker --security-contact $fpName@email.com \
+  --generate-only $gasp --moniker $moniker --security-contact $fpName@email.com \
   --website http://$fpName.com.br --details "best-$fpName" --commission-rate "0.05" --output json | jq > $outputCreatedMsgPath
 
 echo "Generated file " $outputCreatedMsgPath
@@ -94,6 +95,7 @@ if [[ "$START" == 1 || "$START" == "1" ]]; then
 
   perl -i -pe 's|DBPath = '$HOME'/.fpd/data|DBPath = "'$FPD_HOME/data'"|g' $fpdCfg
   perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $fpdCfg
+  perl -i -pe 's|GasPrices = 0.002ubbn|GasPrices = 1ubbn|g' $fpdCfg
   perl -i -pe 's|Key = finality-provider|Key = '$fpName'|g' $fpdCfg
   perl -i -pe 's|BitcoinNetwork = signet|BitcoinNetwork = simnet|g' $fpdCfg
   perl -i -pe 's|LogLevel = info|LogLevel = debug|g' $fpdCfg
