@@ -100,9 +100,10 @@ perl -i -pe 's|allow_duplicate_ip = false|allow_duplicate_ip = true|g' $cfg
 perl -i -pe 's|log_level = "info"|log_level = "'$LOG_LEVEL'"|g' $cfg
 perl -i -pe 's|timeout_commit = ".*?"|timeout_commit = "5s"|g' $cfg
 
+echo "--- Modifying app..."
 perl -i -pe 's|"tcp://0.0.0.0:1317"|"tcp://0.0.0.0:'$apiAddr'"|g' $app
 perl -i -pe 's|"0.0.0.0:9090"|"0.0.0.0:909'$nodeNum'"|g' $app
-perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "0.05uquid"|g' $app
+perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "1'$DENOM'"|g' $app
 
 echo "--- Importing keys..."
 echo "$VAL_MNEMONIC$NEWLINE"
@@ -110,9 +111,6 @@ yes "$VAL_MNEMONIC$NEWLINE" | $NODE_BIN $home keys add $VAL_KEY $kbt --recover
 yes "$USER_MNEMONIC$NEWLINE" | $NODE_BIN $home keys add $USER_KEY $kbt --recover
 
 $NODE_BIN $home create-bls-key $($NODE_BIN $home keys show $VAL_KEY -a $kbt)
-
-echo "--- Modifying app..."
-perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "0.05uquid"|g' $app
 
 peer0="$($NODE_BIN tendermint show-node-id $home0 --log_level info)\@127.0.0.1:26656"
 perl -i -pe 's|persistent_peers = ""|persistent_peers = "'$peer0'"|g' $cfg

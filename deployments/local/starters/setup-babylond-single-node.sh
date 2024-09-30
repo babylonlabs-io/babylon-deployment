@@ -178,7 +178,7 @@ perl -i -pe 's|enable = false|enable = true|g'  $n0app
 perl -i -pe 's|swagger = false|swagger = true|g'  $n0app
 
 echo "--- Modifying app..."
-perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "0.05uquid"|g' $n0app
+perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "1'$DENOM'"|g' $n0app
 perl -i -pe 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $n0app
 perl -i -pe 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $n0app
 perl -i -pe 's|network = "mainnet"|network = "simnet"|g' $n0app
