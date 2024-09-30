@@ -12,7 +12,7 @@ BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
 # By default it reads the signed FP msgs from netwroks repo
 SIGNED_MSGS_PATH="${SIGNED_MSGS_PATH:-$BBN_DEPLOYMENTS/networks/bbn-1/finality-providers/msgs}"
-GO_SIGNED_FPS_PATH="${GO_SIGNED_FPS_PATH:-$BABYLON_PATH/app/upgrades/signetlaunch/data_signed_fps.go}"
+GO_SIGNED_FPS_PATH="${GO_SIGNED_FPS_PATH:-$BABYLON_PATH/app/upgrades/v1/data_signed_fps.go}"
 
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
 
@@ -27,6 +27,6 @@ echo "{ \"signed_txs_create_fp\": $concatenatedSignedMsgs}" | jq > $EXPORT_TO
 fpsSignedJson=$(cat $EXPORT_TO)
 
 # writes the signed msg create finality providers to babylon as go file
-echo "package signetlaunch
+echo "package v1
 
 const SignedFPsStr = \`$fpsSignedJson\`" > $GO_SIGNED_FPS_PATH

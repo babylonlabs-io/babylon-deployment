@@ -17,4 +17,5 @@ $CWD/write-upgrade-btc-headers.sh
 # All the fpd signed messages should be created prior to the upgrade and just pass to the write upgrades
 SIGNED_MSGS_PATH=$SIGNED_FPD_MSGS_PATH $CWD/write-upgrade-signed-fps.sh
 
-SIGNED_MSGS_PATH=$SIGNED_FPD_MSGS_PATH $CWD/write-upgrade-btc-staking-params.sh
+$CWD/write-upgrade-btc-staking-params.sh
+$CWD/write-upgrade-tokens-distribution.sh
