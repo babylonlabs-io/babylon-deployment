@@ -1,10 +1,10 @@
 #!/bin/bash -eux
 
 # USAGE:
-# ./bbn-start-and-upgrade-signet-launch.sh
+# ./bbn-start-and-upgrade-v1.sh
 
-# Runs the signet launch upgrade '-'
-# It adds new btc headers to the running chain
+# Runs the v1 upgrade '-'
+# It adds new btc headers, fps to the running chain
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit ; pwd -P )"
 

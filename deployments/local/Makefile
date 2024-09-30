@@ -28,8 +28,8 @@ bbn-start-btc-del-stop-exportgen-start: build-all
 bbn-start-and-add-btc-delegation: build-all
 	./bbn-start-and-add-btc-delegation.sh
 
-bbn-upgrade-signet: build-all
-	./bbn-start-and-upgrade-signet-launch.sh
+bbn-upgrade-v1: build-all
+	./bbn-start-and-upgrade-v1.sh
 
 stop-all:
 	$(STOP_PATH)/kill-all-process.sh
