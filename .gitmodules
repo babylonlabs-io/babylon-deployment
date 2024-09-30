@@ -1,6 +1,3 @@
-[submodule "contrib/images/ibcsim-wasmd/babylon-contract"]
-	path = contrib/images/ibcsim-wasmd/babylon-contract
-	url = git@github.com:babylonlabs-io/babylon-contract.git
 [submodule "faucet"]
 	path = faucet
 	url = git@github.com:babylonlabs-io/faucet
@@ -10,12 +7,6 @@
 [submodule "finality-provider"]
 	path = finality-provider
 	url = git@github.com:babylonlabs-io/finality-provider.git
-[submodule "babylon-api"]
-	path = babylon-api
-	url = git@github.com:babylonchain/babylon-api.git  # todo: migrate to babylonlabs-io
-[submodule "rpc-poller"]
-	path = rpc-poller
-	url = git@github.com:babylonchain/rpc-poller.git  # todo: migrate to babylonlabs-io
 [submodule "covenant-emulator"]
 	path = covenant-emulator
 	url = git@github.com:babylonlabs-io/covenant-emulator.git
