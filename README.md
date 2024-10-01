@@ -16,21 +16,7 @@ and run a Babylon network locally, using several different deployment scenarios.
     Required to build the service binaries. One tutorial that can be followed
     is [this](https://sp21.datastructur.es/materials/guides/make-install.html).
 
-3. Set up an SSH key to GitHub
-
-    Create a **non passphrase-protected** SSH key and add it to GitHub according
-    to the instructions
-    [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
-
-    Export an env var `BBN_PRIV_DEPLOY_KEY` that points to the ssh private key with github access.
-
-    ```shell
-    export BBN_PRIV_DEPLOY_KEY=FULL_PATH_TO_PRIVATE_KEY/.ssh/id_ed25519
-    ```
-
-    A more detailed explanation can be found [here](babylon-api/README.md#installation).
-
-4. Clone the repository and initialize git submodules
+3. Clone the repository and initialize git submodules
 
     The aforementioned components are included in the repo as git submodules, so
     they need to be initialized accordingly.
