@@ -58,6 +58,8 @@ BTC_BASE_HEADER_FILE=$BTC_BASE_HEADER_FILE $STARTERS/start-babylond-single-node.
 # wait for a block
 sleep 6
 
+# Write balances of vigilante before start
+qBankBalancesFromKey submitter > $DATA_OUTPUTS/vigilante_balances_before_upgrade.json
 
 # Send funds to new finality providers after the upgrade (it could be before as well)
 fpNum=0
@@ -104,3 +106,16 @@ echo "the number of finality providers increased from" $fpsLengthBeforeUpgrade "
 # babylond tx btcstaking create-btc-delegation [btc_pk] [pop_hex] [staking_tx_info] [fp_pk] [staking_time] [staking_value] \
 # [slashing_tx] [delegator_slashing_sig] \
 # [unbonding_tx] [unbonding_slashing_tx] [unbonding_time] [unbonding_value] [delegator_unbonding_slashing_sig] [flags]
+
+qBankBalancesFromKey submitter > $DATA_OUTPUTS/vigilante_balances_after_upgrade.json
+
+genBTCBlocks 20000
+
+sleep 15
+
+# Starts the vigilante to submit new generated btc blocks
+$STARTERS/start-vigilante.sh
+
+sleep 30
+
+qBankBalancesFromKey submitter > $DATA_OUTPUTS/vigilante_balances_after_2000btc_blocks.json

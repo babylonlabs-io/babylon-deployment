@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-vigilante.sh
@@ -68,5 +68,5 @@ CONF_PATH=$vigilanteConfRep CLEANUP=0 SUBMITTER_ADDR=$submitterAddr SERVER_PORT=
 $VIGILANTE_BIN --config $vigilanteConfRep reporter > $vigilanteLogs/reporter.log 2>&1 &
 echo $! > $reporterpid
 
-$VIGILANTE_BIN --config $vigilanteConfSub submitter > $vigilanteLogs/submitter.log 2>&1 &
-echo $! > $submitterpid
+# $VIGILANTE_BIN --config $vigilanteConfSub submitter > $vigilanteLogs/submitter.log 2>&1 &
+# echo $! > $submitterpid
