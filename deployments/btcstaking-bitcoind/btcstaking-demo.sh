@@ -1,5 +1,7 @@
 #!/bin/bash -eux
 
+NUM_FINALITY_PROVIDERS="${NUM_FINALITY_PROVIDERS:-1}"
+
 echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do

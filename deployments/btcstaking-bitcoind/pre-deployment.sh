@@ -1,5 +1,7 @@
 #!/bin/bash -eux
 
+NUM_FINALITY_PROVIDERS="${NUM_FINALITY_PROVIDERS:-1}"
+
 # Create new directory that will hold node and services' configuration
 mkdir -p .testnets && chmod o+w .testnets
 docker run --rm -v $(pwd)/.testnets:/data babylonlabs-io/babylond \
@@ -27,6 +29,9 @@ mkdir -p .testnets/covenant-emulator
 # use a different docker container
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
   mkdir -p .testnets/finality-provider$idx/logs
+  chmod +777 .testnets/finality-provider$idx
+  touch .testnets/finality-provider$idx/logs/fpd.log
+  chmod +777 .testnets/finality-provider$idx/logs/fpd.log
 
   fpdCfg=".testnets/finality-provider$idx/fpd.conf"
   cp artifacts/fpd.conf $fpdCfg
