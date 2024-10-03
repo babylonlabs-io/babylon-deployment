@@ -1,7 +1,5 @@
 #!/bin/bash -eux
 
-NUM_FINALITY_PROVIDERS="${NUM_FINALITY_PROVIDERS:-1}"
-
 # Create new directory that will hold node and services' configuration
 mkdir -p .testnets && chmod o+w .testnets
 docker run --rm -v $(pwd)/.testnets:/data babylonlabs-io/babylond \

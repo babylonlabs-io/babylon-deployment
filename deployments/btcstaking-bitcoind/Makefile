@@ -1,5 +1,6 @@
 DOCKER := $(shell which docker)
 GIT_TOPLEVEL := $(shell git rev-parse --show-toplevel)
+NUM_FINALITY_PROVIDERS := 1
 
 build-bitcoindsim:
 	$(MAKE) -C $(GIT_TOPLEVEL)/contrib/images bitcoindsim
@@ -22,12 +23,12 @@ build-covenant-emulator:
 build-deployment-btcstaking-bitcoind: build-babylond build-bitcoindsim build-vigilante build-btc-staker build-finality-provider build-covenant-emulator
 
 start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-deployment-btcstaking-bitcoind
-	./pre-deployment.sh
+	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./pre-deployment.sh
 	docker compose -f artifacts/docker-compose.yml up -d
 	./post-deployment.sh
 
 start-deployment-btcstaking-bitcoind-demo: start-deployment-btcstaking-bitcoind
-	./btcstaking-demo.sh
+	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./btcstaking-demo.sh
 
 stop-deployment-btcstaking-bitcoind:
 	docker compose -f artifacts/docker-compose.yml down
