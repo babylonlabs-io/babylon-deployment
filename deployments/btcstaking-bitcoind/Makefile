@@ -1,6 +1,6 @@
 DOCKER := $(shell which docker)
 GIT_TOPLEVEL := $(shell git rev-parse --show-toplevel)
-NUM_FINALITY_PROVIDERS := 2
+NUM_FINALITY_PROVIDERS := 3
 
 build-bitcoindsim:
 	$(MAKE) -C $(GIT_TOPLEVEL)/contrib/images bitcoindsim
