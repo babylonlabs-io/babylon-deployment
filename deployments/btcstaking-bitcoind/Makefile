@@ -29,6 +29,8 @@ start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-
 
 start-deployment-btcstaking-bitcoind-demo: start-deployment-btcstaking-bitcoind
 	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./btcstaking-demo.sh
+# TODO: add bash that verifies if the btc delegation was finalized
+# unbound, withdraw and fp slashed
 
 stop-deployment-btcstaking-bitcoind:
 	docker compose -f artifacts/docker-compose.yml down

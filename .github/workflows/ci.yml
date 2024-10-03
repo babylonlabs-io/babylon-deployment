@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - '**'
+
+concurrency:
+  group: ci-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  start-deployment-btcstaking-bitcoind-demo:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Cache Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - name: Run BTCStaking Bitcoind Demo
+        run: |
+          make start-deployment-btcstaking-bitcoind-demo
