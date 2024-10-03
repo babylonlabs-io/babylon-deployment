@@ -17,18 +17,24 @@ mv .testnets/node0/babylond/.tmpdir/keyring-test/* .testnets/btc-staker/keyring-
 [[ "$(uname)" == "Linux" ]] && chown -R 1138:1138 .testnets/btc-staker
 
 sleep 10
-docker exec babylondnode0 /bin/sh -c '
-    FINALITY_PROVIDER_ADDR=$(/bin/babylond --home /babylondhome/.tmpdir keys add \
-        finality-provider0 --output json --keyring-backend test | jq -r .address) && \
-    /bin/babylond --home /babylondhome tx bank send test-spending-key \
-        ${FINALITY_PROVIDER_ADDR} 100000000ubbn --fees 600000ubbn -y \
-        --chain-id chain-test --keyring-backend test
-'
-mkdir -p .testnets/finality-provider0/keyring-test
-mv .testnets/node0/babylond/.tmpdir/keyring-test/* .testnets/finality-provider0/keyring-test
-[[ "$(uname)" == "Linux" ]] && chown -R 1138:1138 .testnets/finality-provider0
 
-sleep 10
+# For each num finality provider it should create a new path and
+# use a different docker container
+for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
+  docker exec babylondnode0 /bin/sh -c '
+      FINALITY_PROVIDER_ADDR=$(/bin/babylond --home /babylondhome/.tmpdir keys add \
+          finality-provider'$idx' --output json --keyring-backend test | jq -r .address) && \
+      /bin/babylond --home /babylondhome tx bank send test-spending-key \
+          ${FINALITY_PROVIDER_ADDR} 100000000ubbn --fees 600000ubbn -y \
+          --chain-id chain-test --keyring-backend test
+  '
+  mkdir -p .testnets/finality-provider$idx/keyring-test
+  mv .testnets/node0/babylond/.tmpdir/keyring-test/* .testnets/finality-provider$idx/keyring-test
+  [[ "$(uname)" == "Linux" ]] && chown -R 1138:1138 .testnets/finality-provider$idx
+
+  sleep 10
+done
+
 docker exec babylondnode0 /bin/sh -c '
     VIGILANTE_ADDR=$(/bin/babylond --home /babylondhome/.tmpdir keys add \
         vigilante --output json --keyring-backend test | jq -r .address) && \
