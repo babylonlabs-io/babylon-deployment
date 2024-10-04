@@ -4,7 +4,6 @@ start-deployment-btcstaking-bitcoind:
 
 start-deployment-btcstaking-bitcoind-demo:
 	$(MAKE) -C $(CURDIR)/deployments/btcstaking-bitcoind \
-		NUM_VALIDATORS=${NUM_VALIDATORS} \
 		start-deployment-btcstaking-bitcoind-demo
 
 stop-deployment-btcstaking-bitcoind:

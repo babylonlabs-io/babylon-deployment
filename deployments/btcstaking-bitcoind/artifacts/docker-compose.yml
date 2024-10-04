@@ -144,17 +144,47 @@ services:
       - babylondnode0
     restart: unless-stopped
 
-  finality-provider0: # TODO: Should have one for each FP NUM_FINALITY_PROVIDERS
+  finality-provider0:
     container_name: finality-provider0
+    image: babylonlabs-io/finality-provider
+    command: fpd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.12
+    ports:
+      - "15822:15812"
+    volumes:
+      - ../.testnets/finality-provider0:/home/finality-provider/.fpd
+    depends_on:
+      - babylondnode0
+    restart: unless-stopped
+
+  finality-provider1:
+    container_name: finality-provider1
     image: babylonlabs-io/finality-provider
     command: fpd start
     networks:
       localnet:
         ipv4_address: 192.168.10.13
     ports:
-      - "15822:15812"
+      - "15832:15812"
     volumes:
-      - ../.testnets/finality-provider0:/home/finality-provider/.fpd
+      - ../.testnets/finality-provider1:/home/finality-provider/.fpd
+    depends_on:
+      - babylondnode0
+    restart: unless-stopped
+
+  finality-provider2:
+    container_name: finality-provider2
+    image: babylonlabs-io/finality-provider
+    command: fpd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.14
+    ports:
+      - "15842:15812"
+    volumes:
+      - ../.testnets/finality-provider2:/home/finality-provider/.fpd
     depends_on:
       - babylondnode0
     restart: unless-stopped
@@ -165,7 +195,7 @@ services:
     command: eotsd start --home /home/finality-provider/.eotsd
     networks:
       localnet:
-        ipv4_address: 192.168.10.14
+        ipv4_address: 192.168.10.15
     ports:
       - "15825:15813"
     volumes:
@@ -173,6 +203,8 @@ services:
     depends_on:
       - babylondnode0
       - finality-provider0
+      - finality-provider1
+      - finality-provider2
     restart: unless-stopped
 
   covenant-emulator:
@@ -181,7 +213,7 @@ services:
     command: covd start
     networks:
       localnet:
-        ipv4_address: 192.168.10.15
+        ipv4_address: 192.168.10.16
     volumes:
       - ../.testnets/covenant-emulator:/home/covenant-emulator/.covd
     depends_on:

@@ -69,7 +69,7 @@ Finality Provider is included in all the example outputs in this section for
 simplicity):
 
 ```shell
-$ docker logs -f finality-provider
+$ docker logs -f finality-provider0
 ...
 time="2023-08-18T10:28:37Z" level=debug msg="handling CreateFinality Provider request"
 Generated mnemonic for key bbn-finality-provider1 is obtain decorate picnic social cheese wool swing smile dashi ncrease van quarter buyer maze moon glad level column metal bounce again usual monster vague
@@ -85,7 +85,7 @@ As these Finality Providers don't have any BTC tokens staked to them, they canno
 finality signatures at this point:
 
 ```shell
-$ docker logs -f finality-provider
+$ docker logs -f finality-provider0
 ...
 time="2023-08-18T10:28:44Z" level=debug msg="received a new block, the finality provider is going to vote" babylon_pk_hex=0386b928eedab5e1f6dc7e4334651cca9c1f039589ac6fd14ece12df8e091a07d0 block_height=5
 time="2023-08-18T10:28:44Z" level=debug msg="the finality provider's voting power is 0, skip voting" block_height=5 btc_pk_hex=1083b0c28491e9660cd252afa9fd36431e93a86adf21801533f365de265de4ba
@@ -96,7 +96,7 @@ The Finality Providers are now periodically generating and submitting EOTS rando
 Babylon:
 
 ```shell
-$ docker logs -f finality-provider
+$ docker logs -f finality-provider0
 ...
 time="2023-08-18T10:28:44Z" level=info msg="successfully committed public randomness to Babylon" babylon_pk_hex=0386b928eedab5e1f6dc7e4334651cca9c1f039589ac6fd14ece12df8e091a07d0 btc_pk_hex=1083b0c28491e9660cd252afa9fd36431e93a86adf21801533f365de265de4ba last_committed_height=109 tx_hash=015216B602472E6F2BFBECEB40170D037AC4C3B1B795FC9CFB495A3A0416B3DB
 ...
@@ -159,7 +159,7 @@ eligible to submit finality signatures until the delegation expires (i.e. in 500
 simnet BTC blocks). From Finality Provider daemon logs:
 
 ```shell
-$ docker logs -f finality-provider
+$ docker logs -f finality-provider0
 ...
 time="2023-08-18T10:30:09Z" level=info msg="successfully submitted a finality signature to Babylon" babylon_pk_hex=0386b928eedab5e1f6dc7e4334651cca9c1f039589ac6fd14ece12df8e091a07d0 block_height=21 btc_pk_hex=1083b0c28491e9660cd252afa9fd36431e93a86adf21801533f365de265de4ba tx_hash=7BF8200BA71E640036141115AED2EE3D6E74682FDA72CD280722C0A2F06FE537
 ...

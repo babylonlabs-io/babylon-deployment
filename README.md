@@ -131,14 +131,8 @@ that will showcase the full lifecycle of Babylon's BTC Staking Protocol**,
 execute the following:
 
 ```shell
-make NUM_FINALITY_PROVIDERS=3 start-deployment-btcstaking-bitcoind-demo
+make start-deployment-btcstaking-bitcoind-demo
 ```
-
-where:
-
-- `NUM_FINALITY_PROVIDERS` is the number of Finality Providers that will be
-  created and used throughout the demo. We recommend utilizing 3 Finality
-  Providers.
 
 Alternatively, to just start the network:
 

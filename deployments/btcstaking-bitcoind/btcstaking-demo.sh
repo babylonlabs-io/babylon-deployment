@@ -2,6 +2,7 @@
 
 echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 
+declare -a btcPks=()
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
     docker exec finality-provider$idx /bin/sh -c "
         BTC_PK=\$(/bin/fpd cfp --key-name finality-provider$idx \
@@ -9,16 +10,17 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
             --moniker \"Finality Provider $idx\" | jq -r .btc_pk_hex ); \
         /bin/fpd rfp \$BTC_PK
     "
+    btcPk=$(docker exec finality-provider$idx /bin/sh -c "
+        /bin/fpd ls | jq -r '.finality_providers[].btc_pk_hex'
+    ")
+    btcPks+=("$btcPk")
 done
 
 echo "Created $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
+echo "Finality provider btc pks" ${btcPks[@]}
 
 echo "Make a delegation to each of the finality providers from a dedicated BTC address"
 sleep 10
-
-# Get the public keys of the finality providers
-btcPks=$(docker exec btc-staker /bin/sh -c '/bin/stakercli dn bfp | jq -r ".finality_providers[].bitcoin_public_Key"')
-echo "BTC Stakers btc pks" $btcPks
 
 # Get the available BTC addresses for delegations
 delAddrs=($(docker exec btc-staker /bin/sh -c '/bin/stakercli dn list-outputs | jq -r ".outputs[].address" | sort | uniq'))
@@ -26,7 +28,7 @@ echo "Delegators Addrs bond vars" $delAddrs
 
 i=0
 declare -a txHashes=()
-for btcPk in $btcPks
+for btcPk in ${btcPks[@]}
 do
     # Let `X=NUM_FINALITY_PROVIDERS`
     # For the first X - 1 requests, we select a staking period of 500 BTC
@@ -34,7 +36,7 @@ do
     # showcase the reclamation of expired BTC funds afterwards.
     if [ $((i % $NUM_FINALITY_PROVIDERS)) -eq $((NUM_FINALITY_PROVIDERS -1)) ];
     then
-        stakingTime=100
+        stakingTime=10
     else
         stakingTime=500
     fi
@@ -66,10 +68,10 @@ done
 
 echo "Attack Babylon by submitting a conflicting finality signature for a finality provider"
 # Select the first Finality Provider
-attackerBtcPk=$(echo ${btcPks}  | cut -d " " -f 1)
+attackerBtcPk=$(echo ${btcPks[@]}  | cut -d " " -f 1)
 attackHeight=$(docker exec finality-provider0 /bin/sh -c '/bin/fpd ls | jq -r ".finality_providers[].last_voted_height" | head -n 1')
 
-# Execute the attack for the first height that every finality provider voted
+# Execute the attack for the first height that the finality provider voted
 docker exec finality-provider0 /bin/sh -c \
     "/bin/fpd afs $attackerBtcPk $attackHeight"
 
