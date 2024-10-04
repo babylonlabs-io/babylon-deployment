@@ -16,6 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GO_PRIVATE_TOKEN }}
           submodules: true
       - name: Cache Go
         uses: actions/setup-go@v5
