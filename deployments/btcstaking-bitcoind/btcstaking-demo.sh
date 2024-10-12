@@ -89,7 +89,7 @@ docker exec btc-staker /bin/sh -c \
         "/bin/stakercli dn unbond --staking-transaction-hash ${txHashes[1]}"
 
 echo "Wait for the unbond transaction to expire"
-sleep 60
+sleep 180
 
 echo "Withdraw the expired staked BTC funds from unbonding (staking tx hash: ${txHashes[1]}"
 docker exec btc-staker /bin/sh -c \
