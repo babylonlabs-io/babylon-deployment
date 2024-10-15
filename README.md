@@ -16,55 +16,15 @@ and run a Babylon network locally, using several different deployment scenarios.
     Required to build the service binaries. One tutorial that can be followed
     is [this](https://sp21.datastructur.es/materials/guides/make-install.html).
 
-3. Set up an SSH key to GitHub
-
-    Create a **non passphrase-protected** SSH key and add it to GitHub according
-    to the instructions
-    [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
-
-    Export an env var `BBN_PRIV_DEPLOY_KEY` that points to the ssh private key with github access.
-
-    ```shell
-    export BBN_PRIV_DEPLOY_KEY=FULL_PATH_TO_PRIVATE_KEY/.ssh/id_ed25519
-    ```
-
-    A more detailed explanation can be found [here](babylon-api/README.md#installation).
-
-4. Clone the repository and initialize git submodules
+3. Clone the repository and initialize git submodules
 
     The aforementioned components are included in the repo as git submodules, so
     they need to be initialized accordingly.
 
     ```shell
-    git clone git@github.com:babylonchain/babylon-deployment.git
+    git clone git@github.com:babylonlabs-io/babylon-deployment.git
     git submodule init && git submodule update
     ```
-
-### Appendix: Babylon API prerequisites
-
-If you're interested in running Babylon API (an in-house blockchain data
-aggregator), you need to take the following additional actions.
-
-1. Export an env var containing a CoinMarketCap token (can be obtained from
-    [here](https://coinmarketcap.com/academy/article/register-for-coinmarketcap-api))
-
-    ```shell
-    export CMC_PRO_API_KEY=XXX
-    ```
-
-2. For the standalone [API deployment](deployments/api) that connects to the
-    Babylon Devnet, complete the following items:
-
-    - Export env vars containing credentials for the signet BTC node used by
-      the Babylon Devnet (can be obtained through
-      [here](https://babylon-chain.atlassian.net/wiki/spaces/BABYLON/pages/173081551/Credential+management))
-        ```shell
-        export BTC_RPC_USER=XXX
-        export BTC_RPC_PASS=XXX
-        ```
-
-    - Connect to the Babylon Devnet VPN (VPN config can be obtained through
-      [here](https://babylon-chain.atlassian.net/wiki/spaces/BABYLON/pages/173081551/Credential+management))
 
 ## Deployment scenarios
 
@@ -76,24 +36,10 @@ on a dedicated subdirectory.  The following scenarios are currently available:
 - [BTC Staking (BTC backend: bitcoind)](deployments/btcstaking-bitcoind):
   Spawns a Babylon network showcasing Babylon's BTC Staking and BTC Timestamping protocols, backed by
   a bitcoind-based BTC simnet
-- [BTC Timestamping (BTC backend: bitcoind)](deployments/timestamping-bitcoind):
-  Spawns a Babylon network featuring Babylon's BTC Timestamping protocol,
-  backed by a bitcoind-based BTC simnet
-- [BTC Timestamping (BTC backend: btcd)](deployments/timestamping-btcd):
-  Spawns a Babylon network featuring Babylon's BTC Timestamping protocol,
-  backed by a btcd-based BTC simnet
-- [Phase 1 Integration (BTC backend: bitcoind)](deployments/phase1-integration-bitcoind):
-  Spawns a Babylon BTC Timestamping network testing Babylon's Phase 1 Integration with a gaiad
-  testnet, backed by a bitcoind-based BTC simnet
-- [Phase 2 Integration (BTC backend: bitcoind)](deployments/phase2-integration-bitcoind):
-  Spawns a Babylon BTC Timestamping network testing Babylon's Phase 2 Integration with a wasmd
-  testnet, backed by a bitcoind-based BTC simnet
 - [Faucet](deployments/faucet):
   Spawns a Babylon network along with a Discord-based Faucet
 - [BTC Discord Faucet](deployments/btc-discord-faucet):
   Spawns a Bitcoin regtest node along with a Discord-based BTC Faucet
-- [API](deployments/api):
-  Spawns Babylon network APIs along with rpc-poller. Utilise devnet enviroments for gathering babylonchain and BTC data. Write operations from API has no effect
 
 ### Subdirectory structure and deployment process
 
@@ -185,14 +131,8 @@ that will showcase the full lifecycle of Babylon's BTC Staking Protocol**,
 execute the following:
 
 ```shell
-make NUM_FINALITY_PROVIDERS=3 start-deployment-btcstaking-bitcoind-demo
+make start-deployment-btcstaking-bitcoind-demo
 ```
-
-where:
-
-- `NUM_FINALITY_PROVIDERS` is the number of Finality Providers that will be
-  created and used throughout the demo. We recommend utilizing 3 Finality
-  Providers.
 
 Alternatively, to just start the network:
 
@@ -204,62 +144,6 @@ To stop the network:
 
 ```shell
 make stop-deployment-btcstaking-bitcoind
-```
-
-### BTC Timestamping (BTC backend: bitcoind)
-
-To start the network:
-
-```shell
-make start-deployment-timestamping-bitcoind
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-timestamping-bitcoind
-```
-
-### BTC Timestamping (BTC backend: btcd)
-
-To start the network:
-
-```shell
-make start-deployment-timestamping-btcd
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-timestamping-btcd
-```
-
-### Phase 1 Integration (BTC backend: bitcoind)
-
-To start the network:
-
-```shell
-make start-deployment-phase1-integration-bitcoind
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-phase1-integration-bitcoind
-```
-
-### Phase 2 Integration (BTC backend: bitcoind)
-
-To start the network:
-
-```shell
-make start-deployment-phase2-integration-bitcoind
-```
-
-To stop the network:
-
-```shell
-make stop-deployment-phase2-integration-bitcoind
 ```
 
 ### Faucet
@@ -288,18 +172,4 @@ To stop the network:
 
 ```shell
 make stop-deployment-btc-discord-faucet
-```
-
-### API
-
-To start the api services:
-
-```shell
-make start-deployment-api
-```
-
-To stop the api services:
-
-```shell
-make stop-deployment-api
 ```

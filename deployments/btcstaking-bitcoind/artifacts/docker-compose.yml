@@ -3,7 +3,7 @@ version: "3"
 services:
   babylondnode0:
     container_name: babylondnode0
-    image: "babylonchain/babylond"
+    image: "babylonlabs-io/babylond"
     command: >
       babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
     cap_add:
@@ -23,7 +23,7 @@ services:
 
   babylondnode1:
     container_name: babylondnode1
-    image: "babylonchain/babylond"
+    image: "babylonlabs-io/babylond"
     command: >
       babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
     cap_add:
@@ -71,7 +71,7 @@ services:
 
   vigilante-reporter:
     container_name: vigilante-reporter
-    image: babylonchain/vigilante
+    image: babylonlabs-io/vigilante
     command: >
       vigilante reporter --config /home/vigilante/config/vigilante.yml 2>&1 | tee /home/vigilante/config/reporter.log
     networks:
@@ -86,7 +86,7 @@ services:
 
   vigilante-submitter:
     container_name: vigilante-submitter
-    image: babylonchain/vigilante
+    image: babylonlabs-io/vigilante
     command: >
       vigilante submitter --config /home/vigilante/config/vigilante.yml 2>&1 | tee /home/vigilante/config/submitter.log
     networks:
@@ -101,7 +101,7 @@ services:
 
   vigilante-monitor:
     container_name: vigilante-monitor
-    image: babylonchain/vigilante
+    image: babylonlabs-io/vigilante
     command: >
       vigilante monitor --config /home/vigilante/config/vigilante.yml --genesis /home/vigilante/config/bbnconfig/genesis.json 2>&1 | tee /home/vigilante/config/monitor.log
     networks:
@@ -116,7 +116,7 @@ services:
 
   vigilante-bstracker:
     container_name: vigilante-bstracker
-    image: babylonchain/vigilante
+    image: babylonlabs-io/vigilante
     command: >
       vigilante bstracker --config /home/vigilante/config/vigilante.yml 2>&1 | tee /home/vigilante/config/bstracker.log
     networks:
@@ -131,7 +131,7 @@ services:
 
   btc-staker:
     container_name: btc-staker
-    image: babylonchain/btc-staker
+    image: babylonlabs-io/btc-staker
     networks:
       localnet:
         ipv4_address: 192.168.10.11
@@ -144,94 +144,81 @@ services:
       - babylondnode0
     restart: unless-stopped
 
-  finality-provider:
-    container_name: finality-provider
-    image: babylonchain/finality-provider
+  finality-provider0:
+    container_name: finality-provider0
+    image: babylonlabs-io/finality-provider
+    command: fpd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.12
+    ports:
+      - "15822:15812"
+    volumes:
+      - ../.testnets/finality-provider0:/home/finality-provider/.fpd
+    depends_on:
+      - babylondnode0
+    restart: unless-stopped
+
+  finality-provider1:
+    container_name: finality-provider1
+    image: babylonlabs-io/finality-provider
     command: fpd start
     networks:
       localnet:
         ipv4_address: 192.168.10.13
     ports:
-      - "15822:15812"
+      - "15832:15812"
     volumes:
-      - ../.testnets/finality-provider:/home/finality-provider/.fpd
+      - ../.testnets/finality-provider1:/home/finality-provider/.fpd
+    depends_on:
+      - babylondnode0
+    restart: unless-stopped
+
+  finality-provider2:
+    container_name: finality-provider2
+    image: babylonlabs-io/finality-provider
+    command: fpd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.14
+    ports:
+      - "15842:15812"
+    volumes:
+      - ../.testnets/finality-provider2:/home/finality-provider/.fpd
     depends_on:
       - babylondnode0
     restart: unless-stopped
 
   eotsmanager:
     container_name: eotsmanager
-    image: babylonchain/finality-provider
-    command: eotsd start
+    image: babylonlabs-io/finality-provider
+    command: eotsd start --home /home/finality-provider/.eotsd
     networks:
       localnet:
-        ipv4_address: 192.168.10.14
+        ipv4_address: 192.168.10.15
     ports:
       - "15825:15813"
     volumes:
       - ../.testnets/eotsmanager:/home/finality-provider/.eotsd
     depends_on:
       - babylondnode0
+      - finality-provider0
+      - finality-provider1
+      - finality-provider2
     restart: unless-stopped
 
   covenant-emulator:
     container_name: covenant-emulator
-    image: babylonchain/covenant-emulator
+    image: babylonlabs-io/covenant-emulator
     command: covd start
     networks:
       localnet:
-        ipv4_address: 192.168.10.15
+        ipv4_address: 192.168.10.16
     volumes:
       - ../.testnets/covenant-emulator:/home/covenant-emulator/.covd
     depends_on:
       - babylondnode0
     restart: unless-stopped
-
-  babylon-api:
-    container_name: babylon-api
-    image: babylonchain/babylon-api
-    networks:
-      localnet:
-        ipv4_address: 192.168.10.16
-    ports:
-      - "8090:8090"
-    environment:
-      - CONFIG=/home/api/config.yml
-      - CHAIN_REGISTRY=/home/api/chain-registry.json
-    volumes:
-      - ../.testnets/api/config.yml:/home/api/config.yml:Z
-      - ../.testnets/api/chain-registry.json:/home/api/chain-registry.json:Z
-    depends_on:
-      - mongodb
-      - rpc-poller
-      - btc-staker
-
-  rpc-poller:
-    image: babylonchain/rpc-poller
-    container_name: rpc-poller
-    networks:
-      localnet:
-        ipv4_address: 192.168.10.17
-    depends_on:
-      - mongodb
-      - bitcoindsim
-    environment:
-      - CMC_PRO_API_KEY=${CMC_PRO_API_KEY}
-      - CONFIG=/home/poller/config.yml
-      - CHAIN_REGISTRY=/home/poller/chain-registry.json
-    volumes:
-      - ../.testnets/poller/config.yml:/home/poller/config.yml
-      - ../.testnets/poller/chain-registry.json:/home/poller/chain-registry.json:Z
-
-  mongodb:
-    container_name: mongodb
-    image: mongo:latest
-    restart: always
-    ports:
-      - "27017:27017"
-    networks:
-      localnet:
-        ipv4_address: 192.168.10.18
 
 networks:
   localnet:

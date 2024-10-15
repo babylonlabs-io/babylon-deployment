@@ -3,3 +3,5 @@
 **/.testnets/
 tmp/
 deployments/local/data
+.DS_Store
+.vscode
