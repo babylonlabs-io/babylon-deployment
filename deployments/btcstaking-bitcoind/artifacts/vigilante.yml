@@ -32,7 +32,7 @@ babylon:
   grpc-addr: https://babylondnode0:9090
   account-prefix: bbn
   keyring-backend: test
-  gas-adjustment: 1.5
+  gas-adjustment: 2
   gas-prices: 2ubbn
   key-directory: /home/vigilante/config
   debug: true
