@@ -63,7 +63,14 @@ $NODE_BIN keys add $vestName $kbt $home0
 vestAddr=$($NODE_BIN $home0 keys show $vestName -a $kbt)
 
 currentTime=$(date +%s)
-new_timestamp=$((currentTime + 3600000)) # 10 min
+new_timestamp=$((currentTime + 36000000))
+
+# if it sends a tx it fails
+# $NODE_BIN tx bank send val $vestAddr 20ubbn --from val $kbt $cid $home0 --yes --fees 10000ubbn
+# raw_log: 'failed to execute message; message index: 0: account bbn1ag8rmewtyaglnucz9gygv4rktl077k6fdevl74
+#   already exists: invalid request'
+# sleep 10
+
 
 $NODE_BIN tx vesting create-vesting-account $vestAddr 10000000ubbn $new_timestamp --from $USER_KEY --fees 400000ubbn  $kbt $cid $home0 --yes
 
@@ -88,7 +95,8 @@ $NODE_BIN tx epoching delegate $VAL0_ADDR 500000ubbn $kbt $cid $home0 --from $ve
 
 $NODE_BIN q bank spendable-balances $vestAddr --output json | jq
 
-sleep 20
+echo "Waits for epoch"
+sleep 50
 
 $NODE_BIN q bank spendable-balances $vestAddr --output json | jq
 
@@ -96,4 +104,4 @@ $NODE_BIN q staking delegations $vestAddr --output json | jq
 
 sleep 6
 
-$NODE_BIN tx bank send $vestAddr $valAddr 500000ubbn $kbt $cid $home0 --yes --fees 10000ubbn
+$NODE_BIN tx bank send $vestAddr $valAddr 500000ubbn $kbt $cid $home0 --yes --fees 10000ubbn --fee-granter $valAddr
