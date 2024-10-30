@@ -145,7 +145,7 @@ if [[ -n "$COVENANT_PK_FILE" ]]; then
 fi
 
 echo "--- Creating gentx..."
-$NODE_BIN $home0 gentx $VAL0_KEY 1000000000$DENOM $kbt $cid
+$NODE_BIN $home0 gentx $VAL0_KEY 1000000000$DENOM $kbt $cid --fees 40000ubbn
 echo "--- Set POP to checkpointing module..."
 
 $NODE_BIN $home0 collect-gentxs > /dev/null
