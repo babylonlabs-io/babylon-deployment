@@ -117,6 +117,9 @@ echo "the number of finality providers should have increased from" $fpsLengthBef
 # The finality provider will not send finality votes until the finality.params.finality_activation_height is reached
 
 # After upgrade is done, sends BTC delegation to babylond with inclusion proof
+# Start btc-staker
+
+
 
 # babylond tx btcstaking create-btc-delegation [btc_pk] [pop_hex] [staking_tx_info] [fp_pk] [staking_time] [staking_value] \
 # [slashing_tx] [delegator_slashing_sig] \

@@ -20,6 +20,8 @@ STOP="${STOP:-$SCRIPT_DIR/stop}"
 
 FPD_BIN="${FPD_BIN:-$SCRIPT_DIR/../../../finality-provider/build/fpd}"
 COVD_BIN="${COVD_BIN:-$SCRIPT_DIR/../../../covenant-emulator/build/covd}"
+STAKERCLI_BIN="${STAKERCLI_BIN:-$SCRIPT_DIR/../../../btc-staker/build/stakercli}"
+STAKERD_BIN="${STAKERD_BIN:-$SCRIPT_DIR/../../../btc-staker/build/stakerd}"
 
 # general usage flags
 btcWalletName="btcWalletName"
@@ -130,6 +132,20 @@ checkFpd() {
 checkCovd() {
   if [ ! -f $COVD_BIN ]; then
     echo "$COVD_BIN does not exists. build it first with $~ make"
+    exit 1
+  fi
+}
+
+checkStakercli() {
+  if [ ! -f $STAKERCLI_BIN ]; then
+    echo "$STAKERCLI_BIN does not exists. build it first with $~ make"
+    exit 1
+  fi
+}
+
+checkStakerd() {
+  if [ ! -f $STAKERD_BIN ]; then
+    echo "$STAKERD_BIN does not exists. build it first with $~ make"
     exit 1
   fi
 }
