@@ -71,7 +71,7 @@ if [ ${#PRE_BUILD_UPGRADE_SCRIPT} -gt 1 ]; then
 fi
 
 # build new version with upgrade 'e2e' build tag is necessary for now
-BUILD_TAGS="e2e" make build
+BUILD_TAGS="e2e" make build-testnet
 
 # go back to old path
 cd -
@@ -79,11 +79,9 @@ cd -
 # start the chain again
 NODE_LOG_PATH=$log_path SETUP=0 $STARTERS/start-babylond-single-node.sh
 
-# git checkout to previous version
+# git reset hard to remove upgrades modification
 cd $BABYLON_PATH
-git stash
-git checkout $oldBabylonBranch
-cd -
+git reset HEAD --hard
 
 # wait for upgrade to apply and start
 sleep 10

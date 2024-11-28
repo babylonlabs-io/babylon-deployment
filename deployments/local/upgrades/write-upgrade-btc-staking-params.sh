@@ -9,7 +9,7 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
-GO_BTC_STAKING_PARAMS_PATH="${GO_BTC_STAKING_PARAMS_PATH:-$BABYLON_PATH/app/upgrades/v1/btcstaking_params.go}"
+GO_BTC_STAKING_PARAMS_PATH="${GO_BTC_STAKING_PARAMS_PATH:-$BABYLON_PATH/app/upgrades/v1/testnet/btcstaking_params.go}"
 
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
 
@@ -17,7 +17,7 @@ defaultCovenantCommitteePks=$(cat $DATA_DIR/covd/pks.json | jq .[])
 COVENANT_COMMITTEE_PKS="${COVENANT_COMMITTEE_PKS:-$defaultCovenantCommitteePks}"
 
 # writes the btc staking parameters to babylon as go file
-echo "package v1
+echo "package testnet
 
 const BtcStakingParamStr = \`
 	{
@@ -35,6 +35,7 @@ const BtcStakingParamStr = \`
   \"min_unbonding_time_blocks\": 0,
   \"unbonding_fee_sat\": \"1000\",
   \"min_commission_rate\": \"0.03\",
-  \"max_active_finality_providers\": 100
+  \"delegation_creation_base_gas_fee\": 1000,
+  \"allow_list_expiration_height\": 0
 }\`
 " > $GO_BTC_STAKING_PARAMS_PATH

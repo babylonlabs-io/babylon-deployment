@@ -10,13 +10,13 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
-GO_TOKENS_DISTRIBUTION_PATH="${GO_TOKENS_DISTRIBUTION_PATH:-$BABYLON_PATH/app/upgrades/v1/data_token_distribution.go}"
+GO_TOKENS_DISTRIBUTION_PATH="${GO_TOKENS_DISTRIBUTION_PATH:-$BABYLON_PATH/app/upgrades/v1/testnet/token_distribution.go}"
 
 
 # writes the tokens distribution empty to babylon as go file
-echo "package v1
+echo "package testnet
 
-const TokensDistribution = \`{
+const TokensDistributionStr = \`{
   \"token_distribution\": []
 }\`
 " > $GO_TOKENS_DISTRIBUTION_PATH

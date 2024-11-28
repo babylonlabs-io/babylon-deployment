@@ -10,7 +10,7 @@ CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
 BABYLON_PATH="${BABYLON_PATH:-$BBN_DEPLOYMENTS/babylon}"
-GO_BTC_HEADERS_PATH="${GO_BTC_HEADERS_PATH:-$BABYLON_PATH/app/upgrades/v1/data_btc_headers.go}"
+GO_BTC_HEADERS_PATH="${GO_BTC_HEADERS_PATH:-$BABYLON_PATH/app/upgrades/v1/testnet/btc_headers.go}"
 SID_BIN="${SID_BIN:-$BBN_DEPLOYMENTS/staking-indexer/build/sid}"
 
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
@@ -31,6 +31,6 @@ $SID_BIN btc-headers 1 $btcBlockTipHeight $homeF --output $EXPORT_TO
 btcHeadersJson=$(cat $EXPORT_TO)
 
 # writes the headers to babylon as go file
-echo "package v1
+echo "package testnet
 
 const NewBtcHeadersStr = \`$btcHeadersJson\`" > $GO_BTC_HEADERS_PATH

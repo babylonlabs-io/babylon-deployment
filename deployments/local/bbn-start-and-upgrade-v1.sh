@@ -39,7 +39,7 @@ sleep 2
 # Setup covd without start to get the covenant pub key to btc staking before babylon chain launches
 $STARTERS/setup-covd.sh
 
-# Creates all the finality providers signed msgs and concatenate
+# Creates all the finality providers signed msgs and concatenatek
 for i in $(seq 1 $NUMBER_FPS_SIGNED); do
   fpNum=$(ls $DATA_DIR/fpd/ | wc -l)
   echo "creating fp number $fpNum"
@@ -52,13 +52,16 @@ $UPGRADES/btcstaker-create-btc-delegation.sh
 # writes block zero from BTC to babylon
 writeBaseBtcHeaderFile $BTC_BASE_HEADER_FILE
 
+# Builds babylond at tge version
+$UPGRADES/build-babylon-tge.sh
+
 # Setup and start single node with base btc header set
-BTC_BASE_HEADER_FILE=$BTC_BASE_HEADER_FILE $STARTERS/start-babylond-single-node.sh
+BTC_BASE_HEADER_FILE=$BTC_BASE_HEADER_FILE IS_TGE=1 $STARTERS/start-babylond-single-node.sh
 
 # wait for a block
 sleep 6
 
-# Send funds to new finality providers after the upgrade (it could be before as well)
+# Send funds to new finality providers before the upgrade
 fpNum=0
 for fpHomePath in $DATA_DIR/fpd/*; do
   echo "sending bbn to fpd $fpNum"
@@ -98,6 +101,8 @@ fi
 echo "V1 upgrade was correctly executed at block height " $upgradeHeight
 echo "the last btc header height is" $btcHeaderTipAfterUpgrade
 echo "the number of finality providers increased from" $fpsLengthBeforeUpgrade " to " $fpsLengthAfterUpgrade
+
+#
 
 # After upgrade is done, sends BTC delegation to babylond with inclusion proof
 # babylond tx btcstaking create-btc-delegation [btc_pk] [pop_hex] [staking_tx_info] [fp_pk] [staking_time] [staking_value] \
