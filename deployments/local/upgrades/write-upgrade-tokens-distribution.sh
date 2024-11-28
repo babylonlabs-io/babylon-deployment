@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./write-upgrade-tokens-distribution.sh

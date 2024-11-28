@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./write-upgrade-btc-staking-params.sh

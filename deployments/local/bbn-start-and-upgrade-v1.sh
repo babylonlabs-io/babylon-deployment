@@ -40,14 +40,17 @@ sleep 2
 $STARTERS/setup-covd.sh
 
 # Creates all the finality providers signed msgs and concatenatek
-for i in $(seq 1 $NUMBER_FPS_SIGNED); do
+for i in $(seq 1 $NUMBER_FPS); do
   fpNum=$(ls $DATA_DIR/fpd/ | wc -l)
   echo "creating fp number $fpNum"
   $UPGRADES/fpd-eots-create-keys.sh
 done
 
+# Writes the global params
+$UPGRADES/write-global-params.sh
+
 # Creates a BTC delegation tx in bitcoin without babylon
-$UPGRADES/btcstaker-create-btc-delegation.sh
+$UPGRADES/btcstaker-create-btc-delegation-global-params.sh
 
 # writes block zero from BTC to babylon
 writeBaseBtcHeaderFile $BTC_BASE_HEADER_FILE
@@ -119,7 +122,8 @@ echo "the number of finality providers should have increased from" $fpsLengthBef
 # After upgrade is done, sends BTC delegation to babylond with inclusion proof
 # Start btc-staker
 
-
+CLEANUP=0 $STARTERS/setup-btc-staker.sh
+CLEANUP=0 $STARTERS/start-btc-staker.sh
 
 # babylond tx btcstaking create-btc-delegation [btc_pk] [pop_hex] [staking_tx_info] [fp_pk] [staking_time] [staking_value] \
 # [slashing_tx] [delegator_slashing_sig] \
