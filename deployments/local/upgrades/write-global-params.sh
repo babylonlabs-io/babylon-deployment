@@ -13,10 +13,9 @@ DATA_DIR="${DATA_DIR:-$CWD/../data}"
 DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 GLOBAL_PARAMS_PATH="${GLOBAL_PARAMS_PATH:-$DATA_OUTPUTS/global_params.json}"
 
-
 mkdir -p $DATA_OUTPUTS
 
-defaultCovenantCommitteePks=$(cat $DATA_DIR/covd/pks.json | jq .[])
+defaultCovenantCommitteePks=$(cat $DATA_DIR/covenant-signer/pks.json | jq .[])
 COVENANT_COMMITTEE_PKS="${COVENANT_COMMITTEE_PKS:-$defaultCovenantCommitteePks}"
 
 # writes the headers to babylon as go file
@@ -33,7 +32,7 @@ echo "{
       \"covenant_quorum\": 1,
       \"unbonding_time\": 1008,
       \"unbonding_fee\": 64000,
-      \"max_staking_amount\": 5000000,
+      \"max_staking_amount\": 100000000,
       \"min_staking_amount\": 500000,
       \"max_staking_time\": 64000,
       \"min_staking_time\": 100,

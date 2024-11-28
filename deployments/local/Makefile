@@ -14,6 +14,9 @@ build-fpd:
 build-covd:
 	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-emulator build
 
+build-covenant-signer:
+	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-signer build
+
 build-btc-staker:
 	$(MAKE) -C $(GIT_TOPLEVEL)/btc-staker build
 

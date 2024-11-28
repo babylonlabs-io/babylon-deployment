@@ -46,8 +46,14 @@ for i in $(seq 1 $NUMBER_FPS); do
   $UPGRADES/fpd-eots-create-keys.sh
 done
 
+# Setups the conveant signer that generates the pub key for covenant_pks in global params
+$STARTERS/setup-covenant-signer.sh
+
 # Writes the global params
 $UPGRADES/write-global-params.sh
+
+# With the global params written, starts the covenant-signer
+GLOBAL_PARAMS_PATH=$DATA_OUTPUTS/global_params.json CLEANUP=0 SETUP=0 $STARTERS/start-covenant-signer.sh
 
 # Creates a BTC delegation tx in bitcoin without babylon
 $UPGRADES/btcstaker-create-btc-delegation-global-params.sh
@@ -78,6 +84,10 @@ done
 
 # Setups the staking indexer to write the btc headers into babylond upgrades
 $STARTERS/setup-staking-indexer.sh
+
+# Migrate covenant-signer to covenant-emulator https://babylonlabs.atlassian.net/wiki/spaces/BABYLON/pages/82182253/Covenant+Keys+Transitions+from+Phase-1+to+phase-2+WIP
+# and pass correct covenant pub key to the write of upgrade data.
+
 
 # collect info to check after upgrade
 btcHeaderTipBeforeUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.height -r)

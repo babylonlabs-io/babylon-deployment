@@ -20,6 +20,7 @@ STOP="${STOP:-$SCRIPT_DIR/stop}"
 
 FPD_BIN="${FPD_BIN:-$SCRIPT_DIR/../../../finality-provider/build/fpd}"
 COVD_BIN="${COVD_BIN:-$SCRIPT_DIR/../../../covenant-emulator/build/covd}"
+COVENANT_SIGNER_BIN="${COVENANT_SIGNER_BIN:-$SCRIPT_DIR/../../../covenant-signer/build/covenant-signer}"
 STAKERCLI_BIN="${STAKERCLI_BIN:-$SCRIPT_DIR/../../../btc-staker/build/stakercli}"
 STAKERD_BIN="${STAKERD_BIN:-$SCRIPT_DIR/../../../btc-staker/build/stakerd}"
 
@@ -146,6 +147,13 @@ checkStakercli() {
 checkStakerd() {
   if [ ! -f $STAKERD_BIN ]; then
     echo "$STAKERD_BIN does not exists. build it first with $~ make"
+    exit 1
+  fi
+}
+
+checkCovenantSigner() {
+  if [ ! -f $COVENANT_SIGNER_BIN ]; then
+    echo "$COVENANT_SIGNER_BIN does not exists. build it first with $~ make"
     exit 1
   fi
 }
