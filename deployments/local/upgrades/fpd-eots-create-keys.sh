@@ -3,7 +3,7 @@
 # USAGE:
 # ./fpd-eotsd-create-keys.sh
 
-# Creates a signed finality provider and eots key.
+# Creates both finality provider and eots keys.
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"

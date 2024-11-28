@@ -17,7 +17,7 @@ DATA_DIR="${DATA_DIR:-$CWD/data}"
 DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-$DATA_OUTPUTS/btc-base-header.json}"
 CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
-NUMBER_FPS_SIGNED="${NUMBER_FPS_SIGNED:-1}"
+NUMBER_FPS="${NUMBER_FPS:-1}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 OUTPUTS_DIR="${OUTPUTS_DIR:-$DATA_DIR/outputs}"
 
@@ -87,24 +87,37 @@ SIGNED_FPD_MSGS_PATH=$fpdOut PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-d
 # realize all checks, like if all the btc headers and fps were added '-'
 upgradeHeight=$($NODE_BIN q upgrade applied v1 --output json | jq ".height" -r)
 btcHeaderTipAfterUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.height -r)
-fpsLengthAfterUpgrade=$($NODE_BIN q btcstaking finality-providers --output json | jq '.finality_providers | length')
+
 
 if ! [[ $btcHeaderTipAfterUpgrade -gt $btcHeaderTipBeforeUpgrade ]]; then
   echo "Upgrade should have applied a bunch of btc headers"
   exit 1
 fi
-if ! [[ $fpsLengthAfterUpgrade -gt $fpsLengthBeforeUpgrade ]]; then
+
+echo "V1 upgrade was correctly executed at block height " $upgradeHeight
+echo "the last btc header height is" $btcHeaderTipAfterUpgrade
+
+# Register finality providers into babylon
+fpNodeNum=0
+for fpHomePath in $DATA_DIR/fpd/*; do
+  echo "creating FP $fpNodeNum"
+  NODE_NUM=$fpNodeNum $UPGRADES/fpd-register-finality-provider.sh
+  fpNodeNum=$(($fpNodeNum + 1))
+done
+
+sleep 6 # waits for one block
+
+fpsAfterCreation=$($NODE_BIN q btcstaking finality-providers --output json | jq '.finality_providers | length')
+if ! [[ $fpsAfterCreation -gt $fpsLengthBeforeUpgrade ]]; then
   echo "Upgrade should have applied a bunch of finality providers"
   exit 1
 fi
 
-echo "V1 upgrade was correctly executed at block height " $upgradeHeight
-echo "the last btc header height is" $btcHeaderTipAfterUpgrade
-echo "the number of finality providers increased from" $fpsLengthBeforeUpgrade " to " $fpsLengthAfterUpgrade
-
-#
+echo "the number of finality providers should have increased from" $fpsLengthBeforeUpgrade " to " $fpsAfterCreation
+# The finality provider will not send finality votes until the finality.params.finality_activation_height is reached
 
 # After upgrade is done, sends BTC delegation to babylond with inclusion proof
+
 # babylond tx btcstaking create-btc-delegation [btc_pk] [pop_hex] [staking_tx_info] [fp_pk] [staking_time] [staking_value] \
 # [slashing_tx] [delegator_slashing_sig] \
 # [unbonding_tx] [unbonding_slashing_tx] [unbonding_time] [unbonding_value] [delegator_unbonding_slashing_sig] [flags]

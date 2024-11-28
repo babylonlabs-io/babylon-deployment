@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 
 # USAGE:
-# ./start-btc-staker.sh
+# ./btc-staker-start-and-stake.sh
 
 # Starts an btc staker and sends stake tx to btc.
 
