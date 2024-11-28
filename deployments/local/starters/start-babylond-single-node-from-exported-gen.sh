@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./single-node-from-exported-gen.sh <option of full path to babylond>

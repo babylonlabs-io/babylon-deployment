@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./setup-babylond-single-node.sh <option of full path to babylond>
@@ -125,8 +125,6 @@ $NODE_BIN $home0 create-bls-key $($NODE_BIN $home0 keys show $VAL0_KEY -a $kbt)
 echo "--- Patching genesis..."
 jq '.consensus_params["block"]["time_iota_ms"]="5000"
   | .app_state["crisis"]["constant_fee"]["denom"]="'$DENOM'"
-  | .app_state["mint"]["params"]["mint_denom"]="'$DENOM'"
-  | .app_state["mint"]["params"]["mint_denom"]="'$DENOM'"
   | .app_state["staking"]["params"]["bond_denom"]="'$DENOM'"
   | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
   | .app_state["btcstaking"]["params"][0]["slashing_pk_script"]="dqkUAQEBAQEBAQEBAQEBAQEBAQEBAQGIrA=="

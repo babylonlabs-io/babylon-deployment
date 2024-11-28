@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./fpd-create-signed-fp.sh

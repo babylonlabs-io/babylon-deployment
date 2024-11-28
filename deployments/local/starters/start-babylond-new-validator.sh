@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-babylond-new-validator.sh <option of full path to babylond>
