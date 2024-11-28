@@ -69,14 +69,6 @@ is put into a queue to be run at the end of an epoch, after the epoch is passed,
 everything was successfully processed, you should be able to see a new validator
 under `babylond q staking validators`
 
-#### Create signed MsgCreateFinalityProvider
-
-Generates a new signed msg ready to be used in the V1 upgrade
-by running the script `./upgrades/fpd-create-signed-fp.sh` it creates a new
-path under `data/fpd/fp-${num}` with the eotsd and fpd home inside of it
-that contains the keys and proof of possession used to generate the signed
-msg.
-
 ## Upgrades
 
 This section cover upgrades tested locally with a single node
@@ -95,9 +87,7 @@ as block zero from bitcoind
 6. Stop the chain
 7. Produces a lot of blocks from bitcoind
 8. Generates a new file with BTC headers to `babylon/app/upgrades/v1/data_btc_headers.go`
-9. Copy all the signed messages `MsgCreateFinalityProvider` from
-[bbn-1/finality-providers/msgs](../../networks/bbn-1/finality-providers/msgs/)
-into the babylon upgrade file `babylon/app/upgrades/v1/data_signed_fps.go`
+9. Generates a BTC delegation phase-1 transaction
 10. Builds new babylond with the expected upgrade code
 11. Start the chain with upgrade to apply
 12. Check if the new BTC headers were correctly created

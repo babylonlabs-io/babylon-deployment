@@ -20,7 +20,7 @@ BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
 defaultCovenantCommitteePks=$(cat $DATA_DIR/covd/pks.json | jq -r .[])
 COVENANT_COMMITTEE_PKS="${COVENANT_COMMITTEE_PKS:-$defaultCovenantCommitteePks}"
 
-defaultFinalityProviderPk=$(cat $DATA_DIR/fpd/fp-0/out/pop-export.json | jq -r .pub_key_hex)
+defaultFinalityProviderPk=$(cat $DATA_DIR/fpd/fp-0/out/eotsd-keys-add.json | jq -r .pubkey_hex)
 FP_EOTS_PK="${FP_EOTS_PK:-$defaultFinalityProviderPk}"
 
 btcDataDirF="-datadir=$BTC_HOME"

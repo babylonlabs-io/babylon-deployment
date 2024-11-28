@@ -131,6 +131,7 @@ jq '.consensus_params["block"]["time_iota_ms"]="5000"
   | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="2"
   | .app_state["consensus"]=null
   | .consensus["params"]["abci"]["vote_extensions_enable_height"]="1"
+  | .app_state["mint"]["params"]["mint_denom"]="'$DENOM'"
   | .app_state["gov"]["params"]["expedited_voting_period"]="'$EXPEDITED_VOTING_PERIOD'"
   | .app_state["gov"]["params"]["min_deposit"][0]["denom"]="'$DENOM'"
   | .app_state["gov"]["params"]["expedited_min_deposit"][0]["denom"]="'$DENOM'"
