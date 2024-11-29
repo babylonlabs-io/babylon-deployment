@@ -37,7 +37,7 @@ $STARTERS/start-bitcoind.sh
 sleep 2
 
 # Setup covd without start to get the covenant pub key to btc staking before babylon chain launches
-$STARTERS/setup-covd.sh
+CREATE_KEYS=0 $STARTERS/setup-covd.sh
 
 # Creates all the finality providers signed msgs and concatenatek
 for i in $(seq 1 $NUMBER_FPS); do
@@ -133,6 +133,8 @@ echo "the number of finality providers should have increased from" $fpsLengthBef
 
 CLEANUP=0 $STARTERS/setup-btc-staker.sh
 CLEANUP=0 $STARTERS/start-btc-staker.sh
+
+$UPGRADES/btcstaker-stake-from-phase1.sh
 
 # babylond tx btcstaking create-btc-delegation [btc_pk] [pop_hex] [staking_tx_info] [fp_pk] [staking_time] [staking_value] \
 # [slashing_tx] [delegator_slashing_sig] \

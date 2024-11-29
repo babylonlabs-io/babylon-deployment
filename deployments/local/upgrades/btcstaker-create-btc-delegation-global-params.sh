@@ -72,3 +72,5 @@ signedTxHex=$(cat $outdir/signrawtransactionwithwallet.json | jq -r .hex)
 bitcoin-cli $btcDataDirF sendrawtransaction $signedTxHex > $outdir/sendrawtransaction.txt
 # creates 10 btc blocks to give height deep enough
 bitcoin-cli $btcDataDirF -rpcwallet=$btcWalletNameWithFunds -generate 10
+
+sleep 10

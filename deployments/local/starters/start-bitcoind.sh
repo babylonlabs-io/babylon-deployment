@@ -55,6 +55,8 @@ fallbackfee=0.01
 # enable SSL for RPC server
 #rpcssl=1
 
+txindex=1
+
 # enable to allow non-localhost RPC connections
 # recommended to change to a subnet, such as your LAN
 #rpcallowip=0.0.0.0/0

@@ -17,13 +17,16 @@ build-covd:
 build-covenant-signer:
 	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-signer build
 
+build-covenant-signer-in-covd:
+	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-emulator/covenant-signer build
+
 build-btc-staker:
 	$(MAKE) -C $(GIT_TOPLEVEL)/btc-staker build
 
 build-staking-indexer:
 	$(MAKE) -C $(GIT_TOPLEVEL)/staking-indexer build
 
-build-all: build-babylond build-vigilante build-fpd build-covd build-btc-staker build-staking-indexer
+build-all: build-babylond build-vigilante build-fpd build-covd build-btc-staker build-staking-indexer build-covenant-signer build-covenant-signer-in-covd
 
 bbn-start-btc-del-stop-exportgen-start: build-all
 	./bbn-start-btc-del-stop-exportgen-start.sh

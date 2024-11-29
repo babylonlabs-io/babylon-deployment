@@ -15,6 +15,7 @@ CHAIN_ID="${CHAIN_ID:-test-1}"
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
 COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
 CLEANUP="${CLEANUP:-1}"
+CREATE_KEYS="${CREATE_KEYS:-1}"
 
 . $CWD/../helpers.sh
 checkJq
@@ -25,8 +26,6 @@ homeF="--home $COVD_HOME"
 keyName="covenant"
 
 cfg="$COVD_HOME/covd.conf"
-covdPubFile=$COVD_HOME/keyring-test/$keyName.pubkey.json
-covdPKs=$COVD_HOME/pks.json
 
 $COVD_BIN init $homeF
 
@@ -34,9 +33,13 @@ perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $cfg
 perl -i -pe 's|Key = covenant-key|Key = "'$keyName'"|g' $cfg
 perl -i -pe 's|Port = 2112|Port = 2115|g' $cfg # any other available port.
 
-covenantPubKey=$($COVD_BIN create-key --key-name $keyName --chain-id $CHAIN_ID $homeF | jq -r)
-echo $covenantPubKey > $covdPubFile
+if [[ "$CREATE_KEYS" == 1 || "$CREATE_KEYS" == "1" ]]; then
+  covdPubFile=$COVD_HOME/keyring-test/$keyName.pubkey.json
+  covdPKs=$COVD_HOME/pks.json
 
-# pub-key, jq does not like -
-convenantPk=$(cat $covdPubFile | jq .[] | jq --slurp '.[1]')
-echo "[$convenantPk]" > $covdPKs
+  covenantPubKey=$($COVD_BIN create-key --key-name $keyName --chain-id $CHAIN_ID $homeF | jq -r)
+  echo $covenantPubKey > $covdPubFile
+
+  convenantPk=$(cat $covdPubFile | jq .[] | jq --slurp '.[1]')
+  echo "[$convenantPk]" > $covdPKs
+fi
