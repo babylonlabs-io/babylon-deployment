@@ -37,7 +37,7 @@ n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
 
 mkdir -p $stakercliLogsDir
 
-walletName="btcWalletName"
+walletName="btc-staker"
 $STAKERCLI_BIN admin dump-config --config-file-dir $stakercliConfigFile
 
 #[Application Options]
