@@ -37,7 +37,7 @@ cleanUp $CLEANUP $BTC_STAKER_HOME/*.pid $BTC_STAKER_HOME
 outdir="$BTC_STAKER_HOME/out"
 mkdir -p $outdir
 
-bitcoin-cli $btcDataDirF -named createwallet wallet_name=$btcStakerWalletName $passphraseFlag
+bitcoin-cli $btcDataDirF -named createwallet descriptors=true wallet_name=$btcStakerWalletName $passphraseFlag
 btcStakerNewAddr=$(bitcoin-cli $btcDataDirF -rpcwallet=$btcStakerWalletName getnewaddress)
 
 echo $btcStakerNewAddr > $outdir/$btcStakerWalletName.address

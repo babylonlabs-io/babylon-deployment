@@ -37,7 +37,7 @@ btcWalletNameWithFunds="btcWalletName"
 covenantSignerWalletName="covenant-signer"
 passphraseFlag="passphrase=walletpass"
 
-bitcoin-cli $btcDataDirF -named createwallet wallet_name=$covenantSignerWalletName $passphraseFlag
+bitcoin-cli $btcDataDirF -named createwallet descriptors=true wallet_name=$covenantSignerWalletName $passphraseFlag
 covenantSignerNewAddr=$(bitcoin-cli $btcDataDirF -rpcwallet=$covenantSignerWalletName getnewaddress)
 
 echo $covenantSignerNewAddr > $outdir/$covenantSignerWalletName.btc.address

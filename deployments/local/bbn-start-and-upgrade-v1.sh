@@ -87,7 +87,7 @@ $STARTERS/setup-staking-indexer.sh
 
 # Migrate covenant-signer to covenant-emulator https://babylonlabs.atlassian.net/wiki/spaces/BABYLON/pages/82182253/Covenant+Keys+Transitions+from+Phase-1+to+phase-2+WIP
 # and pass correct covenant pub key to the write of upgrade data.
-
+$UPGRADES/covenant-signer-migrate-covenant-emulator.sh
 
 # collect info to check after upgrade
 btcHeaderTipBeforeUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.height -r)
@@ -100,7 +100,6 @@ SIGNED_FPD_MSGS_PATH=$fpdOut PRE_BUILD_UPGRADE_SCRIPT=$UPGRADES/write-upgrades-d
 # realize all checks, like if all the btc headers and fps were added '-'
 upgradeHeight=$($NODE_BIN q upgrade applied v1 --output json | jq ".height" -r)
 btcHeaderTipAfterUpgrade=$($NODE_BIN q btclightclient tip -o json | jq .header.height -r)
-
 
 if ! [[ $btcHeaderTipAfterUpgrade -gt $btcHeaderTipBeforeUpgrade ]]; then
   echo "Upgrade should have applied a bunch of btc headers"

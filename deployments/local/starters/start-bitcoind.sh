@@ -74,7 +74,7 @@ echo $! > $bitcoindpid
 
 sleep 1
 
-bitcoin-cli $flagDataDir -named createwallet wallet_name=$walletName passphrase=walletpass
+bitcoin-cli $flagDataDir -named createwallet descriptors=true wallet_name=$walletName passphrase=walletpass
 
 bitcoin-cli $flagDataDir $rpcWalletFlag -generate 150
 
