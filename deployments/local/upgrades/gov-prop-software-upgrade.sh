@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./gov-prop-software-upgrade.sh <option of full path to babylond>
