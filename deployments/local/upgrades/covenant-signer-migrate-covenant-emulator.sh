@@ -29,11 +29,7 @@ COVENANT_SIGNER_ADDR="${COVENANT_SIGNER_ADDR:-$defaultCovenantSignerAddr}"
 
 BTC_STAKER_HOME="${BTC_STAKER_HOME:-$DATA_DIR/btc-staker}"
 
-defaultCovenantCommitteePks=$(cat $DATA_DIR/covd/pks.json | jq -r .[])
-COVENANT_COMMITTEE_PKS="${COVENANT_COMMITTEE_PKS:-$defaultCovenantCommitteePks}"
-
 btcDataDirF="-datadir=$BTC_HOME"
-passphraseFlag="passphrase=walletpass"
 
 covenantSignerHdkeypath=$(bitcoin-cli $btcDataDirF -rpcwallet=$covenantSignerWalletName getaddressinfo $COVENANT_SIGNER_ADDR | jq -r .hdkeypath)
 echo $covenantSignerHdkeypath > $DATA_OUTPUTS/$covenantSignerWalletName.bitcoin.hdkeypath
