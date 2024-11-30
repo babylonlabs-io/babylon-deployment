@@ -3,6 +3,7 @@
 keystore-type = "cosmos"
 
 [keystore.cosmos]
+chain-id = "chain-test"
 # The directory to store the keys in
 key-directory = "/home/covenant-signer/.signer"
 # The keyring backend to use
