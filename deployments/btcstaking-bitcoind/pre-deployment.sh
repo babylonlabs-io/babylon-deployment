@@ -24,6 +24,7 @@ mkdir -p .testnets/vigilante
 mkdir -p .testnets/btc-staker
 mkdir -p .testnets/eotsmanager
 mkdir -p .testnets/covenant-emulator
+mkdir -p .testnets/covenant-signer
 
 # For each num finality provider it should create a new path and
 # use a different docker container
@@ -40,3 +41,5 @@ cp artifacts/stakerd.conf .testnets/btc-staker/stakerd.conf
 cp artifacts/eotsd.conf .testnets/eotsmanager/eotsd.conf
 cp artifacts/covd.conf .testnets/covenant-emulator/covd.conf
 cp -R artifacts/covenant-keyring .testnets/covenant-emulator/keyring-test
+cp artifacts/covenant-signer.toml .testnets/covenant-signer/config.toml
+cp -R artifacts/covenant-keyring .testnets/covenant-signer/keyring-test

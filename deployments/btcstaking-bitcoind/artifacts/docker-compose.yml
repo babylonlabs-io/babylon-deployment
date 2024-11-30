@@ -220,6 +220,19 @@ services:
       - babylondnode0
     restart: unless-stopped
 
+  covenant-signer:
+    container_name: covenant-signer
+    image: babylonlabs-io/covenant-signer
+    command: covenant-signer start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.17
+    volumes:
+      - ../.testnets/covenant-signer:/home/covenant-signer/.signer
+    depends_on:
+      - babylondnode0
+    restart: unless-stopped
+
 networks:
   localnet:
     driver: bridge
