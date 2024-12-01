@@ -60,3 +60,6 @@ docker exec babylondnode0 /bin/sh -c '
 [[ "$(uname)" == "Linux" ]] && chown -R 1138:1138 .testnets/covenant-emulator
 
 echo "Created keyrings and sent funds"
+
+# Unlock the covenant-signer wallet
+docker exec covenant-signer /bin/sh -c 'curl -X POST 127.0.0.1:9791/v1/unlock -H "Content-Type: application/json" -d "{\"passphrase\": \"\"}"'
