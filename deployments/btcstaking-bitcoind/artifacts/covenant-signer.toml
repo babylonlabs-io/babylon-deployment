@@ -9,7 +9,7 @@ key-directory = "/home/covenant-signer/.signer"
 # The keyring backend to use
 keyring-backend = "test"
 # The name of the key to use
-key-name = "covenant"
+key-name = "signer"
 
 [server-config]
 # The address to listen on
