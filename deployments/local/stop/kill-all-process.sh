@@ -15,6 +15,7 @@ COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
 EOTS_HOME="${EOTS_HOME:-$DATA_DIR/eots}"
 FPD_HOME="${FPD_HOME:-$DATA_DIR/fpd}"
 BTC_STAKER_HOME="${BTC_STAKER_HOME:-$DATA_DIR/btc-staker}"
+COVENANT_SIGNER_HOME="${COVENANT_SIGNER_HOME:-$DATA_DIR/covenant-signer}"
 
 PATH_OF_PIDS=$CHAIN_DIR/*/*/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$VIGILANTE_HOME/pid/*.pid $CWD/kill-process.sh
@@ -25,3 +26,4 @@ PATH_OF_PIDS=$EOTS_HOME/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$FPD_HOME/*/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$FPD_HOME/*/*/*.pid $CWD/kill-process.sh # eotsd inside fpd
 PATH_OF_PIDS=$BTC_STAKER_HOME/pid/*.pid $CWD/kill-process.sh
+PATH_OF_PIDS=$COVENANT_SIGNER_HOME/pid/*.pid $CWD/kill-process.sh

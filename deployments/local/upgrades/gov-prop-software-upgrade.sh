@@ -8,7 +8,7 @@
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 NODE_BIN="${1:-$CWD/../../../babylon/build/babylond}"
-SOFTWARE_UPGRADE_FILE="${SOFTWARE_UPGRADE_FILE:-$CWD/props/signet-launch.json}"
+SOFTWARE_UPGRADE_FILE="${SOFTWARE_UPGRADE_FILE:-$CWD/props/v1.json}"
 STOP="${STOP:-$CWD/../stop}"
 
 CHAIN_ID="${CHAIN_ID:-test-1}"
@@ -31,6 +31,7 @@ home0="--home $n0dir"
 # Common flags
 kbt="--keyring-backend test"
 cid="--chain-id $CHAIN_ID"
+gasp="--gas-prices 1ubbn"
 
 VAL0_ADDR=$($NODE_BIN $home0 keys show val -a $kbt --bech val)
 
@@ -43,7 +44,7 @@ echo "Send gov proposal to upgrade to '$SOFTWARE_UPGRADE_FILE'"
 echo $(cat $SOFTWARE_UPGRADE_FILE | jq ".messages[0].plan.height = $UPGRADE_BLOCK_HEIGHT" $SOFTWARE_UPGRADE_FILE) > $SOFTWARE_UPGRADE_FILE
 echo $(cat $SOFTWARE_UPGRADE_FILE | jq ".proposer = \"$VAL0_ADDR\"" $SOFTWARE_UPGRADE_FILE | jq) > $SOFTWARE_UPGRADE_FILE
 
-govPropOut=$($NODE_BIN tx gov submit-proposal $SOFTWARE_UPGRADE_FILE $home0 --from val $kbt $cid --yes --output json --fees 1000ubbn)
+govPropOut=$($NODE_BIN tx gov submit-proposal $SOFTWARE_UPGRADE_FILE $home0 --from val $kbt $cid --yes --output json $gasp)
 
 # Debug
 # echo $govPropOut
@@ -55,7 +56,7 @@ sleep 6 # waits for a block
 propID=$($NODE_BIN q gov proposals -o json | jq -r '.proposals[-1].id')
 echo "Prop ID: $propID"
 
-$NODE_BIN tx gov vote $propID --from val $kbt yes $home0 $cid --yes
+$NODE_BIN tx gov vote $propID --from val $kbt yes $home0 $cid --yes $gasp
 
 echo "..."
 echo "Finish voting in the proposal"

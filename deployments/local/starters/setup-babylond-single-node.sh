@@ -16,10 +16,11 @@ CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 
 DENOM="${DENOM:-ubbn}"
 CLEANUP="${CLEANUP:-1}"
+IS_TGE="${IS_TGE:-0}"
 LOG_LEVEL="${LOG_LEVEL:-info}"
 VOTING_PERIOD="${VOTING_PERIOD:-20s}"
 EXPEDITED_VOTING_PERIOD="${EXPEDITED_VOTING_PERIOD:-10s}"
-COVENANT_QUORUM="${COVENANT_QUORUM:-3}"
+COVENANT_QUORUM="${COVENANT_QUORUM:-1}"
 COVENANT_PK_FILE="${COVENANT_PK_FILE:-""}"
 BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-""}"
 
@@ -123,10 +124,22 @@ $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $BTC_STAKER_KE
 $NODE_BIN $home0 create-bls-key $($NODE_BIN $home0 keys show $VAL0_KEY -a $kbt)
 
 echo "--- Patching genesis..."
-jq '.consensus_params["block"]["time_iota_ms"]="5000"
+if [[ "$IS_TGE" == 1 || "$IS_TGE" == "1" ]]; then
+  jq '.consensus_params["block"]["time_iota_ms"]="5000"
   | .app_state["crisis"]["constant_fee"]["denom"]="'$DENOM'"
-  | .app_state["mint"]["params"]["mint_denom"]="'$DENOM'"
-  | .app_state["mint"]["params"]["mint_denom"]="'$DENOM'"
+  | .app_state["staking"]["params"]["bond_denom"]="'$DENOM'"
+  | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
+  | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="2"
+  | .app_state["consensus"]=null
+  | .consensus["params"]["abci"]["vote_extensions_enable_height"]="1"
+  | .app_state["gov"]["params"]["expedited_voting_period"]="'$EXPEDITED_VOTING_PERIOD'"
+  | .app_state["gov"]["params"]["min_deposit"][0]["denom"]="'$DENOM'"
+  | .app_state["gov"]["params"]["expedited_min_deposit"][0]["denom"]="'$DENOM'"
+  | .app_state["gov"]["params"]["voting_period"]="'$VOTING_PERIOD'"' \
+    $n0cfgDir/genesis.json > $n0cfgDir/tmp_genesis.json && mv $n0cfgDir/tmp_genesis.json $n0cfgDir/genesis.json
+else
+  jq '.consensus_params["block"]["time_iota_ms"]="5000"
+  | .app_state["crisis"]["constant_fee"]["denom"]="'$DENOM'"
   | .app_state["staking"]["params"]["bond_denom"]="'$DENOM'"
   | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
   | .app_state["btcstaking"]["params"][0]["slashing_pk_script"]="dqkUAQEBAQEBAQEBAQEBAQEBAQEBAQGIrA=="
@@ -138,6 +151,7 @@ jq '.consensus_params["block"]["time_iota_ms"]="5000"
   | .app_state["gov"]["params"]["expedited_min_deposit"][0]["denom"]="'$DENOM'"
   | .app_state["gov"]["params"]["voting_period"]="'$VOTING_PERIOD'"' \
     $n0cfgDir/genesis.json > $n0cfgDir/tmp_genesis.json && mv $n0cfgDir/tmp_genesis.json $n0cfgDir/genesis.json
+fi
 
 if [[ -n "$COVENANT_PK_FILE" ]]; then
   jq '.app_state.btcstaking.params[0].covenant_pks = input' $n0cfgDir/genesis.json $COVENANT_PK_FILE > $n0cfgDir/tmp_genesis.json
@@ -145,7 +159,7 @@ if [[ -n "$COVENANT_PK_FILE" ]]; then
 fi
 
 echo "--- Creating gentx..."
-$NODE_BIN $home0 gentx $VAL0_KEY 1000000000$DENOM $kbt $cid --fees 40000ubbn
+$NODE_BIN $home0 gentx $VAL0_KEY 1000000000$DENOM $kbt $cid --gas-prices 2ubbn
 echo "--- Set POP to checkpointing module..."
 
 $NODE_BIN $home0 collect-gentxs > /dev/null
@@ -178,7 +192,7 @@ perl -i -pe 's|enable = false|enable = true|g'  $n0app
 perl -i -pe 's|swagger = false|swagger = true|g'  $n0app
 
 echo "--- Modifying app..."
-perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "0.05uquid"|g' $n0app
+perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "1'$DENOM'"|g' $n0app
 perl -i -pe 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $n0app
 perl -i -pe 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $n0app
 perl -i -pe 's|network = "mainnet"|network = "simnet"|g' $n0app

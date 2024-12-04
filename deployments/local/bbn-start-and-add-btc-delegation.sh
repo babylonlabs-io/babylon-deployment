@@ -60,4 +60,4 @@ DATA_DIR=$DATA_DIR $STARTERS/start-fpd.sh
 sleep 15 # waits for fdp to send some txs
 
 # Start BTC Staker and stakes to btc
-DATA_DIR=$DATA_DIR $STARTERS/start-btc-staker.sh
+DATA_DIR=$DATA_DIR $STARTERS/btc-staker-start-and-stake.sh

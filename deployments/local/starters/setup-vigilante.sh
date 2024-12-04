@@ -18,6 +18,7 @@ VIGILANTE_HOME="${VIGILANTE_HOME:-$DATA_DIR/vigilante}"
 LISTEN_PORT="${LISTEN_PORT:-8067}"
 SERVER_PORT="${SERVER_PORT:-2135}"
 
+DB_FILE_PATH="${DB_FILE_PATH:-$VIGILANTE_HOME/submitter-db}"
 SUBMITTER_ADDR="${SUBMITTER_ADDR:-bbn1dnug7399p0xg4x2ccduegu94gxshrrl78r8mz6}"
 CONF_PATH="${CONF_PATH:-$VIGILANTE_HOME/vigilante-submitter.yml}"
 
@@ -70,7 +71,7 @@ babylon:
   account-prefix: bbn
   keyring-backend: test
   gas-adjustment: 1.2
-  gas-prices: 20ubbn
+  gas-prices: 1ubbn
   key-directory: $N0_HOME
   debug: true
   timeout: 20s
@@ -95,10 +96,17 @@ submitter:
   resubmit-fee-multiplier: 1
   polling-interval-seconds: 60
   resend-interval-seconds: 1800
+  dbconfig:
+    dbpath: $DB_FILE_PATH
+    dbfilename: vigilante.db
+    nofreelistsync: true
+    autocompact: false
+    autocompactminage: 168h
+    dbtimeout: 60s
 reporter:
   netparams: regtest
-  btc_cache_size: 1000
-  max_headers_in_msg: 100
+  btc_cache_size: 50000
+  max_headers_in_msg: 1000
 monitor:
   checkpoint-buffer-size: 1000
   btc-block-buffer-size: 1000
@@ -116,4 +124,5 @@ btcstaking-tracker:
   retry-submit-unbonding-interval: 1m
   max-jitter-interval: 30s
   btcnetparams: regtest
+  max-slashing-concurrency: 20
 " > $CONF_PATH

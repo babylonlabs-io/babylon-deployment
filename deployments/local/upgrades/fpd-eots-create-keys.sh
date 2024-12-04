@@ -1,9 +1,9 @@
 #!/bin/bash -eu
 
 # USAGE:
-# ./fpd-create-signed-fp.sh
+# ./fpd-eotsd-create-keys.sh
 
-# Creates a signed finality provider MsgCreateFinalityProvider.
+# Creates both finality provider and eots keys.
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
@@ -27,10 +27,11 @@ fpName="fp-name-$nodeNum"
 
 outdir="$FPD_HOME/out"
 logdir="$FPD_HOME/logs"
-OUTPUT_SIGNED_MSG="${OUTPUT_SIGNED_MSG:-$outdir/msg-signed.json}"
 
 cid="--chain-id $CHAIN_ID"
 kbt="--keyring-backend test"
+json="--output json"
+gasp="--gas-prices 1ubbn"
 keyNameF="--key-name $fpName"
 
 . $CWD/../helpers.sh
@@ -42,7 +43,7 @@ mkdir -p $outdir
 mkdir -p $logdir
 
 # Adds new key for the finality provider
-$FPD_BIN keys add $fpName $homeF $kbt > $outdir/keys-add-keys-finality-provider.txt
+$FPD_BIN keys add $fpName $homeF $kbt $json > $outdir/fpd-keys-add.json
 fpAddr=$($FPD_BIN keys show $fpName $homeF $kbt -a)
 
 echo "new FP addr:" $fpAddr
@@ -57,26 +58,13 @@ eotsdRpcListenerAddr=127.0.0.1:$eotsdRpcListenerPort
 perl -i -pe 's|Port = 2113|Port = '$metricsPort'|g' $eotsdCfg
 perl -i -pe 's|RpcListener = 127.0.0.1:12582|RpcListener = '$eotsdRpcListenerAddr'|g' $eotsdCfg
 
-$EOTS_BIN keys add $eotsdHomeF $kbt $keyNameF > $outdir/keys-add-keys-eotsd.txt
+keysOut=$outdir/eotsd-keys-add.json
+$EOTS_BIN keys add $fpName $eotsdHomeF $kbt $json > $keysOut
 
-popOut=$outdir/pop-export.json
-$EOTS_BIN pop-export $fpAddr $eotsdHomeF $kbt $keyNameF --output json > $popOut
-
-btcPKHex=$(cat $popOut | jq '.pub_key_hex' -r)
-popHex=$(cat $popOut | jq '.pop_hex' -r)
-
-outputCreatedMsgPath="$outdir/msg-unsigned.json"
-moniker="nick-$fpName"
-$FPD_BIN tx create-finality-provider $btcPKHex $popHex \
-  $homeF $kbt --from $fpName --chain-id $CHAIN_ID \
-  --generate-only --gas-prices 10ubbn --moniker $moniker --security-contact $fpName@email.com \
-  --website http://$fpName.com.br --details "best-$fpName" --commission-rate "0.05" --output json | jq > $outputCreatedMsgPath
-
-$FPD_BIN tx sign $outputCreatedMsgPath $homeF $kbt \
-  --from $fpName --offline --account-number 0 --sequence 0 | jq > $OUTPUT_SIGNED_MSG
-
+eotsPkHex=$(cat $keysOut | jq '.pubkey_hex' -r)
 
 if [[ "$START" == 1 || "$START" == "1" ]]; then
+  echo "starting the finality provider"
   $EOTS_BIN start $eotsdHomeF >> $EOTS_HOME/eots-start.log &
   echo $! > $EOTS_HOME/eots.pid
 
@@ -93,6 +81,7 @@ if [[ "$START" == 1 || "$START" == "1" ]]; then
 
   perl -i -pe 's|DBPath = '$HOME'/.fpd/data|DBPath = "'$FPD_HOME/data'"|g' $fpdCfg
   perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $fpdCfg
+  perl -i -pe 's|GasPrices = 0.002ubbn|GasPrices = 1ubbn|g' $fpdCfg
   perl -i -pe 's|Key = finality-provider|Key = '$fpName'|g' $fpdCfg
   perl -i -pe 's|BitcoinNetwork = signet|BitcoinNetwork = simnet|g' $fpdCfg
   perl -i -pe 's|LogLevel = info|LogLevel = debug|g' $fpdCfg
@@ -103,8 +92,9 @@ if [[ "$START" == 1 || "$START" == "1" ]]; then
   $FPD_BIN start --rpc-listener $fpdListenAddr $homeF > $logdir/fpd-start.log 2>&1 &
   echo $! > $FPD_HOME/fpd.pid
   sleep 5 # wait a few secs to setup and starts to listen
+  moniker="nick-$fpName"
 
   createFPFile=$outdir/create-finality-provider.json
-  $FPD_BIN create-finality-provider --eots-pk $btcPKHex $keyNameF $cid $homeF \
-    --daemon-address $fpdListenAddr --moniker $moniker > $createFPFile
+  $FPD_BIN create-finality-provider --eots-pk $eotsPkHex $keyNameF $cid $homeF \
+    --daemon-address $fpdListenAddr --moniker $moniker --commission-rate "0.05" > $createFPFile
 fi
