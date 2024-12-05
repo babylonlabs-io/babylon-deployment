@@ -14,6 +14,7 @@ docker run --rm -v $(pwd)/.testnets:/data babylonlabs-io/babylond \
    --slashing-rate 0.1 \
    --min-staking-time-blocks 10 \
    --min-commission-rate 0.05 \
+   --unbonding-time 3 \
    --covenant-quorum 1 \
    --covenant-pks "2d4ccbe538f846a750d82a77cd742895e51afcf23d86d05004a356b783902748" # should be updated if `covenant-keyring` dir is changed`
 
