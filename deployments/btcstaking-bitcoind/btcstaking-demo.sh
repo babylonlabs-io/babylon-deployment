@@ -74,7 +74,7 @@ attackHeight=$(docker exec finality-provider0 /bin/sh -c '/bin/fpd ls | jq -r ".
 
 # Execute the attack for the first height that the finality provider voted
 docker exec finality-provider0 /bin/sh -c \
-    "/bin/fpd unsafe-add-finality-sig $attackerBtcPk $attackHeight"
+    "/bin/fpd unsafe-add-finality-sig $attackerBtcPk $attackHeight --check-double-sign=false"
 
 echo "Finality Provider with Bitcoin public key $attackerBtcPk submitted a conflicting finality signature for Babylon height $attackHeight; the Finality Provider's private BTC key has been extracted and the Finality Provider will now be slashed"
 
