@@ -5,7 +5,7 @@ echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 declare -a btcPks=()
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
     btcPk=$(docker exec eotsmanager /bin/sh -c "
-        /bin/eotsd keys add finality-provider$idx --keyring-backend=test --output=json | jq -r '.pubkey_hex'
+        /bin/eotsd keys add finality-provider$idx --keyring-backend=test --rpc-client "0.0.0.0:15813" --output=json | jq -r '.pubkey_hex'
     ")
     btcPks+=("$btcPk")
     docker exec finality-provider$idx /bin/sh -c "
