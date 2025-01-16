@@ -13,27 +13,15 @@ NODE_BIN="${1:-/Users/rafilx/projects/github.com/babylonlabs-io/babylon/build/ba
 CHAIN_ID="${CHAIN_ID:-test-1}"
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
 CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
-DENOM="${DENOM:-ubbn}"
-BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-""}"
-COVENANT_PK_FILE="${COVENANT_PK_FILE:-""}"
-COVENANT_QUORUM="${COVENANT_QUORUM:-3}"
-SETUP="${SETUP:-1}"
-
-# Folder for node
-NODE_DIR="${NODE_DIR:-$CHAIN_DIR/$CHAIN_ID/n0}"
-NODE_LOG_PATH="${NODE_LOG_PATH:-$NODE_DIR/start.log}"
 
 . $CWD/../helpers.sh $NODE_BIN
 checkBabylond
 
 echo "--- Chain ID = $CHAIN_ID"
 echo "--- Chain Dir = $CHAIN_DIR"
-echo "--- Coin Denom = $DENOM"
 VAL0_KEY="val"
 
 hdir="$CHAIN_DIR/$CHAIN_ID"
-# Home flag for folder
-home0="--home $NODE_DIR"
 
 # Folder for node
 n0dir="$hdir/n0"

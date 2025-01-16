@@ -47,6 +47,12 @@ waitForBlock() {
   done
 }
 
+waitForOneBlock() {
+  CUR_BLOCK_HEIGHT=`$NODE_BIN status | jq ".sync_info.latest_block_height | tonumber"`
+  blockHeight=$(($CUR_BLOCK_HEIGHT + 1))
+  waitForBlock $blockHeight
+}
+
 upgradeApplied() {
   SOFTWARE_UPGRADE_FILE=$1
 
