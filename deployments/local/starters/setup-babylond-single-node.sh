@@ -18,7 +18,7 @@ DENOM="${DENOM:-ubbn}"
 CLEANUP="${CLEANUP:-1}"
 IS_TGE="${IS_TGE:-0}"
 LOG_LEVEL="${LOG_LEVEL:-info}"
-VOTING_PERIOD="${VOTING_PERIOD:-120s}"
+VOTING_PERIOD="${VOTING_PERIOD:-30s}"
 EXPEDITED_VOTING_PERIOD="${EXPEDITED_VOTING_PERIOD:-10s}"
 COVENANT_QUORUM="${COVENANT_QUORUM:-1}"
 COVENANT_PK_FILE="${COVENANT_PK_FILE:-""}"
@@ -159,6 +159,7 @@ if [[ -n "$COVENANT_PK_FILE" ]]; then
 fi
 
 echo "--- Creating gentx..."
+# gentx should gen-helpers create-bls and gen-helpers add-bls
 $NODE_BIN $home0 gentx $VAL0_KEY 1000000000$DENOM $kbt $cid --gas-prices 2ubbn
 echo "--- Set POP to checkpointing module..."
 
