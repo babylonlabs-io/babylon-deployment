@@ -48,8 +48,14 @@ waitForBlock() {
 }
 
 waitForOneBlock() {
+  waitForBlocks 1
+}
+
+waitForBlocks() {
+  NUM_BLOCKS_TO_WAIT=$1
+
   CUR_BLOCK_HEIGHT=`$NODE_BIN status | jq ".sync_info.latest_block_height | tonumber"`
-  blockHeight=$(($CUR_BLOCK_HEIGHT + 1))
+  blockHeight=$(($CUR_BLOCK_HEIGHT + $NUM_BLOCKS_TO_WAIT))
   waitForBlock $blockHeight
 }
 
