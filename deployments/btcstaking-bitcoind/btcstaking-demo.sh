@@ -13,7 +13,7 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
             --chain-id chain-test \
             --eots-pk $btcPk \
             --commission-rate 0.05 \
-            --moniker \"Finality Provider $idx\" | jq -r .btc_pk_hex
+            --moniker \"Finality Provider $idx\" | head -n -1 | jq -r .btc_pk_hex
     "
 done
 
