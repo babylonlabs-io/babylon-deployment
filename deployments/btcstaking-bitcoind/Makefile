@@ -39,7 +39,10 @@ build-finality-provider:
 build-covenant-emulator:
 	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-emulator build-docker
 
-build-deployment-btcstaking-bitcoind: build-bitcoindsim $(EXTRA_BUILD_TARGET)
+build-covenant-signer:
+	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-emulator/covenant-signer build-docker
+
+build-deployment-btcstaking-bitcoind: build-babylond build-bitcoindsim build-vigilante build-btc-staker build-finality-provider build-covenant-emulator build-covenant-signer
 
 start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-deployment-btcstaking-bitcoind
 	BABYLOND_IMAGE=${BABYLOND_IMAGE} \
