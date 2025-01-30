@@ -8,17 +8,19 @@ EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-fina
 endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
-BABYLOND_IMAGE= "babylonlabs/babylond:v1.0.0-rc.3"
-VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.19.7"
-BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.14.0"
-FP_IMAGE= "babylonlabs/finality-provider:v0.14.3"
-COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.11.3"
+BABYLOND_IMAGE= "babylonlabs/babylond:v1.0.0-rc.4"
+VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.19.9"
+BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.15.1"
+FP_IMAGE= "babylonlabs/finality-provider:v0.15.0"
+COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.12.0"
+COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.12.0"
 else
 BABYLOND_IMAGE= "babylonlabs-io/babylond"
 VIGILANTE_IMAGE= "babylonlabs-io/vigilante"
 BTCSTAKER_IMAGE= "babylonlabs-io/btc-staker"
 FP_IMAGE= "babylonlabs-io/finality-provider"
 COVENANT_IMAGE= "babylonlabs-io/covenant-emulator"
+COVENANT_SIGNER_IMAGE= "babylonlabs-io/covenant-signer"
 endif
 
 build-bitcoindsim:
@@ -51,6 +53,7 @@ start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-
 		VIGILANTE_IMAGE=$(VIGILANTE_IMAGE) \
 		BTCSTAKER_IMAGE=$(BTCSTAKER_IMAGE) \
 		COVENANT_IMAGE=$(COVENANT_IMAGE) \
+		COVENANT_SIGNER_IMAGE=$(COVENANT_SIGNER_IMAGE) \
 		FP_IMAGE=$(FP_IMAGE) \
 		docker compose -f artifacts/docker-compose.yml up -d
 	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./post-deployment.sh
@@ -63,6 +66,7 @@ stop-deployment-btcstaking-bitcoind:
 		VIGILANTE_IMAGE=$(VIGILANTE_IMAGE) \
 		BTCSTAKER_IMAGE=$(BTCSTAKER_IMAGE) \
 		COVENANT_IMAGE=$(COVENANT_IMAGE) \
+		COVENANT_SIGNER_IMAGE=$(COVENANT_SIGNER_IMAGE) \
 		FP_IMAGE=$(FP_IMAGE) \
 		docker compose -f artifacts/docker-compose.yml down
 	rm -rf $(CURDIR)/.testnets
