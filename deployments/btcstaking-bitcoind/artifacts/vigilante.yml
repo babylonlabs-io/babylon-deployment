@@ -87,10 +87,10 @@ monitor:
     autocompactminage: 168h0m0s
     dbtimeout: 1m0s
 btcstaking-tracker:
-  check-delegations-interval: 1m
+  check-delegations-interval: 10s
   delegations-batch-size: 100
-  check-if-delegation-active-interval: 5m
-  retry-submit-unbonding-interval: 1m
+  check-if-delegation-active-interval: 10s
+  retry-submit-unbonding-interval: 10s
   max-jitter-interval: 30s
   btcnetparams: regtest
   max-slashing-concurrency: 20

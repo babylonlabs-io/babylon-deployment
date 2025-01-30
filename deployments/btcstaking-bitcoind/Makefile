@@ -2,6 +2,25 @@ DOCKER := $(shell which docker)
 GIT_TOPLEVEL := $(shell git rev-parse --show-toplevel)
 NUM_FINALITY_PROVIDERS := 3
 
+# Build submodules only if the executor specifies to build submodules
+ifneq ($(USE_DOCKERHUB_IMAGES),TRUE)
+EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-finality-provider build-covenant-emulator
+endif
+
+ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
+BABYLOND_IMAGE= "babylonlabs/babylond:v1.0.0-rc.3"
+VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.19.7"
+BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.14.0"
+FP_IMAGE= "babylonlabs/finality-provider:v0.14.3"
+COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.11.3"
+else
+BABYLOND_IMAGE= "babylonlabs-io/babylond"
+VIGILANTE_IMAGE= "babylonlabs-io/vigilante"
+BTCSTAKER_IMAGE= "babylonlabs-io/btc-staker"
+FP_IMAGE= "babylonlabs-io/finality-provider"
+COVENANT_IMAGE= "babylonlabs-io/covenant-emulator"
+endif
+
 build-bitcoindsim:
 	$(MAKE) -C $(GIT_TOPLEVEL)/contrib/images bitcoindsim
 
@@ -20,16 +39,27 @@ build-finality-provider:
 build-covenant-emulator:
 	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-emulator build-docker
 
-build-deployment-btcstaking-bitcoind: build-babylond build-bitcoindsim build-vigilante build-btc-staker build-finality-provider build-covenant-emulator
+build-deployment-btcstaking-bitcoind: build-bitcoindsim $(EXTRA_BUILD_TARGET)
 
 start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-deployment-btcstaking-bitcoind
-	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./pre-deployment.sh
-	docker compose -f artifacts/docker-compose.yml up -d
+	BABYLOND_IMAGE=${BABYLOND_IMAGE} \
+		NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./pre-deployment.sh
+	BABYLOND_IMAGE=$(BABYLOND_IMAGE) \
+		VIGILANTE_IMAGE=$(VIGILANTE_IMAGE) \
+		BTCSTAKER_IMAGE=$(BTCSTAKER_IMAGE) \
+		COVENANT_IMAGE=$(COVENANT_IMAGE) \
+		FP_IMAGE=$(FP_IMAGE) \
+		docker compose -f artifacts/docker-compose.yml up -d
 	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./post-deployment.sh
 
 start-deployment-btcstaking-bitcoind-demo: start-deployment-btcstaking-bitcoind
 	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./btcstaking-demo.sh
 
 stop-deployment-btcstaking-bitcoind:
-	docker compose -f artifacts/docker-compose.yml down
+	BABYLOND_IMAGE=$(BABYLOND_IMAGE) \
+		VIGILANTE_IMAGE=$(VIGILANTE_IMAGE) \
+		BTCSTAKER_IMAGE=$(BTCSTAKER_IMAGE) \
+		COVENANT_IMAGE=$(COVENANT_IMAGE) \
+		FP_IMAGE=$(FP_IMAGE) \
+		docker compose -f artifacts/docker-compose.yml down
 	rm -rf $(CURDIR)/.testnets

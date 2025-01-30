@@ -1,6 +1,3 @@
-[submodule "faucet"]
-	path = faucet
-	url = git@github.com:babylonlabs-io/faucet
 [submodule "btc-staker"]
 	path = btc-staker
 	url = git@github.com:babylonlabs-io/btc-staker.git
@@ -16,27 +13,3 @@
 [submodule "vigilante"]
 	path = vigilante
 	url = git@github.com:babylonlabs-io/vigilante.git
-[submodule "btc-discord-faucet"]
-	path = btc-discord-faucet
-	url = git@github.com:babylonlabs-io/btc-discord-faucet.git
-[submodule "simple-staking"]
-	path = simple-staking
-	url = https://github.com/babylonlabs-io/simple-staking.git
-[submodule "staking-api-service"]
-	path = staking-api-service
-	url = https://github.com/babylonlabs-io/staking-api-service.git
-[submodule "staking-indexer"]
-	path = staking-indexer
-	url = https://github.com/babylonlabs-io/staking-indexer.git
-[submodule "cli-tools"]
-	path = cli-tools
-	url = https://github.com/babylonlabs-io/cli-tools.git
-[submodule "staking-expiry-checker"]
-	path = staking-expiry-checker
-	url = https://github.com/babylonlabs-io/staking-expiry-checker.git
-[submodule "covenant-signer"]
-	path = covenant-signer
-	url = git@github.com:babylonlabs-io/covenant-signer.git
-[submodule "networks"]
-	path = networks
-	url = git@github.com:babylonlabs-io/networks.git
