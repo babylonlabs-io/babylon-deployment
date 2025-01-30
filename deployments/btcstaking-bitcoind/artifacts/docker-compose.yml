@@ -220,6 +220,8 @@ services:
       - babylondnode0
     restart: unless-stopped
 
+# TODO: Add a covenant signer
+
 networks:
   localnet:
     driver: bridge

@@ -5,16 +5,16 @@
 The to-be-deployed Babylon network that features Babylon's BTC Staking and BTC
 Timestamping protocols comprises the following components:
 
-- 2 **Babylon Finality Provider Nodes** running the base Tendermint consensus and producing
-  Tendermint-confirmed Babylon blocks
-- **Finality Provider** daemon: Hosts one or more Finality Providers which commit public
-  randomness and submit finality signatures for Babylon blocks to Babylon
+- 2 **Babylon Finality Provider Nodes** running the base Tendermint consensus and
+  producing Tendermint-confirmed Babylon blocks
+- 3 **Finality Provider** daemons: Hosts one or more Finality Providers which commit
+  public randomness and submit finality signatures for Babylon blocks to Babylon
 - **BTC Staker** daemon: Enables the staking of BTC tokens to PoS chains by
   locking BTC tokens on the BTC network and submitting a delegation to a
   dedicated Finality Provider; the daemon connects to a BTC wallet that manages
   multiple private/public keys and performs staking requests from BTC public
   keys to dedicated Finality Providers
-- **BTC covenant emulation** daemon: Pre-signs the BTC slashing
+- **BTC Covenant Emulation** daemon: Pre-signs the BTC slashing
   transaction to enforce that malicious stakers' stake will be sent to a
   pre-defined burn BTC address in case they attack Babylon
 - **Vigilante Monitor** daemon: Detects attacks to Babylon and submits slashing
@@ -25,6 +25,9 @@ Timestamping protocols comprises the following components:
 - **Vigilante Reporter** daemon: Keeps track of the BTC network's state in
   Babylon and detects Babylon checkpoints that have received a BTC timestamp
   (i.e. have been confirmed in BTC)
+- **Vigilante BTC Staking Tracker** daemon: Tracks the state of every BTC delegation
+  on the BTC network and reports important events (e.g., activation, unbondings)
+  to the Babylon network
 - A **BTC simnet** acting as the BTC network, operated through a bitcoind node
 
 ### Expected Docker state post-deployment
@@ -33,17 +36,21 @@ The following containers should be created as a result of the `make` command
 that spins up the network:
 
 ```shell
-[+] Running 13/13
-✔ Network artifacts_localnet      Created                                                               0.2s
- ✔ Container babylondnode0        Started                                                               0.5s
- ✔ Container babylondnode1        Started                                                               0.6s
- ✔ Container bitcoindsim          Started                                                               0.5s
- ✔ Container vigilante-reporter   Started                                                               1.6s
- ✔ Container vigilante-submitter  Started                                                               1.2s
- ✔ Container finality-provider    Started                                                               1.0s
- ✔ Container vigilante-monitor    Started                                                               2.0s
- ✔ Container btc-staker           Started                                                               1.2s
- ✔ Container covenant             Started                                                               1.0s
+[+] Running 14/14
+ ✔ Container eotsmanager          Removed                                                           0.0s 
+ ✔ Container vigilante-submitter  Removed                                                           0.0s 
+ ✔ Container vigilante-monitor    Removed                                                           0.0s 
+ ✔ Container vigilante-bstracker  Removed                                                           0.0s 
+ ✔ Container covenant-emulator    Removed                                                           0.0s 
+ ✔ Container btc-staker           Removed                                                           0.0s 
+ ✔ Container babylondnode1        Removed                                                           0.0s 
+ ✔ Container vigilante-reporter   Removed                                                           0.0s 
+ ✔ Container finality-provider1   Removed                                                           0.0s 
+ ✔ Container finality-provider2   Removed                                                           0.0s 
+ ✔ Container finality-provider0   Removed                                                           0.0s 
+ ✔ Container bitcoindsim          Removed                                                          10.4s 
+ ✔ Container babylondnode0        Removed                                                           0.0s 
+ ✔ Network artifacts_localnet     Removed                                                           0.3s
 ```
 
 ## Inspecting the BTC Staking Protocol demo
@@ -59,10 +66,8 @@ outcome for the Babylon and the BTC network respectively.
 
 ### Generating Finality Providers
 
-Initially, 3 Finality Providers are created and registered on Babylon through the
-Finality Provider daemon. For each Babylon block, the daemon will now check if
-the Finality Providers have simnet BTC tokens staked to them. The Finality Providers that have
-staked tokens can submit finality signatures.
+The Finality Providers have simnet BTC tokens staked to them. The Finality
+Providers that have staked tokens can submit finality signatures.
 
 Through the Finality Provider's daemon logs we can verify the above (only 1
 Finality Provider is included in all the example outputs in this section for
