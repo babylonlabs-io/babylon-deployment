@@ -17,6 +17,14 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
     "
 done
 
+echo "Restarting finality provider containers..."
+for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
+    echo "Restarting finality-provider$idx"
+    docker restart finality-provider$idx
+done
+echo "All finality provider containers restarted"
+
+
 echo "Created $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 echo "Finality provider btc pks" ${btcPks[@]}
 
