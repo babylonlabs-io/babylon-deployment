@@ -1,9 +1,13 @@
+USE_DOCKERHUB_IMAGES ?= TRUE
+
 start-deployment-btcstaking-bitcoind:
-	$(MAKE) -C $(CURDIR)/deployments/btcstaking-bitcoind \
+	USE_DOCKERHUB_IMAGES=$(USE_DOCKERHUB_IMAGES) \
+		$(MAKE) -C $(CURDIR)/deployments/btcstaking-bitcoind \
 		start-deployment-btcstaking-bitcoind
 
 start-deployment-btcstaking-bitcoind-demo:
-	$(MAKE) -C $(CURDIR)/deployments/btcstaking-bitcoind \
+	USE_DOCKERHUB_IMAGES=$(USE_DOCKERHUB_IMAGES) \
+		$(MAKE) -C $(CURDIR)/deployments/btcstaking-bitcoind \
 		start-deployment-btcstaking-bitcoind-demo
 
 stop-deployment-btcstaking-bitcoind:
