@@ -4,7 +4,7 @@ NUM_FINALITY_PROVIDERS := 3
 
 # Build submodules only if the executor specifies to build submodules
 ifneq ($(USE_DOCKERHUB_IMAGES),TRUE)
-EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-finality-provider build-covenant-emulator
+EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-finality-provider build-covenant-emulator build-covenant-signer
 endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
@@ -44,7 +44,7 @@ build-covenant-emulator:
 build-covenant-signer:
 	$(MAKE) -C $(GIT_TOPLEVEL)/covenant-emulator/covenant-signer build-docker
 
-build-deployment-btcstaking-bitcoind: build-babylond build-bitcoindsim build-vigilante build-btc-staker build-finality-provider build-covenant-emulator build-covenant-signer
+build-deployment-btcstaking-bitcoind: build-bitcoindsim $(EXTRA_BUILD_TARGET)
 
 start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-deployment-btcstaking-bitcoind
 	BABYLOND_IMAGE=${BABYLOND_IMAGE} \
