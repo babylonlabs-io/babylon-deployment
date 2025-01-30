@@ -45,7 +45,7 @@ do
     echo "Delegating 1 million Satoshis from BTC address ${delAddrs[i]} to Finality Provider with Bitcoin public key $btcPk for $stakingTime BTC blocks";
 
     btcTxHash=$(docker exec btc-staker /bin/sh -c \
-        "/bin/stakercli dn stake --staker-address ${delAddrs[i]} --staking-amount 1000000 --finality-providers-pks $btcPk --staking-time $stakingTime | jq -r '.tx_hash'")
+        "/bin/stakercli dn stake --staker-address ${delAddrs[i]} --staking-amount 1000000 --finality-providers-pks $btcPk --staking-time $stakingTime --send-to-babylon-first| jq -r '.tx_hash'")
     echo "Delegation was successful; staking tx hash is $btcTxHash"
     txHashes+=("$btcTxHash")  # Store the tx hash in the array
     i=$((i+1))
