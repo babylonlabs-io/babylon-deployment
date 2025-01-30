@@ -17,6 +17,8 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
     "
 done
 
+# Restart the finality provider containers so that key creation command above
+# takes effect and finality provider is start communication with the chain.
 echo "Restarting finality provider containers..."
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
     echo "Restarting finality-provider$idx"
