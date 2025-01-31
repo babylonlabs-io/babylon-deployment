@@ -13,9 +13,19 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
             --chain-id chain-test \
             --eots-pk $btcPk \
             --commission-rate 0.05 \
-            --moniker \"Finality Provider $idx\" | jq -r .btc_pk_hex
+            --moniker \"Finality Provider $idx\" | head -n -1 | jq -r .btc_pk_hex
     "
 done
+
+# Restart the finality provider containers so that key creation command above
+# takes effect and finality provider is start communication with the chain.
+echo "Restarting finality provider containers..."
+for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
+    echo "Restarting finality-provider$idx"
+    docker restart finality-provider$idx
+done
+echo "All finality provider containers restarted"
+
 
 echo "Created $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 echo "Finality provider btc pks" ${btcPks[@]}
