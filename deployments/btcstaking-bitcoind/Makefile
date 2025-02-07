@@ -11,7 +11,7 @@ ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
 BABYLOND_IMAGE= "babylonlabs/babylond:v1.0.0-rc.4"
 VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.19.9"
 BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.15.1"
-FP_IMAGE= "babylonlabs/finality-provider:v0.15.0"
+FP_IMAGE= "babylonlabs/finality-provider:v1.0.0-rc.1"
 COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.12.0"
 COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.12.0"
 else
