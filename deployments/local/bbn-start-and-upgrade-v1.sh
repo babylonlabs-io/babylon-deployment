@@ -83,7 +83,7 @@ for fpHomePath in $DATA_DIR/fpd/*; do
 done
 
 # Setups the staking indexer to write the btc headers into babylond upgrades
-$STARTERS/setup-staking-indexer.sh
+# $STARTERS/setup-staking-indexer.sh
 
 # Migrate covenant-signer to covenant-emulator https://babylonlabs.atlassian.net/wiki/spaces/BABYLON/pages/82182253/Covenant+Keys+Transitions+from+Phase-1+to+phase-2+WIP
 # and pass correct covenant pub key to the write of upgrade data.
