@@ -55,3 +55,4 @@ cp artifacts/covd.conf .testnets/covenant-emulator/covd.conf
 cp -R artifacts/covenant-emulator-keyring .testnets/covenant-emulator/keyring-test
 cp artifacts/covenant-signer.toml .testnets/covenant-signer/config.toml
 cp -R artifacts/covenant-signer-keyring .testnets/covenant-signer/keyring-test
+cp artifacts/tmkms.toml .testnets/tmkms/config/tmkms.toml
