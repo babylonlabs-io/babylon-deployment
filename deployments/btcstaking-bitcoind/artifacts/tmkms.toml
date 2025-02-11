@@ -4,7 +4,6 @@ key_format = { type = "bech32", account_key_prefix = "bbnpub", consensus_key_pre
 state_file = "/tmkms/config/state/priv_validator_state.json"
 sign_extensions = true
 
-## Signing Provider Configuration
 
 ### Software-based Signer Configuration
 
