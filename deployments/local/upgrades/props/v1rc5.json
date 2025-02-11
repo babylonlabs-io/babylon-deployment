@@ -1,0 +1,12 @@
+{
+  "title": "any title",
+  "summary": "any summary",
+  "messages": [
+    {
+      "@type": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
+      "authority": "bbn10d07y265gmmuvt4z0w9aw880jnsr700jduz5f2",
+      "plan": { "name": "v1rc5", "info": "Coordinated upgrade for state breaking changes. Version v1.0.0-rc{1,2,3,4} => v1.0.0-rc5", "height": 120 }
+    }
+  ],
+  "deposit": "500000000ubbn"
+}

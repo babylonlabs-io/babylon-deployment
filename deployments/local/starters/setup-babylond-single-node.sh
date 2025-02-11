@@ -101,7 +101,7 @@ coins_user="1000000000000$DENOM"
 echo "--- Initializing home..."
 
 # Initialize the home directory of node
-$NODE_BIN $home0 $cid init n0 &>/dev/null
+$NODE_BIN $home0 $cid init --no-bls-password n0 &>/dev/null
 
 echo "--- Importing keys..."
 echo "$VAL0_MNEMONIC$NEWLINE"
@@ -121,7 +121,6 @@ $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $VAL0_KEY -a $
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $USER_KEY -a $kbt) $coins_user &>/dev/null
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $SUBMITTER_KEY -a $kbt) $coins_user &>/dev/null
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $BTC_STAKER_KEY -a $kbt) $coins_user &>/dev/null
-$NODE_BIN $home0 create-bls-key $($NODE_BIN $home0 keys show $VAL0_KEY -a $kbt)
 
 echo "--- Patching genesis..."
 if [[ "$IS_TGE" == 1 || "$IS_TGE" == "1" ]]; then
@@ -164,9 +163,6 @@ $NODE_BIN $home0 gentx $VAL0_KEY 1000000000$DENOM $kbt $cid --gas-prices 2ubbn
 echo "--- Set POP to checkpointing module..."
 
 $NODE_BIN $home0 collect-gentxs > /dev/null
-
-$NODE_BIN $home0 gen-helpers create-bls
-$NODE_BIN $home0 gen-helpers add-bls $n0cfgDir/gen-bls-$VAL0_ADDR.json
 
 if [[ -n "$BTC_BASE_HEADER_FILE" ]]; then
   jq '.app_state.btclightclient.btc_headers = [input]' $n0cfgDir/genesis.json $BTC_BASE_HEADER_FILE > $n0cfgDir/tmp_genesis.json
