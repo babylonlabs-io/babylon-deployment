@@ -1,0 +1,23 @@
+[[chain]]
+id = "chain-test"
+key_format = { type = "bech32", account_key_prefix = "bbnpub", consensus_key_prefix = "bbnvalconspub" }
+state_file = "/tmkms/config/state/priv_validator_state.json"
+sign_extensions = true
+
+## Signing Provider Configuration
+
+### Software-based Signer Configuration
+
+[[providers.softsign]]
+chain_ids = ["chain-test"]
+key_type = "consensus"
+path = "/tmkms/config/secrets/priv_validator_key"
+
+## Validator Configuration
+
+[[validator]]
+chain_id = "chain-test"
+addr = "tcp://babylondnode0:26658"
+secret_key = "/tmkms/config/secrets/secret_connection_key"
+protocol_version = "v0.34"
+reconnect = true

@@ -19,6 +19,17 @@ docker run --rm -v $(pwd)/.testnets:/data ${BABYLOND_IMAGE} \
   --unbonding-time 5 \
   --covenant-pks "2d4ccbe538f846a750d82a77cd742895e51afcf23d86d05004a356b783902748" # should be updated if `covenant-keyring` dir is changed`
 
+# Create tmkms directory that holds the tmkms secrets
+mkdir -p .testnets/tmkms
+docker run --rm \
+  -v $(pwd)/.testnets/tmkms:/tmkms \
+  -v $(pwd)/.testnets/node0:/tmkms/node0 \
+  babylonlabs-io/tmkms:latest /bin/sh -c " \
+    tmkms init /tmkms/config && \
+    tmkms softsign keygen /tmkms/config/secrets/secret_connection_key && \
+    tmkms softsign import /tmkms/node0/babylond/config/priv_validator_key.json /tmkms/config/secrets/priv_validator_key \
+  "
+
 # Create separate subpaths for each component and copy relevant configuration
 mkdir -p .testnets/bitcoin
 mkdir -p .testnets/vigilante

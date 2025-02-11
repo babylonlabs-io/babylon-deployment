@@ -14,4 +14,8 @@ bitcoindsim:
 bitcoindsim-rmi:
 	docker rmi babylonlabs-io/bitcoindsim 2>/dev/null; true
 
-.PHONY: all bitcoindsim bitcoindsim-rmi
+tmkms:
+	docker build --platform "linux/amd64" --tag babylonlabs-io/tmkms:latest -f tmkms/Dockerfile \
+		$(shell git rev-parse --show-toplevel)/contrib/images/tmkms
+
+.PHONY: all bitcoindsim bitcoindsim-rmi tmkms
