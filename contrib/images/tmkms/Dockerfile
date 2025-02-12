@@ -1,3 +1,4 @@
+# A custom Dockerfile is needed since an official Docker image is not available.
 FROM rust:alpine AS builder
 
 # Install dependencies
