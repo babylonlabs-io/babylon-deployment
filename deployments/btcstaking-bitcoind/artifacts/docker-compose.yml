@@ -95,7 +95,7 @@ services:
         "--electrum-rpc-addr", "0.0.0.0:8080",
         "--http-addr", "0.0.0.0:3000",
         "--db-dir", "/electrs/.electrs/db/",
-        "--daemon-rpc-addr", "192.168.10.30:18443",
+        "--daemon-rpc-addr", "bitcoindsim:18443",
         "--daemon-dir", "/bitcoin/.bitcoin",
         "-v",
         "--address-search",
