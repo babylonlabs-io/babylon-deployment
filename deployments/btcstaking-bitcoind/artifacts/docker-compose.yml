@@ -1,11 +1,23 @@
 version: "3"
 
 services:
+  tmkms:
+    container_name: tmkms
+    image: babylonlabs-io/tmkms:latest
+    volumes:
+      - ../.testnets/tmkms:/tmkms
+    command: tmkms start -c /tmkms/config/tmkms.toml
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.18
+    ports:
+      - "26658:26658"
+
   babylondnode0:
     container_name: babylondnode0
     image: "${BABYLOND_IMAGE}"
     command: >
-      babylond --home /babylondhome start --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
+      babylond --home /babylondhome start --priv_validator_laddr tcp://0.0.0.0:26658 --log_format 'plain' 2>&1 | tee /babylondhome/babylond.log
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -20,6 +32,8 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.2
+    depends_on:
+      - tmkms
 
   babylondnode1:
     container_name: babylondnode1
