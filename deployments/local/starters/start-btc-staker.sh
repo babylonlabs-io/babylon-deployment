@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./start-btc-staker.sh
@@ -31,11 +31,6 @@ mkdir -p $pidPath
 mkdir -p $stakercliLogsDir
 
 # starts the staker daemon
-echo
-echo "RUN THE FOLLOWING": $STAKERD_BIN --configfile=$stakercliConfigFile
-echo
-sleep 15
-
-# $STAKERD_BIN --configfile=$stakercliConfigFile > $stakercliLogsDir/daemon.log 2>&1 &
-# echo $! > $pidPath/stakerd.pid
-# sleep 5 # waits for the daemon to load.
+$STAKERD_BIN --configfile=$stakercliConfigFile > $stakercliLogsDir/daemon.log 2>&1 &
+echo $! > $pidPath/stakerd.pid
+sleep 5 # waits for the daemon to load.

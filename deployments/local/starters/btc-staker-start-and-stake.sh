@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./btc-staker-start-and-stake.sh
@@ -27,7 +27,7 @@ stakercliDirHome=$BTC_STAKER_HOME/stakecli
 stakercliOutputDir=$stakercliDirHome/output
 
 btcWalletNameWithFunds="btcWalletName"
-DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=$CLEANUP BTC_WALLET_NAME=$btcWalletNameWithFunds KEYRING_BACKEND="file" $CWD/setup-btc-staker.sh
+DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=$CLEANUP BTC_WALLET_NAME=$btcWalletNameWithFunds $CWD/setup-btc-staker.sh
 DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=0 $CWD/start-btc-staker.sh
 
 mkdir -p $stakercliOutputDir
