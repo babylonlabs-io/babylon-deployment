@@ -37,6 +37,7 @@ n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
 homeN0="--home $n0dir"
 kbt="--keyring-backend test"
 cid="--chain-id $CHAIN_ID"
+gasp="--gas-prices 1ubbn"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
   PATH_OF_PIDS=$COVD_HOME/*.pid $STOP/kill-process.sh
@@ -51,8 +52,9 @@ fi
 
 # transfer funds to the covenant acc created
 covenantAddr=$($BBN_BIN $homeF keys show covenant -a $kbt)
-$BBN_BIN tx bank send user $covenantAddr 100000000ubbn $homeN0 $kbt $cid -y
+$BBN_BIN tx bank send user $covenantAddr 100000000ubbn $homeN0 $gasp $kbt $cid -y
 
 # Start Covenant
-$COVD_BIN start $homeF >> $COVD_HOME/covd-start.log &
+
+$COVD_BIN start $homeF > $COVD_HOME/covd-start.log 2>&1 &
 echo $! > $COVD_HOME/covd.pid

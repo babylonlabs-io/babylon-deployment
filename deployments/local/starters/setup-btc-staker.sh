@@ -16,6 +16,7 @@ DATA_DIR="${DATA_DIR:-$CWD/../data}"
 CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 BTC_STAKER_HOME="${BTC_STAKER_HOME:-$DATA_DIR/btc-staker}"
+BTC_WALLET_NAME="${BTC_WALLET_NAME:-"btc-staker"}"
 CLEANUP="${CLEANUP:-1}"
 
 pidPath=$BTC_STAKER_HOME/pid
@@ -37,7 +38,6 @@ n0dir="$CHAIN_DIR/$CHAIN_ID/n0"
 
 mkdir -p $stakercliLogsDir
 
-walletName="btc-staker"
 $STAKERCLI_BIN admin dump-config --config-file-dir $stakercliConfigFile
 
 #[Application Options]
@@ -46,7 +46,7 @@ perl -i -pe 's|ConfigFile = '$HOME'/.stakerd/stakerd.conf|ConfigFile = "'$staker
 perl -i -pe 's|DataDir = '$HOME'/.stakerd/data|DataDir = "'$stakercliDataDir'"|g' $stakercliConfigFile
 perl -i -pe 's|LogDir = '$HOME'/.stakerd/logs|LogDir = "'$stakercliLogsDir'"|g' $stakercliConfigFile
 #[walletconfig]
-perl -i -pe 's|WalletName = wallet|WalletName = "'$walletName'"|g' $stakercliConfigFile
+perl -i -pe 's|WalletName = wallet|WalletName = "'$BTC_WALLET_NAME'"|g' $stakercliConfigFile
 #[btcnodebackend]
 perl -i -pe 's|Nodetype = btcd|Nodetype = bitcoind|g' $stakercliConfigFile
 perl -i -pe 's|WalletType = btcwallet|WalletType = bitcoind|g' $stakercliConfigFile
