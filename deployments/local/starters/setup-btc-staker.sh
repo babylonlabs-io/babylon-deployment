@@ -17,6 +17,7 @@ CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 CHAIN_ID="${CHAIN_ID:-test-1}"
 BTC_STAKER_HOME="${BTC_STAKER_HOME:-$DATA_DIR/btc-staker}"
 BTC_WALLET_NAME="${BTC_WALLET_NAME:-"btc-staker"}"
+KEYRING_BACKEND="${KEYRING_BACKEND:-"test"}"
 CLEANUP="${CLEANUP:-1}"
 
 pidPath=$BTC_STAKER_HOME/pid
@@ -70,6 +71,7 @@ perl -i -pe 's|RPCHost = 127.0.0.1:8334|RPCHost = 127.0.0.1:19001|g' $stakercliC
 perl -i -pe 's|Key = node0|Key = "'$BTC_STAKER_KEY'"|g' $stakercliConfigFile
 perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $stakercliConfigFile
 perl -i -pe 's|KeyDirectory = '$HOME'/.stakerd|KeyDirectory = "'$n0dir'"|g' $stakercliConfigFile
+perl -i -pe 's|KeyringBackend = test|KeyringBackend = '$KEYRING_BACKEND'|g' $stakercliConfigFile
 #[dbconfig]
 perl -i -pe 's|DBPath = '$HOME'/.stakerd/data|DBPath = "'$stakercliDBDir'"|g' $stakercliConfigFile
 #[stakerconfig]
