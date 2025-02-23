@@ -19,7 +19,7 @@ DATA_DIR="${DATA_DIR:-$CWD/../data}"
 DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 
 BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
-COVENANT_SIGNER_HOME="${COVENANT_SIGNER_HOME:-$DATA_DIR/covenant-signer}"
+COVENANT_SIGNER_HOME="${COVENANT_SIGNER_HOME:-$DATA_DIR/covenant-signer-phase-1}"
 COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
 COVD_BIN="${COVD_BIN:-$BBN_DEPLOYMENTS/covenant-emulator/build/covd}"
 

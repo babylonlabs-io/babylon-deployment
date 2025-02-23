@@ -15,7 +15,7 @@ for pid_file in $PATH_OF_PIDS; do
   if [ -f "$pid_file" ]; then
     pid_value=$(cat "$pid_file")
     if ps -p "$pid_value" > /dev/null; then
-      kill -s 15 "$pid_value"
+      kill -s 9 "$pid_value"
       echo -e "\t$pid_value killed"
     else
       echo -e "\tno process running"

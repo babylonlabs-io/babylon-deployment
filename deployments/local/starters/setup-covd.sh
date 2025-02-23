@@ -31,6 +31,8 @@ $COVD_BIN init $homeF
 
 perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $cfg
 perl -i -pe 's|Key = covenant-key|Key = "'$keyName'"|g' $cfg
+perl -i -pe 's|GasPrices = 0.01ubbn|GasPrices = 1ubbn|g' $cfg
+perl -i -pe 's|GasAdjustment = 1.2|GasAdjustment = 2|g' $cfg
 perl -i -pe 's|Port = 2112|Port = 2115|g' $cfg # any other available port.
 
 if [[ "$CREATE_KEYS" == 1 || "$CREATE_KEYS" == "1" ]]; then

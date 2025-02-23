@@ -81,5 +81,5 @@ bitcoin-cli $flagDataDir -named createwallet descriptors=true wallet_name=$walle
 bitcoin-cli $flagDataDir $rpcWalletFlag -generate 150
 
 # keeps mining 1 block each 8 sec.
-# genBlocksForever &
-# echo $! > $genblockspid
+genBlocksForever &
+echo $! > $genblockspid

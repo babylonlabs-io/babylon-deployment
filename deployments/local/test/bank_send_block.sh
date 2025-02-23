@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # USAGE:
 # ./bank_send_block.sh <option of full path to babylond>

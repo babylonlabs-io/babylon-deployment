@@ -86,7 +86,7 @@ if [[ "$START" == 1 || "$START" == "1" ]]; then
   perl -i -pe 's|BitcoinNetwork = signet|BitcoinNetwork = simnet|g' $fpdCfg
   perl -i -pe 's|LogLevel = info|LogLevel = debug|g' $fpdCfg
   perl -i -pe 's|Port = 2112|Port = '$metricsPort'|g' $fpdCfg
-  perl -i -pe 's|RpcListener = 127.0.0.1:12581|RpcListener = '$fpdListenAddr'|g' $fpdCfg
+  perl -i -pe 's|RPCListener = 127.0.0.1:12581|RPCListener = '$fpdListenAddr'|g' $fpdCfg
   perl -i -pe 's|EOTSManagerAddress = 127.0.0.1:12582|EOTSManagerAddress = '$eotsdRpcListenerAddr'|g' $fpdCfg
 
   $FPD_BIN start --rpc-listener $fpdListenAddr $homeF > $logdir/fpd-start.log 2>&1 &

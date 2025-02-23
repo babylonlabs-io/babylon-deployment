@@ -26,10 +26,11 @@ checkBitcoind
 stakercliDirHome=$BTC_STAKER_HOME/stakecli
 stakercliOutputDir=$stakercliDirHome/output
 
-mkdir -p $stakercliOutputDir
-
-DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=$CLEANUP $CWD/setup-btc-staker.sh
+btcWalletNameWithFunds="btcWalletName"
+DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=$CLEANUP BTC_WALLET_NAME=$btcWalletNameWithFunds $CWD/setup-btc-staker.sh
 DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=0 $CWD/start-btc-staker.sh
+
+mkdir -p $stakercliOutputDir
 
 finalityProviderBTCPubKey=$($STAKERCLI_BIN daemon babylon-finality-providers | jq .finality_providers[0].bitcoin_public_Key -r)
 echo $finalityProviderBTCPubKey > $stakercliOutputDir/fpbtc.pub.key
@@ -43,6 +44,6 @@ $STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-
 
 # Generate a few blocks to confirm the tx.
 flagDataDir="-datadir=$BTC_HOME"
-flagRpc="-rpcwallet=$walletName"
+flagRpc="-rpcwallet=$btcWalletNameWithFunds"
 
 bitcoin-cli $flagDataDir $flagRpc -generate 20

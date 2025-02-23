@@ -47,13 +47,13 @@ for i in $(seq 1 $NUMBER_FPS); do
 done
 
 # Setups the conveant signer that generates the pub key for covenant_pks in global params
-$STARTERS/setup-covenant-signer.sh
+$STARTERS/setup-covenant-signer-phase-1.sh
 
 # Writes the global params
 $UPGRADES/write-global-params.sh
 
 # With the global params written, starts the covenant-signer
-GLOBAL_PARAMS_PATH=$DATA_OUTPUTS/global_params.json CLEANUP=0 SETUP=0 $STARTERS/start-covenant-signer.sh
+GLOBAL_PARAMS_PATH=$DATA_OUTPUTS/global_params.json CLEANUP=0 SETUP=0 $STARTERS/start-covenant-signer-phase-1.sh
 
 # Creates a BTC delegation tx in bitcoin without babylon
 $UPGRADES/btcstaker-create-btc-delegation-global-params.sh
