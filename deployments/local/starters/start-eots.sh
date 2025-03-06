@@ -25,6 +25,7 @@ fi
 # Home flag for folder
 homeF="--home $EOTS_HOME"
 cfg="$EOTS_HOME/eotsd.conf"
+outdir="$EOTS_HOME/out"
 
 if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
   PATH_OF_PIDS=$EOTS_HOME/*.pid $STOP/kill-process.sh
@@ -34,7 +35,11 @@ if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
 fi
 
 $EOTS_BIN init $homeF
+mkdir -p $outdir
+
 perl -i -pe 's|DBPath = '$HOME'/.eotsd/data|DBPath = "'$EOTS_HOME/data'"|g' $cfg
+
+$EOTS_BIN keys add eots-key --home $EOTS_HOME --keyring-backend test --output json > $outdir/keys-add-eots-key.json
 
 # Start Covenant
 $EOTS_BIN start $homeF >> $EOTS_HOME/eots-start.log &

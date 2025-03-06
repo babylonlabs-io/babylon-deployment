@@ -30,6 +30,8 @@ mkdir -p $DATA_OUTPUTS
 # setup covd
 DATA_DIR=$DATA_DIR $STARTERS/setup-covd.sh
 
+$STARTERS/start-covenant-signer.sh
+
 # Starts BTC
 DATA_DIR=$DATA_DIR $STARTERS/start-bitcoind.sh
 sleep 2
@@ -61,3 +63,8 @@ sleep 15 # waits for fdp to send some txs
 
 # Start BTC Staker and stakes to btc
 DATA_DIR=$DATA_DIR $STARTERS/btc-staker-start-and-stake.sh
+
+sleep 10
+
+genBTCBlocks 30
+

@@ -109,6 +109,7 @@ yes "$VAL0_MNEMONIC$NEWLINE" | $NODE_BIN $home0 keys add $VAL0_KEY $kbt --recove
 yes "$USER_MNEMONIC$NEWLINE" | $NODE_BIN $home0 keys add $USER_KEY $kbt --recover
 yes "$SUBMITTER_MNEMONIC$NEWLINE" | $NODE_BIN $home0 keys add $SUBMITTER_KEY $kbt --recover
 yes "$BTC_STAKER_MNEMONIC$NEWLINE" | $NODE_BIN $home0 keys add $BTC_STAKER_KEY $kbt --recover
+# yes "$BTC_STAKER_MNEMONIC $NEWLINE 12345678 $NEWLINE 12345678" | $NODE_BIN $home0 keys add $BTC_STAKER_KEY --keyring-backend file --recover
 
 echo "--- Adding addresses..."
 $NODE_BIN $home0 keys show $VAL0_KEY -a $kbt
@@ -120,6 +121,7 @@ VAL0_ADDR=$($NODE_BIN $home0 keys show $VAL0_KEY -a $kbt --bech val)
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $VAL0_KEY -a $kbt) $coins &>/dev/null
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $USER_KEY -a $kbt) $coins_user &>/dev/null
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $SUBMITTER_KEY -a $kbt) $coins_user &>/dev/null
+# $NODE_BIN $home0 add-genesis-account $(yes "12345678$NEWLINE" | $NODE_BIN $home0 keys show $BTC_STAKER_KEY -a --keyring-backend file) $coins_user &>/dev/null
 $NODE_BIN $home0 add-genesis-account $($NODE_BIN $home0 keys show $BTC_STAKER_KEY -a $kbt) $coins_user &>/dev/null
 
 echo "--- Patching genesis..."

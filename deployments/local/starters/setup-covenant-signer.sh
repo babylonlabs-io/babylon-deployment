@@ -3,59 +3,32 @@
 # USAGE:
 # ./setup-covenant-signer.sh
 
-# it setups the covenant signer config and creates the key with bitcoin
+# it setups the covenant signer init files for single node chain
 
 CWD="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 BBN_DEPLOYMENTS="${BBN_DEPLOYMENTS:-$CWD/../../..}"
-COVENANT_SIGNER_BIN="${COVENANT_SIGNER_BIN:-$BBN_DEPLOYMENTS/covenant-signer/build/covenant-signer}"
+COVENANT_SIGNER_BIN="${COVENANT_SIGNER_BIN:-$BBN_DEPLOYMENTS/covenant-emulator/build/covenant-signer}"
 
+CHAIN_ID="${CHAIN_ID:-test-1}"
 DATA_DIR="${DATA_DIR:-$CWD/../data}"
-BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
 COVENANT_SIGNER_HOME="${COVENANT_SIGNER_HOME:-$DATA_DIR/covenant-signer}"
+COVD_KEY_NAME="${COVD_KEY_NAME:-"covenant"}"
+COVD_KEY_DIRECTORY="${COVD_KEY_DIRECTORY:-$DATA_DIR/covd}"
 CLEANUP="${CLEANUP:-1}"
+CREATE_KEYS="${CREATE_KEYS:-1}"
 
 . $CWD/../helpers.sh
-checkJq
-checkBitcoinCLI
 checkCovenantSigner
+checkJq
+COVENANT_SIGNER_BIN=$COVENANT_SIGNER_BIN checkCovd
+cleanUp $CLEANUP $COVENANT_SIGNER_HOME/*.pid $COVENANT_SIGNER_HOME
 
-pidPath=$COVENANT_SIGNER_HOME/pid
-cleanUp $CLEANUP $pidPath/*.pid $COVENANT_SIGNER_HOME
+cfg="$COVENANT_SIGNER_HOME/config.toml"
 
-outdir="$COVENANT_SIGNER_HOME/out"
-logsdir="$COVENANT_SIGNER_HOME/logs"
-mkdir -p $pidPath
-mkdir -p $outdir
-mkdir -p $logsdir
+$COVENANT_SIGNER_BIN dump-cfg --config $cfg
 
-configPath="$COVENANT_SIGNER_HOME/config.toml"
-globalParamsPath="$COVENANT_SIGNER_HOME/global-params.json"
-covenantSignerPks=$COVENANT_SIGNER_HOME/pks.json
-btcDataDirF="-datadir=$BTC_HOME"
-btcWalletNameWithFunds="btcWalletName"
-covenantSignerWalletName="covenant-signer"
-passphraseFlag="passphrase=walletpass"
-
-bitcoin-cli $btcDataDirF -named createwallet descriptors=true wallet_name=$covenantSignerWalletName $passphraseFlag
-covenantSignerNewAddr=$(bitcoin-cli $btcDataDirF -rpcwallet=$covenantSignerWalletName getnewaddress)
-
-echo $covenantSignerNewAddr > $outdir/$covenantSignerWalletName.btc.address
-
-covenantSignerPubkeyOutFile=$outdir/$covenantSignerWalletName.btc.pubkey
-covenantSignerPubKey=$(bitcoin-cli $btcDataDirF -rpcwallet=$covenantSignerWalletName getaddressinfo $covenantSignerNewAddr | jq -r .pubkey)
-echo $covenantSignerPubKey > $covenantSignerPubkeyOutFile
-
-# pub-key, jq does not like -
-# convenantPkToGlobalParams=$(cat $covenantSignerPubkeyOutFile | jq .[] | jq --slurp '.[1]')
-echo "[\"$covenantSignerPubKey\"]" > $covenantSignerPks
-
-# opens the btc wallet to send transactions
-bitcoin-cli $btcDataDirF -rpcwallet=$btcWalletNameWithFunds walletpassphrase walletpass 100000000
-# sends 12 btc to new address
-bitcoin-cli $btcDataDirF -rpcwallet=$btcWalletNameWithFunds sendtoaddress $covenantSignerNewAddr 12
-# creates 15 btc blocks to give height deep enough
-bitcoin-cli $btcDataDirF -rpcwallet=$btcWalletNameWithFunds -generate 15
-
-# handles the covenant signer config creation
-$COVENANT_SIGNER_BIN dump-cfg --config $configPath
+perl -i -pe 's|chain-id = ""|chain-id = "'$CHAIN_ID'"|g' $cfg
+perl -i -pe 's|key-name = ""|key-name = "'$COVD_KEY_NAME'"|g' $cfg
+perl -i -pe 's|keyring-backend = ""|keyring-backend = "test"|g' $cfg
+perl -i -pe 's|key-directory = ""|key-directory = "'$COVD_KEY_DIRECTORY'"|g' $cfg
