@@ -125,4 +125,5 @@ btcstaking-tracker:
   max-jitter-interval: 30s
   btcnetparams: regtest
   max-slashing-concurrency: 20
+  indexer-addr: "http://localhost:3000"
 " > $CONF_PATH
