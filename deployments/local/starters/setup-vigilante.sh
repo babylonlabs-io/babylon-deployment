@@ -111,7 +111,7 @@ monitor:
   checkpoint-buffer-size: 1000
   btc-block-buffer-size: 1000
   btc-cache-size: 1000
-  btc-confirmation-depth: 6
+  btc-confirmation-depth: 1
   liveness-check-interval-seconds: 10
   max-live-btc-heights: 200
   enable-liveness-checker: true

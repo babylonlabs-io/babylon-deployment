@@ -144,7 +144,7 @@ else
   | .app_state["staking"]["params"]["bond_denom"]="'$DENOM'"
   | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
   | .app_state["btcstaking"]["params"][0]["slashing_pk_script"]="dqkUAQEBAQEBAQEBAQEBAQEBAQEBAQGIrA=="
-  | .app_state["btcstaking"]["params"][0]["btc_activation_height"]=10
+  | .app_state["btcstaking"]["params"][0]["btc_activation_height"]=2
   | .app_state["epoching"]["params"]["epoch_interval"]="5"
   | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="1"
   | .app_state["btccheckpoint"]["params"]["checkpoint_finalization_timeout"]="2"
@@ -187,7 +187,7 @@ perl -i -pe 's|external_address = ""|external_address = "tcp://127.0.0.1:26657"|
 perl -i -pe 's|"tcp://127.0.0.1:26657"|"tcp://0.0.0.0:26657"|g' $n0cfg
 perl -i -pe 's|allow_duplicate_ip = false|allow_duplicate_ip = true|g' $n0cfg
 perl -i -pe 's|log_level = "info"|log_level = "'$LOG_LEVEL'"|g' $n0cfg
-perl -i -pe 's|timeout_commit = ".*?"|timeout_commit = "5s"|g' $n0cfg
+perl -i -pe 's|timeout_commit = ".*?"|timeout_commit = "3s"|g' $n0cfg
 perl -i -pe 's|cors_allowed_origins = \[\]|cors_allowed_origins = \["*"\]|g' $n0cfg
 
 echo "--- Enabling node API and Swagger"
@@ -196,8 +196,7 @@ perl -i -pe 's|swagger = false|swagger = true|g'  $n0app
 
 echo "--- Modifying app..."
 perl -i -pe 's|minimum-gas-prices = ""|minimum-gas-prices = "1'$DENOM'"|g' $n0app
-perl -i -pe 's|enable-unsafe-cors = false|enable-unsafe-cors = true|g' $n0app
 perl -i -pe 's|enabled-unsafe-cors = false|enabled-unsafe-cors = true|g' $n0app
-perl -i -pe 's|network = "mainnet"|network = "simnet"|g' $n0app
+perl -i -pe 's|network = "mainnet"|network = "regtest"|g' $n0app
 
 exit 0
