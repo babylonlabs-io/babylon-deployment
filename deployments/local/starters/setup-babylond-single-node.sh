@@ -145,6 +145,7 @@ else
   | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
   | .app_state["btcstaking"]["params"][0]["slashing_pk_script"]="dqkUAQEBAQEBAQEBAQEBAQEBAQEBAQGIrA=="
   | .app_state["btcstaking"]["params"][0]["btc_activation_height"]=10
+  | .app_state["epoching"]["params"]["epoch_interval"]="5"
   | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="1"
   | .app_state["btccheckpoint"]["params"]["checkpoint_finalization_timeout"]="2"
   | .app_state["finality"]["params"]["finality_activation_height"]=0

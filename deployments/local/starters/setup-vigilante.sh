@@ -70,8 +70,8 @@ babylon:
   grpc-addr: https://localhost:9090
   account-prefix: bbn
   keyring-backend: test
-  gas-adjustment: 1.2
-  gas-prices: 1ubbn
+  gas-adjustment: 1.8
+  gas-prices: 800ubbn
   key-directory: $N0_HOME
   debug: true
   timeout: 20s

@@ -58,10 +58,12 @@ $FPD_BIN init $homeF --force
 
 perl -i -pe 's|DBPath = '$HOME'/.fpd/data|DBPath = "'$FPD_HOME/data'"|g' $cfg
 perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $cfg
-perl -i -pe 's|BitcoinNetwork = signet|BitcoinNetwork = simnet|g' $cfg
+perl -i -pe 's|BitcoinNetwork = signet|BitcoinNetwork = regtest|g' $cfg
 perl -i -pe 's|Port = 2112|Port = 2734|g' $cfg
 perl -i -pe 's|RPCListener = 127.0.0.1:12581|RPCListener = "'$listenAddr'"|g' $cfg
 perl -i -pe 's|Key = finality-provider|Key = "'$fpKeyName'"|g' $cfg
+perl -i -pe 's|RandomnessCommitInterval = 30s|RandomnessCommitInterval = 5s|g' $cfg
+perl -i -pe 's|TimestampingDelayBlocks = 6000|TimestampingDelayBlocks = 3|g' $cfg
 
 # Adds new key for the finality provider
 $FPD_BIN keys add $fpKeyName $homeF $kbt > $outdir/keys-add-keys-finality-provider.txt
