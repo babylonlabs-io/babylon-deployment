@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./btc-staker-start-and-stake.sh
@@ -46,4 +46,4 @@ $STAKERCLI_BIN daemon stake --staker-address $stakerBTCAddrListOutput --staking-
 flagDataDir="-datadir=$BTC_HOME"
 flagRpc="-rpcwallet=$btcWalletNameWithFunds"
 
-bitcoin-cli $flagDataDir $flagRpc -generate 20
+bitcoin-cli $flagDataDir $flagRpc -generate 40

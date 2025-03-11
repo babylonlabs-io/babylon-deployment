@@ -29,3 +29,6 @@ PATH_OF_PIDS=$FPD_HOME/*/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$FPD_HOME/*/*/*.pid $CWD/kill-process.sh # eotsd inside fpd
 PATH_OF_PIDS=$BTC_STAKER_HOME/pid/*.pid $CWD/kill-process.sh
 PATH_OF_PIDS=$COVENANT_SIGNER_PHASE_1_HOME/pid/*.pid $CWD/kill-process.sh
+
+docker stop electrs 2>/dev/null || true
+docker rm -f electrs 2>/dev/null || true

@@ -144,7 +144,10 @@ else
   | .app_state["staking"]["params"]["bond_denom"]="'$DENOM'"
   | .app_state["btcstaking"]["params"][0]["covenant_quorum"]="'$COVENANT_QUORUM'"
   | .app_state["btcstaking"]["params"][0]["slashing_pk_script"]="dqkUAQEBAQEBAQEBAQEBAQEBAQEBAQGIrA=="
-  | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="2"
+  | .app_state["btcstaking"]["params"][0]["btc_activation_height"]=10
+  | .app_state["btccheckpoint"]["params"]["btc_confirmation_depth"]="1"
+  | .app_state["btccheckpoint"]["params"]["checkpoint_finalization_timeout"]="2"
+  | .app_state["finality"]["params"]["finality_activation_height"]=0
   | .app_state["consensus"]=null
   | .consensus["params"]["abci"]["vote_extensions_enable_height"]="1"
   | .app_state["gov"]["params"]["expedited_voting_period"]="'$EXPEDITED_VOTING_PERIOD'"

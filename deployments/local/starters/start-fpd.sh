@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-fpd.sh
@@ -21,6 +21,9 @@ CHAIN_DIR="${CHAIN_DIR:-$DATA_DIR/babylon}"
 FPD_HOME="${FPD_HOME:-$DATA_DIR/fpd/fp-0}"
 EOTS_HOME="${EOTS_HOME:-$DATA_DIR/eots}"
 CLEANUP="${CLEANUP:-1}"
+SETUP="${SETUP:-1}"
+KILL_FIRST="${KILL_FIRST:-0}"
+REGISTER="${REGISTER:-1}"
 
 n0dir="$DATA_DIR/$CHAIN_ID/n0"
 listenAddr="127.0.0.1:12583"
@@ -41,60 +44,50 @@ gasp="--gas-prices 1ubbn"
 
 . $CWD/../helpers.sh
 
-if [[ "$CLEANUP" == 1 || "$CLEANUP" == "1" ]]; then
-  PATH_OF_PIDS=$FPD_HOME/*.pid $STOP/kill-process.sh
 
-  rm -rf $FPD_HOME
-  echo "Removed $FPD_HOME"
+if [[ "$SETUP" == 1 || "$SETUP" == "1" ]]; then
+  FPD_HOME=$FPD_HOME CLEANUP=$CLEANUP CHAIN_ID=$CHAIN_ID CHAIN_DIR=$CHAIN_DIR $CWD/setup-fpd.sh
 fi
 
 checkFpd
 
-mkdir -p $outdir
-mkdir -p $logdir
+if [[ "$KILL_FIRST" == 1 || "$KILL_FIRST" == "1" ]]; then
+  PATH_OF_PIDS=$FPD_HOME/*.pid $STOP/kill-process.sh
+fi
 
-# Creates and modifies config
-$FPD_BIN init $homeF --force
-
-perl -i -pe 's|DBPath = '$HOME'/.fpd/data|DBPath = "'$FPD_HOME/data'"|g' $cfg
-perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $cfg
-perl -i -pe 's|BitcoinNetwork = signet|BitcoinNetwork = simnet|g' $cfg
-perl -i -pe 's|Port = 2112|Port = 2734|g' $cfg
-perl -i -pe 's|RPCListener = 127.0.0.1:12581|RPCListener = "'$listenAddr'"|g' $cfg
-perl -i -pe 's|Key = finality-provider|Key = "'$fpKeyName'"|g' $cfg
-
-# Adds new key for the finality provider
-$FPD_BIN keys add $fpKeyName $homeF $kbt > $outdir/keys-add-keys-finality-provider.txt
+logNum=$(ls $logdir/ | wc -l)
 
 # Starts the finality provider daemon
-$FPD_BIN start --rpc-listener $listenAddr $homeF > $logdir/fpd-start.log 2>&1 &
+$FPD_BIN start --rpc-listener $listenAddr $homeF > $logdir/fpd-start-$logNum.log 2>&1 &
 echo $! > $FPD_HOME/fpd.pid
 sleep 2
 
-eotsPk=$(cat $EOTS_HOME/out/keys-add-eots-key.json | jq -r '.pubkey_hex' )
+if [[ "$REGISTER" == 1 || "$REGISTER" == "1" ]]; then
+  eotsPk=$(cat $EOTS_HOME/out/keys-add-eots-key.json | jq -r '.pubkey_hex' )
 
+  # Transfer funds to the fp acc created
+  fpBbnAddr=$($BBN_BIN $homeF keys show $fpKeyName -a $kbt)
+  $BBN_BIN tx bank send user $fpBbnAddr 100000000ubbn $homeN0 $kbt $cid $gasp -y
 
-# Transfer funds to the fp acc created
-fpBbnAddr=$($BBN_BIN $homeF keys show $fpKeyName -a $kbt)
-$BBN_BIN tx bank send user $fpBbnAddr 100000000ubbn $homeN0 $kbt $cid $gasp -y
+  waitForOneBlock
 
-waitForOneBlock
+  # Creates the finality provider and stores it into the database and eots
+  createFPFileIn=$outdir/create-finality-provider-in.json
 
-# Creates the finality provider and stores it into the database and eots
-createFPFileIn=$outdir/create-finality-provider-in.json
+  echo "{
+    \"keyName\": \"$fpKeyName\",
+    \"chainID\": \"$CHAIN_ID\",
+    \"passphrase\": \"\",
+    \"commissionRate\": \"0.05\",
+    \"moniker\": \"fpd-monikey\",
+    \"identity\": \"\",
+    \"website\": \"\",
+    \"securityContract\": \"\",
+    \"details\": \"\",
+    \"eotsPK\": \"$eotsPk\"
+  }" > $createFPFileIn
 
-echo "{
-  \"keyName\": \"$fpKeyName\",
-  \"chainID\": \"$CHAIN_ID\",
-  \"passphrase\": \"\",
-  \"commissionRate\": \"0.05\",
-  \"moniker\": \"fpd-monikey\",
-  \"identity\": \"\",
-  \"website\": \"\",
-  \"securityContract\": \"\",
-  \"details\": \"\",
-  \"eotsPK\": \"$eotsPk\"
-}" > $createFPFileIn
+  createFPFileOut=$outdir/create-finality-provider-out.json
+  $FPD_BIN create-finality-provider --from-file $createFPFileIn $dAddr > $createFPFileOut
+fi
 
-createFPFileOut=$outdir/create-finality-provider-out.json
-$FPD_BIN create-finality-provider --from-file $createFPFileIn $dAddr > $createFPFileOut

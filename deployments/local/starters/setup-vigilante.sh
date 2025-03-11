@@ -38,7 +38,7 @@ echo "
 common:
   log-format: "auto" # format of the log (json|auto|console|logfmt)
   log-level: "debug" # log level (debug|warn|error|panic|fatal)
-  retry-sleep-time: 5s
+  retry-sleep-time: 2s
   max-retry-sleep-time: 5m
 btc:
   no-client-tls: true # use true for bitcoind as it does not support tls
@@ -93,9 +93,9 @@ metrics:
 submitter:
   netparams: regtest
   buffer-size: 10
-  resubmit-fee-multiplier: 1
-  polling-interval-seconds: 60
-  resend-interval-seconds: 1800
+  resubmit-fee-multiplier: 2
+  polling-interval-seconds: 10
+  resend-interval-seconds: 20
   dbconfig:
     dbpath: $DB_FILE_PATH
     dbfilename: vigilante.db
@@ -106,13 +106,13 @@ submitter:
 reporter:
   netparams: regtest
   btc_cache_size: 50000
-  max_headers_in_msg: 1000
+  max_headers_in_msg: 100
 monitor:
   checkpoint-buffer-size: 1000
   btc-block-buffer-size: 1000
   btc-cache-size: 1000
   btc-confirmation-depth: 6
-  liveness-check-interval-seconds: 100
+  liveness-check-interval-seconds: 10
   max-live-btc-heights: 200
   enable-liveness-checker: true
   enable-slasher: true
@@ -120,9 +120,10 @@ monitor:
 btcstaking-tracker:
   check-delegations-interval: 1m
   delegations-batch-size: 100
-  check-if-delegation-active-interval: 5m
+  check-if-delegation-active-interval: 20s
   retry-submit-unbonding-interval: 1m
   max-jitter-interval: 30s
   btcnetparams: regtest
   max-slashing-concurrency: 20
+  indexer-addr: localhost:3000
 " > $CONF_PATH

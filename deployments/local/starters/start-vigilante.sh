@@ -22,7 +22,9 @@ VIGILANTE_BIN="${VIGILANTE_BIN:-$BBN_DEPLOYMENTS/vigilante/build/vigilante}"
 
 N0_HOME="${N0_HOME:-$CHAIN_HOME/n0}"
 BTC_HOME="${BTC_HOME:-$DATA_DIR/bitcoind}"
+BTC_BLOCKS_PATH=$BTC_HOME/regtest/
 VIGILANTE_HOME="${VIGILANTE_HOME:-$DATA_DIR/vigilante}"
+ELECTRS_HOME="${ELECTRS_HOME:-$VIGILANTE_HOME/electrs}"
 CLEANUP="${CLEANUP:-1}"
 
 echo "--- Chain Dir = $DATA_DIR"
@@ -64,9 +66,36 @@ submitterAddr=$($BBN_BIN --home $N0_HOME keys show submitter -a $kbt)
 CONF_PATH=$vigilanteConfSub CLEANUP=0 SUBMITTER_ADDR=$submitterAddr $CWD/setup-vigilante.sh
 CONF_PATH=$vigilanteConfRep CLEANUP=0 SUBMITTER_ADDR=$submitterAddr SERVER_PORT=2134 LISTEN_PORT=8068 $CWD/setup-vigilante.sh
 
+docker stop electrs 2>/dev/null || true
+docker rm -f electrs 2>/dev/null || true
+
+docker run -d \
+  --name electrs \
+  --platform linux/amd64 \
+  --ip 192.168.10.31 \
+  --env ELECTRS_NETWORK=regtest \
+  --env ELECTRS_COOKIE=rpcuser:rpcpass \
+  --env ELECTRS_DAEMON_RPC_ADDR=172.17.0.1:19001 \
+  --volume $(ELECTRS_HOME)/:/data:Z \
+  --volume $(BTC_BLOCKS_PATH)/:/bitcoin/.bitcoin:Z \
+  --publish 8080:8080 \
+  --publish 3000:3000 \
+  mempool/electrs:v3.1.0 \
+  --cookie rpcuser:rpcpass \
+  --network regtest \
+  --electrum-rpc-addr 0.0.0.0:8080 \
+  --http-addr 0.0.0.0:3000 \
+  --db-dir /electrs/.electrs/db/ \
+  --daemon-rpc-addr 172.17.0.1:19001 \
+  --daemon-dir /bitcoin/.bitcoin \
+  -v \
+  --address-search \
+  --cors "*" \
+  --timestamp
+
 # Starts reporter and submitter
 $VIGILANTE_BIN --config $vigilanteConfRep reporter > $vigilanteLogs/reporter.log 2>&1 &
 echo $! > $reporterpid
 
-# $VIGILANTE_BIN --config $vigilanteConfSub submitter > $vigilanteLogs/submitter.log 2>&1 &
-# echo $! > $submitterpid
+$VIGILANTE_BIN --config $vigilanteConfSub submitter > $vigilanteLogs/submitter.log 2>&1 &
+echo $! > $submitterpid

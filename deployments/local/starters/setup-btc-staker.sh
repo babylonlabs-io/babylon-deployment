@@ -71,7 +71,7 @@ perl -i -pe 's|RPCHost = 127.0.0.1:8334|RPCHost = 127.0.0.1:19001|g' $stakercliC
 perl -i -pe 's|Key = node0|Key = "'$BTC_STAKER_KEY'"|g' $stakercliConfigFile
 perl -i -pe 's|ChainID = chain-test|ChainID = "'$CHAIN_ID'"|g' $stakercliConfigFile
 perl -i -pe 's|KeyDirectory = '$HOME'/.stakerd|KeyDirectory = "'$n0dir'"|g' $stakercliConfigFile
-perl -i -pe 's|KeyringBackend = test|KeyringBackend = '$KEYRING_BACKEND'|g' $stakercliConfigFile
+perl -i -pe 's|KeyringBackend = file|KeyringBackend = '$KEYRING_BACKEND'|g' $stakercliConfigFile
 #[dbconfig]
 perl -i -pe 's|DBPath = '$HOME'/.stakerd/data|DBPath = "'$stakercliDBDir'"|g' $stakercliConfigFile
 #[stakerconfig]

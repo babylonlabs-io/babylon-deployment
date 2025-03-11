@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./bbn-start-and-add-btc-delegation.sh
@@ -12,6 +12,7 @@ DATA_OUTPUTS="${DATA_OUTPUTS:-$DATA_DIR/outputs}"
 STARTERS="${STARTERS:-$CWD/starters}"
 STOP="${STOP:-$CWD/stop}"
 CLEANUP="${CLEANUP:-1}"
+FPD_HOME="${FPD_HOME:-$DATA_DIR/fpd/fp-0}"
 COVD_HOME="${COVD_HOME:-$DATA_DIR/covd}"
 BTC_BASE_HEADER_FILE="${BTC_BASE_HEADER_FILE:-$DATA_OUTPUTS/btc-base-header.json}"
 
@@ -52,6 +53,8 @@ CLEANUP=1 DATA_DIR=$DATA_DIR $STARTERS/start-vigilante.sh
 # Start EOTS
 DATA_DIR=$DATA_DIR $STARTERS/start-eots.sh
 
+genBTCBlocks 50
+
 # sleeps here, because covd and fpd need funds and execute an tx bank send from user
 # to avoid acc sequence errors, just wait until produces a block.
 sleep 2
@@ -64,7 +67,10 @@ sleep 15 # waits for fdp to send some txs
 # Start BTC Staker and stakes to btc
 DATA_DIR=$DATA_DIR $STARTERS/btc-staker-start-and-stake.sh
 
-sleep 10
+sleep 1
 
 genBTCBlocks 30
 
+sleep 10
+
+DATA_DIR=$DATA_DIR CLEANUP=0 SETUP=0 KILL_FIRST=1 REGISTER=0 $STARTERS/start-fpd.sh

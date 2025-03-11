@@ -29,14 +29,12 @@ mkdir -p $BTC_HOME
 mkdir -p $btcLogs
 mkdir -p $btcpidPath
 
+chmod -R 755 $BTC_HOME
 
 # Write the config file
 echo "
 # testnet-box functionality
 regtest=1
-dnsseed=0
-upnp=0
-
 # always run a server, even with bitcoin-qt
 server=1
 
@@ -44,6 +42,10 @@ server=1
 # listen on different ports than default testnet
 port=19000
 rpcport=19001
+rpcbind=0.0.0.0
+rpcallowip=172.0.0.0/8
+
+blockfilterindex=1
 
 zmqpubrawtx=tcp://127.0.0.1:28332
 zmqpubrawtxlock=tcp://127.0.0.1:28332
@@ -74,11 +76,12 @@ rpcWalletFlag="-rpcwallet=$walletName"
 bitcoind $flagDataDir > $btcLogs/bitcoind-start.log 2>&1 &
 echo $! > $bitcoindpid
 
+
 sleep 1
 
 bitcoin-cli $flagDataDir -named createwallet descriptors=true wallet_name=$walletName passphrase=walletpass
 
-bitcoin-cli $flagDataDir $rpcWalletFlag -generate 150
+bitcoin-cli $flagDataDir $rpcWalletFlag -generate 51
 
 # keeps mining 1 block each 8 sec.
 genBlocksForever &
