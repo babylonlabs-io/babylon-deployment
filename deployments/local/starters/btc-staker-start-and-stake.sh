@@ -19,6 +19,7 @@ CLEANUP="${CLEANUP:-1}"
 
 . $CWD/../helpers.sh
 
+setBtcStakerAuth
 checkStakercli
 checkStakerd
 checkBitcoind
@@ -32,6 +33,7 @@ DATA_DIR=$DATA_DIR BTC_STAKER_HOME=$BTC_STAKER_HOME CLEANUP=0 $CWD/start-btc-sta
 
 mkdir -p $stakercliOutputDir
 
+$STAKERCLI_BIN daemon babylon-finality-providers
 finalityProviderBTCPubKey=$($STAKERCLI_BIN daemon babylon-finality-providers | jq .finality_providers[0].bitcoin_public_Key -r)
 echo $finalityProviderBTCPubKey > $stakercliOutputDir/fpbtc.pub.key
 

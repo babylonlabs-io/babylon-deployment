@@ -196,6 +196,11 @@ checkBitcoind() {
   fi
 }
 
+setBtcStakerAuth() {
+  export BTCSTAKER_USERNAME="niceuser"
+  export BTCSTAKER_PASSWORD="coolpwd"
+}
+
 checkJq() {
   if ! command -v jq &> /dev/null
   then
