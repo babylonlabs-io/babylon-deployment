@@ -81,7 +81,7 @@ sleep 1
 
 bitcoin-cli $flagDataDir -named createwallet descriptors=true wallet_name=$walletName passphrase=walletpass
 
-bitcoin-cli $flagDataDir $rpcWalletFlag -generate 100
+bitcoin-cli $flagDataDir $rpcWalletFlag -generate 120
 
 # keeps mining 1 block each 8 sec.
 genBlocksForever &

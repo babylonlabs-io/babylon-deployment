@@ -79,6 +79,8 @@ if [[ "$REGISTER" == 1 || "$REGISTER" == "1" ]]; then
     \"chainID\": \"$CHAIN_ID\",
     \"passphrase\": \"\",
     \"commissionRate\": \"0.05\",
+    \"commissionMaxRate\": \"0.09\",
+    \"commissionMaxChangeRate\": \"0.01\",
     \"moniker\": \"fpd-monikey\",
     \"identity\": \"\",
     \"website\": \"\",
