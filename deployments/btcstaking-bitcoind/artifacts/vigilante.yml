@@ -94,3 +94,5 @@ btcstaking-tracker:
   max-jitter-interval: 30s
   btcnetparams: regtest
   max-slashing-concurrency: 20
+  indexer-addr: localhost:3000
+  fetch-evidence-interval: 30s

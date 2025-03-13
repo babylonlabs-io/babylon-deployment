@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./helpers.sh <option of full path to babylond>
@@ -194,6 +194,11 @@ checkBitcoind() {
     echo "Install it by checking https://bitcoin.org/en/full-node"
     exit 1
   fi
+}
+
+setBtcStakerAuth() {
+  export BTCSTAKER_USERNAME="niceuser"
+  export BTCSTAKER_PASSWORD="coolpwd"
 }
 
 checkJq() {

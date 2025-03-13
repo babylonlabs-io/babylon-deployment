@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 # USAGE:
 # ./start-btc-staker.sh
@@ -21,6 +21,7 @@ pidPath=$BTC_STAKER_HOME/pid
 . $CWD/../helpers.sh
 
 checkStakerd
+setBtcStakerAuth
 cleanUp $CLEANUP $pidPath/*.pid  $BTC_STAKER_HOME
 
 stakercliDirHome=$BTC_STAKER_HOME/stakecli

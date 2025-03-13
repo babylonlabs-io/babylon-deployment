@@ -1,0 +1,13 @@
+{
+  "start_time": 1741809425,
+  "periods": [
+    {
+      "coins": "100ubbn",
+      "length_seconds": 100
+    },
+    {
+      "coins": "250ubbn",
+      "length_seconds": 200
+    }
+  ]
+}
