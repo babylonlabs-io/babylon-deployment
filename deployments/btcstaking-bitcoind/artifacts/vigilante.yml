@@ -4,6 +4,7 @@ common:
   log-format: "auto"
   log-level: "debug"
 btc:
+  disable-tls: true
   no-client-tls: true   # use true for bitcoind as it does not support tls
   ca-file: ~
   endpoint: bitcoindsim:18443  # use port 18443 for bitcoind regtest
@@ -36,8 +37,8 @@ babylon:
   gas-prices: 2ubbn
   key-directory: /home/vigilante/config
   debug: true
-  timeout: 20s
-  block-timeout: ~
+  timeout: "20s"
+  block-timeout: "30s"
   output-format: json
   submitter-address: bbn1v6k7k9s8md3k29cu9runasstq5zaa0lpznk27w
   sign-mode: direct
@@ -94,5 +95,5 @@ btcstaking-tracker:
   max-jitter-interval: 30s
   btcnetparams: regtest
   max-slashing-concurrency: 20
-  indexer-addr: localhost:3000
+  indexer-addr: http://electrs:3000
   fetch-evidence-interval: 30s
