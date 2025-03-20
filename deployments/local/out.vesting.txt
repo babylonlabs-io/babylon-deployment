@@ -1,0 +1,77 @@
+--- Chain ID = test-1
+--- Chain Dir = /home/rafilx/projects/github.com/babylonlabs-io/babylon-deployment/deployments/local/test/../data/babylon
+- address: bbn1mk0ga5wdg0xkxuwsf74sx5pp443adweneslu40
+  name: vestingtest20
+  pubkey: '{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"AjxTMMUWpay+PF+obssjbe3RfA7Ky7bl00agKwGE7Kov"}'
+  type: local
+
+vesting spendable balances
+{
+  "balances": [],
+  "pagination": {}
+}
+code: 0
+codespace: ""
+data: ""
+events: []
+gas_used: "0"
+gas_wanted: "0"
+height: "0"
+info: ""
+logs: []
+raw_log: ""
+timestamp: ""
+tx: null
+txhash: 1CDE9B5C9CD943BF6EF2245C498B95CAA926E807A25CCF0131A111675E00D08E
+Current block height 287, waiting to reach 287
+valAddr bbn1y6xz2ggfc0pcsmyjlekh0j9pxh6hk87y7sfr8j , VAL0_ADDR bbnvaloper1y6xz2ggfc0pcsmyjlekh0j9pxh6hk87yrjr7tn
+{
+  "balances": [
+    {
+      "denom": "ubbn",
+      "amount": "0"
+    }
+  ],
+  "pagination": {
+    "total": "1"
+  }
+}
+code: 13
+codespace: sdk
+data: ""
+events: []
+gas_used: "0"
+gas_wanted: "0"
+height: "0"
+info: ""
+logs: []
+raw_log: 'insufficient fees; got: 0 required: 400: insufficient fee'
+timestamp: ""
+tx: null
+txhash: 8FCA23940B87A7754D54B4299D20DC51AC524C46BD9C94B48C3B154BA88B1E72
+code: 38
+codespace: sdk
+data: ""
+events: []
+gas_used: "0"
+gas_wanted: "0"
+height: "0"
+info: ""
+logs: []
+raw_log: "&�%!\t�Èl��mwȡ5�{\x1F� does not allow to pay fees for ݞ���C�cq�O�\x03P!�cֻ3:
+  fee-grant not found: not found"
+timestamp: ""
+tx: null
+txhash: 957BF9EEF5798ED6B1CC433DE89CA85239958EBCAC51B4EA6B0BB3DD8F512F5B
+{
+  "balances": [
+    {
+      "denom": "ubbn",
+      "amount": "0"
+    }
+  ],
+  "pagination": {
+    "total": "1"
+  }
+}
+Waits for epoch
