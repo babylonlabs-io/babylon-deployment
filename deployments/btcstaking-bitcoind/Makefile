@@ -9,11 +9,11 @@ endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
 BABYLOND_IMAGE= "babylonlabs/babylond:v1.0.0-rc.8"
-VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.22.0"
+VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.23.1"
 BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.15.5"
 FP_IMAGE= "babylonlabs/finality-provider:v1.0.0-rc.4"
-COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.14.0"
-COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.14.0"
+COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.15.0"
+COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.15.0"
 else
 BABYLOND_IMAGE= "babylonlabs-io/babylond"
 VIGILANTE_IMAGE= "babylonlabs-io/vigilante"
