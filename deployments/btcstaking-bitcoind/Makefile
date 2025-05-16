@@ -8,7 +8,7 @@ EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-fina
 endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
-BABYLOND_IMAGE= "babylonlabs/babylond:v1.0.0-rc.8"
+BABYLOND_IMAGE= "babylonlabs/babylond:v2.0.0-rc.0"
 VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.23.1"
 BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.15.5"
 FP_IMAGE= "babylonlabs/finality-provider:v1.0.0-rc.4"
