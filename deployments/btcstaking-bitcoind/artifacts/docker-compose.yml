@@ -34,6 +34,8 @@ services:
         ipv4_address: 192.168.10.2
     depends_on:
       - tmkms
+    environment:
+      - BABYLON_BLS_PASSWORD=password
 
   babylondnode1:
     container_name: babylondnode1
@@ -54,6 +56,8 @@ services:
     networks:
       localnet:
         ipv4_address: 192.168.10.3
+    environment:
+      - BABYLON_BLS_PASSWORD=password
 
   bitcoindsim:
     build:
