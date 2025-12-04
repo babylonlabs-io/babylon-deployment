@@ -99,7 +99,7 @@ btcstaking-tracker:
   fetch-evidence-interval: 30s
   fetch-comet-block-interval: 2s
   slasherdbconfig:
-    dbpath: home/vigilante/bstracker/data
+    dbpath: /home/vigilante/bstracker/data
     dbfilename: bstracker.db
     nofreelistsync: true
     autocompact: false
