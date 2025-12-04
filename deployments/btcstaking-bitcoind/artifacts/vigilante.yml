@@ -97,3 +97,4 @@ btcstaking-tracker:
   max-slashing-concurrency: 20
   indexer-addr: http://electrs:3000
   fetch-evidence-interval: 30s
+  fetch-comet-block-interval: 2s
