@@ -4,8 +4,9 @@ echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 
 declare -a btcPks=()
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
+    # skips the "Warning: HMAC key not configured. Authentication will not be enabled." with awk
     btcPk=$(docker exec eotsmanager /bin/sh -c "
-        /bin/eotsd keys add finality-provider$idx --keyring-backend=test --rpc-client "0.0.0.0:15813" --output=json | jq -r '.pubkey_hex'
+        /bin/eotsd keys add finality-provider$idx --keyring-backend=test --rpc-client "0.0.0.0:15813" --output=json | awk '/^\{/ {p=1} p' | jq -r '.pubkey_hex'
     ")
     btcPks+=("$btcPk")
     docker exec finality-provider$idx /bin/sh -c "
@@ -57,7 +58,7 @@ do
     echo "Delegating 1 million Satoshis from BTC address ${delAddrs[i]} to Finality Provider with Bitcoin public key $btcPk for $stakingTime BTC blocks";
 
     btcTxHash=$(docker exec btc-staker /bin/sh -c \
-        "/bin/stakercli dn stake --staker-address ${delAddrs[i]} --staking-amount 1000000 --finality-providers-pks $btcPk --staking-time $stakingTime --send-to-babylon-first| jq -r '.tx_hash'")
+        "/bin/stakercli dn stake --staker-address ${delAddrs[i]} --staking-amount 1000000 --finality-providers-pks $btcPk --staking-time $stakingTime | jq -r '.tx_hash'")
     echo "Delegation was successful; staking tx hash is $btcTxHash"
     txHashes+=("$btcTxHash")  # Store the tx hash in the array
     i=$((i+1))
