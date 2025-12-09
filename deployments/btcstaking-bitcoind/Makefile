@@ -8,12 +8,12 @@ EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-fina
 endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
-BABYLOND_IMAGE= "babylonlabs/babylond:v2.0.0-rc.0"
-VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.23.1"
-BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.15.5"
-FP_IMAGE= "babylonlabs/finality-provider:v1.0.0-rc.4"
-COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.15.0"
-COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.15.0"
+BABYLOND_IMAGE= "babylonlabs/babylond:v4.2.0"
+VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.24.1"
+BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.17.0"
+FP_IMAGE= "babylonlabs/finality-provider:v2.0.1"
+COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.16.0"
+COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.16.0"
 else
 BABYLOND_IMAGE= "babylonlabs-io/babylond"
 VIGILANTE_IMAGE= "babylonlabs-io/vigilante"

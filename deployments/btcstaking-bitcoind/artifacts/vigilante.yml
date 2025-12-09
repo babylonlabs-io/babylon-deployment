@@ -97,3 +97,12 @@ btcstaking-tracker:
   max-slashing-concurrency: 20
   indexer-addr: http://electrs:3000
   fetch-evidence-interval: 30s
+  fetch-comet-block-interval: 2s
+  reconnect-btc-node-interval: 60s
+  slasherdbconfig:
+    dbpath: /home/vigilante/bstracker/data
+    dbfilename: bstracker.db
+    nofreelistsync: true
+    autocompact: false
+    autocompactminage: 168h0m0s
+    dbtimeout: 1m0s
