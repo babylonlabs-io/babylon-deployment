@@ -98,6 +98,7 @@ btcstaking-tracker:
   indexer-addr: http://electrs:3000
   fetch-evidence-interval: 30s
   fetch-comet-block-interval: 2s
+  reconnect-btc-node-interval: 60s
   slasherdbconfig:
     dbpath: /home/vigilante/bstracker/data
     dbfilename: bstracker.db

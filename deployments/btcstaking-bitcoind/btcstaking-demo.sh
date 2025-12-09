@@ -16,7 +16,7 @@ for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
             --commission-rate 0.05 \
             --commission-max-change-rate 0.05 \
             --commission-max-rate 0.1 \
-            --moniker \"Finality Provider $idx\" | head -n -1 | jq -r .btc_pk_hex
+            --moniker \"Finality Provider $idx\" | head -n -1 | jq -r .finality_provider.btc_pk_hex
     "
 done
 
@@ -84,19 +84,22 @@ echo "Attack Babylon by submitting a conflicting finality signature for a finali
 # Select the first Finality Provider
 attackerBtcPk=$(echo ${btcPks[@]}  | cut -d " " -f 1)
 attackHeight=$(docker exec finality-provider0 /bin/sh -c '/bin/fpd ls | jq -r ".finality_providers[].last_voted_height" | head -n 1')
+# fpd unsafe-add-finality-sig now requires the block app hash; fetch it from Babylon
+attackAppHash=$(docker exec babylondnode0 /bin/sh -c "curl -s localhost:26657/block?height=${attackHeight} | jq -r .result.block.header.app_hash")
 
 # Execute the attack for the first height that the finality provider voted
 docker exec finality-provider0 /bin/sh -c \
-    "/bin/fpd unsafe-add-finality-sig $attackerBtcPk $attackHeight --check-double-sign=false"
+    "/bin/fpd unsafe-add-finality-sig $attackerBtcPk $attackHeight --app-hash ${attackAppHash} --daemon-address 127.0.0.1:12581 --check-double-sign=false"
 
 echo "Finality Provider with Bitcoin public key $attackerBtcPk submitted a conflicting finality signature for Babylon height $attackHeight; the Finality Provider's private BTC key has been extracted and the Finality Provider will now be slashed"
 
 echo "Wait a few minutes for the last, shortest BTC delegation (10 BTC blocks) to expire..."
-sleep 180
+sleep 10
 
-echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
-docker exec btc-staker /bin/sh -c \
-    "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
+# TODO: enable ust of expired staked btc funds after making it possible
+#echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
+#docker exec btc-staker /bin/sh -c \
+#    "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
 
 echo "Unbond staked BTC tokens (staking tx hash: ${txHashes[1]}"
 docker exec btc-staker /bin/sh -c \
