@@ -94,12 +94,11 @@ docker exec finality-provider0 /bin/sh -c \
 echo "Finality Provider with Bitcoin public key $attackerBtcPk submitted a conflicting finality signature for Babylon height $attackHeight; the Finality Provider's private BTC key has been extracted and the Finality Provider will now be slashed"
 
 echo "Wait a few minutes for the last, shortest BTC delegation (10 BTC blocks) to expire..."
-sleep 10
+sleep 100
 
-# TODO: enable ust of expired staked btc funds after making it possible
-#echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
-#docker exec btc-staker /bin/sh -c \
-#    "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
+echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
+docker exec btc-staker /bin/sh -c \
+    "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
 
 echo "Unbond staked BTC tokens (staking tx hash: ${txHashes[1]}"
 docker exec btc-staker /bin/sh -c \
