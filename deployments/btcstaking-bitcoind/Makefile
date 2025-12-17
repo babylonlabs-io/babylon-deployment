@@ -48,7 +48,8 @@ build-covenant-signer:
 build-tmkms:
 	$(MAKE) -C $(GIT_TOPLEVEL)/contrib/images tmkms
 
-build-deployment-btcstaking-bitcoind: build-bitcoindsim build-tmkms $(EXTRA_BUILD_TARGET)
+# TODO: restore build-tmkms once its bug is fixed (issue #47)
+build-deployment-btcstaking-bitcoind: build-bitcoindsim $(EXTRA_BUILD_TARGET)
 
 start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-deployment-btcstaking-bitcoind
 	BABYLOND_IMAGE=${BABYLOND_IMAGE} \
