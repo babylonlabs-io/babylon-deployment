@@ -66,6 +66,16 @@ done
 
 echo "Made a delegation to each of the finality providers"
 
+echo "Create an additional BTC delegation using multisig staker keys (stake-multisig)"
+multisigFundingAddr=${delAddrs[0]}
+multisigFpPk=${btcPks[0]}
+multisigStakingTime=100
+multisigStakingAmount=1000000
+echo "Delegating ${multisigStakingAmount} sats (multisig) from funding address ${multisigFundingAddr} to FP ${multisigFpPk} for ${multisigStakingTime} BTC blocks"
+multisigTxHash=$(docker exec btc-staker /bin/sh -c \
+    "/bin/stakercli dn stake-multisig --funding-address ${multisigFundingAddr} --staking-amount ${multisigStakingAmount} --finality-providers-pks ${multisigFpPk} --staking-time ${multisigStakingTime} | jq -r '.tx_hash'")
+echo "Multisig delegation submitted; staking tx hash is ${multisigTxHash}"
+
 echo "Wait a few minutes for the delegations to become active..."
 while true; do
     allDelegationsActive=$(docker exec finality-provider0 /bin/sh -c \
