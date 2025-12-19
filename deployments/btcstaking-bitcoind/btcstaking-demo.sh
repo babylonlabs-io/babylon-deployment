@@ -66,15 +66,24 @@ done
 
 echo "Made a delegation to each of the finality providers"
 
-echo "Create an additional BTC delegation with short stakingTime using multisig staker keys (stake-multisig)"
-multisigFundingAddr=${delAddrs[0]}
-multisigFpPk=${btcPks[0]}
-multisigStakingTime=10
+echo "Create two BTC delegations using multisig staker keys (stake-multisig)"
+multisigFundingShort=${delAddrs[0]}
+multisigFundingLong=${delAddrs[1]}
+multisigFpPkShort=${btcPks[0]}
+multisigFpPkLong=${btcPks[1]}
+multisigStakingTimeShort=10
+multisigStakingTimeLong=500
 multisigStakingAmount=1000000
-echo "Delegating ${multisigStakingAmount} sats (multisig) from funding address ${multisigFundingAddr} to FP ${multisigFpPk} for ${multisigStakingTime} BTC blocks"
-multisigTxHash=$(docker exec btc-staker /bin/sh -c \
-    "/bin/stakercli dn stake-multisig --funding-address ${multisigFundingAddr} --staking-amount ${multisigStakingAmount} --finality-providers-pks ${multisigFpPk} --staking-time ${multisigStakingTime} | jq -r '.tx_hash'")
-echo "Multisig delegation submitted; staking tx hash is ${multisigTxHash}"
+
+echo "Delegating ${multisigStakingAmount} sats (multisig) from ${multisigFundingShort} to FP ${multisigFpPkShort} for ${multisigStakingTimeShort} BTC blocks"
+multisigTxHashShort=$(docker exec btc-staker /bin/sh -c \
+    "/bin/stakercli dn stake-multisig --funding-address ${multisigFundingShort} --staking-amount ${multisigStakingAmount} --finality-providers-pks ${multisigFpPkShort} --staking-time ${multisigStakingTimeShort} | jq -r '.tx_hash'")
+echo "Multisig short delegation submitted; staking tx hash is ${multisigTxHashShort}"
+
+echo "Delegating ${multisigStakingAmount} sats (multisig) from ${multisigFundingLong} to FP ${multisigFpPkLong} for ${multisigStakingTimeLong} BTC blocks"
+multisigTxHashLong=$(docker exec btc-staker /bin/sh -c \
+    "/bin/stakercli dn stake-multisig --funding-address ${multisigFundingLong} --staking-amount ${multisigStakingAmount} --finality-providers-pks ${multisigFpPkLong} --staking-time ${multisigStakingTimeLong} | jq -r '.tx_hash'")
+echo "Multisig long delegation submitted; staking tx hash is ${multisigTxHashLong}"
 
 echo "Wait a few minutes for the delegations to become active..."
 while true; do
@@ -110,13 +119,17 @@ echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
 docker exec btc-staker /bin/sh -c \
     "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
 
-echo "Withdraw the expired multisig staked BTC funds (staking tx hash: $multisigTxHash)"
+echo "Withdraw the expired multisig staked BTC funds (staking tx hash: $multisigTxHashShort)"
 docker exec btc-staker /bin/sh -c \
-    "/bin/stakercli dn ustm --staking-transaction-hash $multisigTxHash"
+    "/bin/stakercli dn ustm --staking-transaction-hash $multisigTxHashShort"
 
 echo "Unbond staked BTC tokens (staking tx hash: ${txHashes[1]}"
 docker exec btc-staker /bin/sh -c \
         "/bin/stakercli dn unbond --staking-transaction-hash ${txHashes[1]}"
+
+echo "Unbond multisig staked BTC tokens (staking tx hash: ${multisigTxHashLong})"
+docker exec btc-staker /bin/sh -c \
+        "/bin/stakercli dn unbond-multisig --staking-transaction-hash ${multisigTxHashLong}"
 
 echo "Wait for the unbond transaction to expire"
 sleep 180
@@ -124,3 +137,7 @@ sleep 180
 echo "Withdraw the expired staked BTC funds from unbonding (staking tx hash: ${txHashes[1]}"
 docker exec btc-staker /bin/sh -c \
         "/bin/stakercli dn unstake --staking-transaction-hash ${txHashes[1]}"
+
+echo "Withdraw the expired multisig staked BTC funds from unbonding (staking tx hash: ${multisigTxHashLong})"
+docker exec btc-staker /bin/sh -c \
+        "/bin/stakercli dn unstake-multisig --staking-transaction-hash ${multisigTxHashLong}"
