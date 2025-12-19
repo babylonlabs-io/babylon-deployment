@@ -66,10 +66,10 @@ done
 
 echo "Made a delegation to each of the finality providers"
 
-echo "Create an additional BTC delegation using multisig staker keys (stake-multisig)"
+echo "Create an additional BTC delegation with short stakingTime using multisig staker keys (stake-multisig)"
 multisigFundingAddr=${delAddrs[0]}
 multisigFpPk=${btcPks[0]}
-multisigStakingTime=100
+multisigStakingTime=10
 multisigStakingAmount=1000000
 echo "Delegating ${multisigStakingAmount} sats (multisig) from funding address ${multisigFundingAddr} to FP ${multisigFpPk} for ${multisigStakingTime} BTC blocks"
 multisigTxHash=$(docker exec btc-staker /bin/sh -c \
@@ -109,6 +109,10 @@ sleep 100
 echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
 docker exec btc-staker /bin/sh -c \
     "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
+
+echo "Withdraw the expired multisig staked BTC funds (staking tx hash: $multisigTxHash)"
+docker exec btc-staker /bin/sh -c \
+    "/bin/stakercli dn ustm --staking-transaction-hash $multisigTxHash"
 
 echo "Unbond staked BTC tokens (staking tx hash: ${txHashes[1]}"
 docker exec btc-staker /bin/sh -c \
