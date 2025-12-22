@@ -3,6 +3,22 @@
 echo "Create $NUM_FINALITY_PROVIDERS Bitcoin finality providers"
 
 declare -a btcPks=()
+
+wait_for_active() {
+    local txHash="$1"
+    local label="$2"
+    for attempt in $(seq 1 60); do
+        state=$(docker exec btc-staker /bin/sh -c "/bin/stakercli dn staking-details --staking-transaction-hash ${txHash} | jq -r '.staking_state'") || state=""
+        echo "Waiting for ${label} (${txHash}) to become ACTIVE. Attempt ${attempt}, state=${state}"
+        if [[ "${state}" == "ACTIVE" ]]; then
+            return 0
+        fi
+        sleep 10
+    done
+    echo "Timed out waiting for ${label} (${txHash}) to become ACTIVE"
+    return 1
+}
+
 for idx in $(seq 0 $((NUM_FINALITY_PROVIDERS-1))); do
     # skips the "Warning: HMAC key not configured. Authentication will not be enabled." with awk
     btcPk=$(docker exec eotsmanager /bin/sh -c "
@@ -107,15 +123,8 @@ while true; do
     fi
 done
 
-echo "Create a single-sig stake expansion using an active delegation"
-stakeExpandAmount=1500000
-stakeExpandTime=200
-stakeExpandBaseTx=${txHashes[0]}
-stakeExpandAddr=${delAddrs[0]}
-stakeExpandFpPk=${btcPks[0]}
-stakeExpandTxHash=$(docker exec btc-staker /bin/sh -c \
-    "/bin/stakercli dn stake-expand --staker-address ${stakeExpandAddr} --staking-amount ${stakeExpandAmount} --finality-providers-pks ${stakeExpandFpPk} --staking-time ${stakeExpandTime} --staking-transaction-hash ${stakeExpandBaseTx} | jq -r '.tx_hash'")
-echo "Stake expansion (single-sig) submitted; tx hash is ${stakeExpandTxHash}"
+echo "Wait for stake-expand base delegations to become ACTIVE before expanding"
+wait_for_active "${msExpandBaseTxHash}" "multisig base delegation"
 
 echo "Create a multisig stake expansion using the long-lived multisig delegation"
 msStakeExpandAmount=1500000
