@@ -56,10 +56,10 @@ do
         stakingTime=500
     fi
 
-    echo "Delegating 1 million Satoshis from BTC address ${delAddrs[i]} to Finality Provider with Bitcoin public key $btcPk for $stakingTime BTC blocks";
+    echo "Delegating 1 million Satoshis from BTC address ${delAddrs[i]} using multisig staker keys to Finality Provider with Bitcoin public key $btcPk for $stakingTime BTC blocks";
 
     btcTxHash=$(docker exec btc-staker /bin/sh -c \
-        "/bin/stakercli dn stake --staker-address ${delAddrs[i]} --staking-amount 1000000 --finality-providers-pks $btcPk --staking-time $stakingTime | jq -r '.tx_hash'")
+        "/bin/stakercli dn stake-multisig --funding-address ${delAddrs[i]} --staking-amount 1000000 --finality-providers-pks $btcPk --staking-time $stakingTime | jq -r '.tx_hash'")
     echo "Delegation was successful; staking tx hash is $btcTxHash"
     txHashes+=("$btcTxHash")  # Store the tx hash in the array
     i=$((i+1))
@@ -81,33 +81,34 @@ while true; do
     fi
 done
 
-echo "Attack Babylon by submitting a conflicting finality signature for a finality provider"
-# Select the first Finality Provider
-attackerBtcPk=$(echo ${btcPks[@]}  | cut -d " " -f 1)
-attackHeight=$(docker exec finality-provider0 /bin/sh -c '/bin/fpd ls | jq -r ".finality_providers[].last_voted_height" | head -n 1')
-# fpd unsafe-add-finality-sig now requires the block app hash; fetch it from Babylon
-attackAppHash=$(docker exec babylondnode0 /bin/sh -c "curl -s localhost:26657/block?height=${attackHeight} | jq -r .result.block.header.app_hash")
-
-# Execute the attack for the first height that the finality provider voted
-docker exec finality-provider0 /bin/sh -c \
-    "/bin/fpd unsafe-add-finality-sig $attackerBtcPk $attackHeight --app-hash ${attackAppHash} --daemon-address 127.0.0.1:12581 --check-double-sign=false"
-
-echo "Finality Provider with Bitcoin public key $attackerBtcPk submitted a conflicting finality signature for Babylon height $attackHeight; the Finality Provider's private BTC key has been extracted and the Finality Provider will now be slashed"
+echo "Create a multisig stake expansion using the long-lived multisig delegation"
+msStakeExpandAmount=1500000
+msStakeExpandTime=300
+msStakeExpandBaseTx=${txHashes[0]}
+msStakeExpandFunding=${delAddrs[0]}
+msStakeExpandFpPk=${btcPks[0]}
+msStakeExpandTxHash=$(docker exec btc-staker /bin/sh -c \
+    "/bin/stakercli dn stake-expand-multisig --funding-address ${msStakeExpandFunding} --staking-amount ${msStakeExpandAmount} --finality-providers-pks ${msStakeExpandFpPk} --staking-time ${msStakeExpandTime} --staking-transaction-hash ${msStakeExpandBaseTx} | jq -r '.tx_hash'")
+echo "Stake expansion (multisig) submitted; tx hash is ${msStakeExpandTxHash}"
 
 echo "Wait a few minutes for the last, shortest BTC delegation (10 BTC blocks) to expire..."
 sleep 100
 
-echo "Withdraw the expired staked BTC funds (staking tx hash: $btcTxHash)"
+echo "Withdraw the expired multisig staked BTC funds (staking tx hash: $btcTxHash)"
 docker exec btc-staker /bin/sh -c \
-    "/bin/stakercli dn ust --staking-transaction-hash $btcTxHash"
+    "/bin/stakercli dn ustm --staking-transaction-hash $btcTxHash"
 
-echo "Unbond staked BTC tokens (staking tx hash: ${txHashes[1]}"
+echo "Unbond multisig staked BTC tokens (staking tx hash: ${txHashes[1]})"
 docker exec btc-staker /bin/sh -c \
-        "/bin/stakercli dn unbond --staking-transaction-hash ${txHashes[1]}"
+        "/bin/stakercli dn unbond-multisig --staking-transaction-hash ${txHashes[1]}"
 
 echo "Wait for the unbond transaction to expire"
 sleep 180
 
-echo "Withdraw the expired staked BTC funds from unbonding (staking tx hash: ${txHashes[1]}"
+echo "Withdraw the expired multisig staked BTC funds from unbonding (staking tx hash: ${txHashes[1]})"
 docker exec btc-staker /bin/sh -c \
-        "/bin/stakercli dn unstake --staking-transaction-hash ${txHashes[1]}"
+        "/bin/stakercli dn unstake-multisig --staking-transaction-hash ${txHashes[1]}"
+
+echo "Check staking state for multisig stake expansion"
+docker exec btc-staker /bin/sh -c \
+        "/bin/stakercli dn staking-details --staking-transaction-hash ${msStakeExpandTxHash}"

@@ -66,6 +66,9 @@ start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-
 start-deployment-btcstaking-bitcoind-demo: start-deployment-btcstaking-bitcoind
 	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./btcstaking-demo.sh
 
+start-deployment-btcstaking-bitcoind-multisig-demo: start-deployment-btcstaking-bitcoind
+	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./multisig-demo.sh
+
 stop-deployment-btcstaking-bitcoind:
 	BABYLOND_IMAGE=$(BABYLOND_IMAGE) \
 		VIGILANTE_IMAGE=$(VIGILANTE_IMAGE) \
