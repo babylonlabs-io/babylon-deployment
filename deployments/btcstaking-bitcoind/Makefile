@@ -8,6 +8,8 @@ EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-fina
 endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
+# currently doesn't support multisig-demo.sh to work with using dockerhub images. but still support build images locally and test it.
+# TODO: after releasing all other repos with multisig support release, switch it.
 BABYLOND_IMAGE= "babylonlabs/babylond:v4.2.0"
 VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.24.1"
 BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.18.1"
