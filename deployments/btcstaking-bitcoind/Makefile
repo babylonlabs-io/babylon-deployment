@@ -8,9 +8,11 @@ EXTRA_BUILD_TARGET := build-babylond build-vigilante build-btc-staker build-fina
 endif
 
 ifeq ($(USE_DOCKERHUB_IMAGES),TRUE)
+# currently doesn't support multisig-demo.sh to work with using dockerhub images. but still support build images locally and test it.
+# TODO: after releasing all other repos with multisig support release, switch it.
 BABYLOND_IMAGE= "babylonlabs/babylond:v4.2.0"
 VIGILANTE_IMAGE= "babylonlabs/vigilante:v0.24.1"
-BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.17.0"
+BTCSTAKER_IMAGE= "babylonlabs/btc-staker:v0.18.1"
 FP_IMAGE= "babylonlabs/finality-provider:v2.0.1"
 COVENANT_IMAGE= "babylonlabs/covenant-emulator:v0.16.0"
 COVENANT_SIGNER_IMAGE= "babylonlabs/covenant-signer:v0.16.0"
@@ -47,7 +49,8 @@ build-covenant-signer:
 build-tmkms:
 	$(MAKE) -C $(GIT_TOPLEVEL)/contrib/images tmkms
 
-build-deployment-btcstaking-bitcoind: build-bitcoindsim build-tmkms $(EXTRA_BUILD_TARGET)
+# TODO: restore build-tmkms once its bug is fixed (issue #47)
+build-deployment-btcstaking-bitcoind: build-bitcoindsim $(EXTRA_BUILD_TARGET)
 
 start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-deployment-btcstaking-bitcoind
 	BABYLOND_IMAGE=${BABYLOND_IMAGE} \
@@ -63,6 +66,9 @@ start-deployment-btcstaking-bitcoind: stop-deployment-btcstaking-bitcoind build-
 
 start-deployment-btcstaking-bitcoind-demo: start-deployment-btcstaking-bitcoind
 	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./btcstaking-demo.sh
+
+start-deployment-btcstaking-bitcoind-multisig-demo: start-deployment-btcstaking-bitcoind
+	NUM_FINALITY_PROVIDERS=$(NUM_FINALITY_PROVIDERS) ./multisig-demo.sh
 
 stop-deployment-btcstaking-bitcoind:
 	BABYLOND_IMAGE=$(BABYLOND_IMAGE) \

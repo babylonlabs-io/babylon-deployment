@@ -20,15 +20,16 @@ docker run --rm -v $(pwd)/.testnets:/data ${BABYLOND_IMAGE} \
   --covenant-pks "2d4ccbe538f846a750d82a77cd742895e51afcf23d86d05004a356b783902748" # should be updated if `covenant-keyring` dir is changed`
 
 # Create tmkms directory that holds the tmkms secrets
-mkdir -p .testnets/tmkms
-docker run --rm \
-  -v $(pwd)/.testnets/tmkms:/tmkms \
-  -v $(pwd)/.testnets/node0:/tmkms/node0 \
-  babylonlabs-io/tmkms:latest /bin/sh -c " \
-    tmkms init /tmkms/config && \
-    tmkms softsign keygen /tmkms/config/secrets/secret_connection_key && \
-    tmkms softsign import /tmkms/node0/babylond/config/priv_validator_key.json /tmkms/config/secrets/priv_validator_key \
-  "
+# TODO: restore tmkms once its bug is fixed (issue #47)
+#mkdir -p .testnets/tmkms
+#docker run --rm \
+#  -v $(pwd)/.testnets/tmkms:/tmkms \
+#  -v $(pwd)/.testnets/node0:/tmkms/node0 \
+#  babylonlabs-io/tmkms:latest /bin/sh -c " \
+#    tmkms init /tmkms/config && \
+#    tmkms softsign keygen /tmkms/config/secrets/secret_connection_key && \
+#    tmkms softsign import /tmkms/node0/babylond/config/priv_validator_key.json /tmkms/config/secrets/priv_validator_key \
+#  "
 
 # Create separate subpaths for each component and copy relevant configuration
 mkdir -p .testnets/bitcoin
@@ -55,4 +56,5 @@ cp artifacts/covd.conf .testnets/covenant-emulator/covd.conf
 cp -R artifacts/covenant-emulator-keyring .testnets/covenant-emulator/keyring-test
 cp artifacts/covenant-signer.toml .testnets/covenant-signer/config.toml
 cp -R artifacts/covenant-signer-keyring .testnets/covenant-signer/keyring-test
-cp artifacts/tmkms.toml .testnets/tmkms/config/tmkms.toml
+# TODO: restore tmkms once its bug is fixed (issue #47)
+#cp artifacts/tmkms.toml .testnets/tmkms/config/tmkms.toml
